@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Instructors List</title>
+    <style>
+        table, th, td {
+            border: 2px solid black;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+
+<h1 class="panel-title">Lessons</h1>
+
+<table style="width:50%;  text-align:center">
+    <thead class="thead-inverse">
+    <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tr th:each="lesson : ${lessons}">
+        <!--/*@thymesVar id="lesson" type="com.example.swimmingproject.model.Lesson"*/-->
+        <td th:text="${lesson.id}">3</td>
+        <td th:text="${lesson.localDateTime}">01.01.01</td>
+        <td th:text="${lesson.description}">Desc</td>
+        <td><a href="#" th:href="@{'/lessons/' + ${lesson.id}}">View</a></td>
+        <td><a href="#" th:href="@{'/lessons/' + ${lesson.id} + '/update'}">Update</a></td>
+        <td><a href="#" th:href="@{'/lessons/' + ${lesson.id} + '/delete'}">Delete</a></td>
+    </tr>
+</table>
+
+</body>
+</html>

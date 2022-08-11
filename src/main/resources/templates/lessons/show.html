@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8"/>
+    <title>Lesson Show</title>
+    <style>
+        table, th, td {
+            border: 2px solid black;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+
+<body>
+
+<!--/*@thymesVar id="lesson" type="com.example.swimmingproject.model.Lesson"*/-->
+
+<h1>Lesson details</h1>
+
+<h3>
+    <a href="#" th:href="@{'/lesson/' + ${lesson.id} + '/update'}">Update</a>
+    <a style="color:red" href="#" th:href="@{'/lesson/' + ${lesson.id} + '/delete'}">Delete</a>
+</h3>
+
+<table style="width:50%;  text-align:center">
+
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td th:text="${lesson.id}">1</td>
+            <td th:text="${lesson.localDateTime}">Date</td>
+            <td th:text="${lesson.description}">Description</td>
+        </tr>
+    </tbody>
+</table>
+
+<table style="width:15%;  text-align:center">
+
+    <caption style="font-size:30px; font-weight: bold; text-align:left">Swimmers</caption>
+
+    <tbody>
+    <tr th:each="swimmer : ${lesson.swimmers}">
+        <td>
+            <a th:text="${swimmer.firstName} + ' ' + ${swimmer.lastName}" th:href="@{'/swimmers/' + ${swimmer.id} + '/show'}">John Kowalski</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
