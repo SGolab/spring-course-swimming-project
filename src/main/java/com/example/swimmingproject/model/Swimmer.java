@@ -22,7 +22,8 @@ public class Swimmer {
     private String firstName;
     private String lastName;
 
-    //https://stackabuse.com/guide-to-jpa-with-hibernate-basic-mapping/
+    @ManyToMany(mappedBy = "swimmers")
+    private List<Lesson> lessons = new ArrayList<>();
 
     @ManyToMany
     private List<Lesson> lessons;

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -25,7 +26,10 @@ public class Lesson {
     private Instructor instructor;
 
     @ManyToMany
-    private List<Swimmer> swimmers;
+    @JoinTable(
+            joinColumns = @JoinColumn(name = "lesson_id"),
+            inverseJoinColumns = @JoinColumn(name = "swimmer_id"))
+    private List<Swimmer> swimmers = new ArrayList<>();
 
     private String description;
 
