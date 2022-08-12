@@ -25,7 +25,7 @@ public class Bootstrap implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        Set<Swimmer> swimmerSet = createSwimmerSet(15);
+        Set<Swimmer> swimmerSet = createSwimmerSet(12);
         Set<Instructor> instructorSet = createInstructorSet(3);
         Set<Lesson> lessonsSet = createLessonSet(9);
 
@@ -44,16 +44,18 @@ public class Bootstrap implements CommandLineRunner {
 
         Iterator<Lesson> iterator = new CircularIterator<>(lessonsSet);
 
+        int LESSON_PER_SWIMMER = 3; //(SWIMMER_AMOUNT / LESSON_PER_SWIMMER) swimmer per lesson
         swimmerSet.forEach(swimmer -> { //binding lessons to swimmers
-            for (int i = 0; i < random.nextInt(lessonsSet.size()); i++) {
+            for (int i = 0; i < LESSON_PER_SWIMMER; i++) {
                 Lesson lesson = iterator.next();
                 swimmer.addLesson(lesson);
                 lesson.addSwimmer(swimmer);
             }
         });
 
+        int LESSONS_PER_INSTRUCTOR = 3; //one instructor per lesson
         instructorSet.forEach(instructor -> { //binding lessons to instructors
-            for (int i = 0; i < lessonsSet.size() / instructorSet.size(); i++) {
+            for (int i = 0; i < LESSONS_PER_INSTRUCTOR; i++) {
                 Lesson lesson = iterator.next();
                 instructor.addLesson(lesson);
                 lesson.setInstructor(instructor);
