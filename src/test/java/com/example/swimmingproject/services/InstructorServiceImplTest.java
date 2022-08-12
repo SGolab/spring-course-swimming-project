@@ -1,6 +1,7 @@
 package com.example.swimmingproject.services;
 
 import com.example.swimmingproject.model.Instructor;
+import com.example.swimmingproject.model.NotFoundException;
 import com.example.swimmingproject.repositories.InstructorRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,8 +12,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -46,5 +46,11 @@ class InstructorServiceImplTest {
         Instructor instructor = instructorService.findById(1L);
 
         assertNotNull(instructor);
+    }
+
+    @Test()
+    void findByIdNotFound() {
+        when(instructorRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> instructorService.findById(1L));
     }
 }

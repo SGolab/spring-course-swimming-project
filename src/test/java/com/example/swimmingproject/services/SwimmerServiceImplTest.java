@@ -1,5 +1,6 @@
 package com.example.swimmingproject.services;
 
+import com.example.swimmingproject.model.NotFoundException;
 import com.example.swimmingproject.model.Swimmer;
 import com.example.swimmingproject.repositories.SwimmerRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,12 +18,11 @@ import static org.mockito.Mockito.when;
 
 class SwimmerServiceImplTest {
 
-
     @Mock
-    SwimmerRepository SwimmerRepository;
+    SwimmerRepository swimmerRepository;
 
     @InjectMocks
-    SwimmerServiceImpl SwimmerService;
+    SwimmerServiceImpl swimmerService;
 
     @BeforeEach
     void setUp() {
@@ -31,9 +31,9 @@ class SwimmerServiceImplTest {
 
     @Test
     void findAll() {
-        when(SwimmerRepository.findAll()).thenReturn(List.of(new Swimmer(), new Swimmer()));
+        when(swimmerRepository.findAll()).thenReturn(List.of(new Swimmer(), new Swimmer()));
 
-        List<Swimmer> Swimmers = SwimmerService.findAll();
+        List<Swimmer> Swimmers = swimmerService.findAll();
 
         assertNotNull(Swimmers);
         assertEquals(2, Swimmers.size());
@@ -41,10 +41,16 @@ class SwimmerServiceImplTest {
 
     @Test
     void findById() {
-        when(SwimmerRepository.findById(anyLong())).thenReturn(Optional.of(new Swimmer()));
+        when(swimmerRepository.findById(anyLong())).thenReturn(Optional.of(new Swimmer()));
 
-        Swimmer swimmer = SwimmerService.findById(1L);
+        Swimmer swimmer = swimmerService.findById(1L);
 
         assertNotNull(swimmer);
+    }
+
+    @Test()
+    void findByIdNotFound() {
+        when(swimmerRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> swimmerService.findById(1L));
     }
 }
