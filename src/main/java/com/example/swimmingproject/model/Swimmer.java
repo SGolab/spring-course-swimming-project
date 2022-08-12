@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -25,6 +26,10 @@ public class Swimmer {
     @ManyToMany(mappedBy = "swimmers")
     private List<Lesson> lessons = new ArrayList<>();
 
-    @ManyToMany
-    private List<Lesson> lessons;
+    public void addLesson(Lesson lesson) {
+        if (lessons == null) {
+            lessons = new ArrayList<>();
+        }
+        lessons.add(lesson);
+    }
 }

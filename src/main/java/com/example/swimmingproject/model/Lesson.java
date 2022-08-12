@@ -34,4 +34,11 @@ public class Lesson {
     private String description;
 
     private LocalDateTime localDateTime;
+
+    public void addSwimmer(Swimmer swimmer) {
+        if (swimmers == null) {
+            swimmers = new ArrayList<>();
+        }
+        swimmers.add(swimmer);
+    }
 }

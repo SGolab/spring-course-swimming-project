@@ -10,9 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Random;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 @RequiredArgsConstructor
 @Component
@@ -24,55 +24,116 @@ public class Bootstrap implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        instructorRepository.save(createInstructor());
-        instructorRepository.save(createInstructor());
-        instructorRepository.save(createInstructor());
+
+        Set<Swimmer> swimmerSet = createSwimmerSet(15);
+        Set<Instructor> instructorSet = createInstructorSet(3);
+        Set<Lesson> lessonsSet = createLessonSet(9);
+
+        randomlyBind(swimmerSet, instructorSet, lessonsSet);
+
+        swimmerRepository.saveAll(swimmerSet);
+        instructorRepository.saveAll(instructorSet);
+        lessonRepository.saveAll(lessonsSet);
 
         System.out.printf(
                 "Loaded bootstrap data.\ninstructor count: %d\nlesson count: %d\nswimmer count: %d\n",
                 instructorRepository.count(), lessonRepository.count(), swimmerRepository.count());
     }
 
-    private static final List<String> names = List.of("Stephany", "Camdyn", "Korey", "Eddy", "Preston", "Myka", "Braelyn", "Emmalynn", "Tatum", "Jaxen", "Jaya", "Don", "Bryer", "Teagan", "Brenna", "Khloee", "Ingrid", "Nigel", "Yaritza", "Jessa", "Rilynn", "Mark", "Angel", "Brady", "Deacon", "Melvin", "Dyllan", "Bronx", "Elisha", "Elan", "Kenia", "Alonzo", "Dean", "Cortez", "Latrell", "Lochlan", "Landin", "Alannah", "Kaiya", "Helena", "Braylan", "Chyna", "Mack", "Madison", "Darien", "Raegan", "Lorraine", "Ryleigh", "Raylan", "Aayden", "Lana", "Case", "Shanaya", "Steven", "Jaelynn", "Zeke", "Maryam", "Trinity", "Weston", "Micaela", "Eliyahu", "Kalen", "Ayman", "Yuna", "Zia", "Jaylynn", "Kole", "Joyce", "Tatianna", "Juancarlos", "Thea", "Soleil", "Alma", "Arleth", "Vicente", "Jethro", "Myra", "Hans", "Sidney", "Jeffery", "Coleman", "Adelynn", "Bryson", "Eddie", "Aiza", "Niall", "Annmarie", "Lina", "Rylie", "Kai", "Walter", "Ivory", "Violeta", "Jazzlyn", "Nick", "Immanuel", "Matthew", "Dyson", "Estevan", "Tala");
-    private static final Random random = new Random();
+    private void randomlyBind(Set<Swimmer> swimmerSet, Set<Instructor> instructorSet, Set<Lesson> lessonsSet) {
+
+        Iterator<Lesson> iterator = new CircularIterator<>(lessonsSet);
+
+        swimmerSet.forEach(swimmer -> { //binding lessons to swimmers
+            for (int i = 0; i < random.nextInt(lessonsSet.size()); i++) {
+                Lesson lesson = iterator.next();
+                swimmer.addLesson(lesson);
+                lesson.addSwimmer(swimmer);
+            }
+        });
+
+        instructorSet.forEach(instructor -> { //binding lessons to instructors
+            for (int i = 0; i < lessonsSet.size() / instructorSet.size(); i++) {
+                Lesson lesson = iterator.next();
+                instructor.addLesson(lesson);
+                lesson.setInstructor(instructor);
+            }
+        });
+    }
+
+    private Set<Swimmer> createSwimmerSet(int amount) {
+        Set<Swimmer> result = new HashSet<>();
+        for (int i = 0; i < amount; i++) {
+            result.add(createSwimmer());
+        }
+        return result;
+    }
+
+    private Set<Instructor> createInstructorSet(int amount) {
+        Set<Instructor> result = new HashSet<>();
+        for (int i = 0; i < amount; i++) {
+            result.add(createInstructor());
+        }
+        return result;
+    }
+
+    private Set<Lesson> createLessonSet(int amount) {
+        Set<Lesson> result = new HashSet<>();
+        for (int i = 0; i < amount; i++) {
+            result.add(createLesson());
+        }
+        return result;
+    }
 
     private Instructor createInstructor() {
-        Instructor instructor = Instructor.builder()
+        return Instructor.builder()
                 .firstName(getRandomName())
                 .lastName(getRandomName())
                 .build();
-
-        instructor = instructorRepository.save(instructor);
-
-        instructor.addLesson(createLesson(instructor));
-        instructor.addLesson(createLesson(instructor));
-        instructor.addLesson(createLesson(instructor));
-
-        return instructorRepository.save(instructor);
     }
 
-    private Lesson createLesson(Instructor instructor) {
-        return lessonRepository.save(
-                Lesson.builder()
-                        .localDateTime(LocalDateTime.now())
-                        .description("lesson's description")
-                        .swimmers(List.of(
-                                createSwimmer(),
-                                createSwimmer(),
-                                createSwimmer()))
-                        .instructor(instructor)
-                        .build());
+    private Lesson createLesson() {
+        return Lesson.builder()
+                .localDateTime(LocalDate.ofEpochDay(ThreadLocalRandom.current().nextInt(365 * 50, 365 * 53)).atStartOfDay())
+                .description("lesson's description")
+                .build();
     }
 
     private Swimmer createSwimmer() {
-        return swimmerRepository.save(
-                Swimmer.builder()
-                        .firstName(getRandomName())
-                        .lastName(getRandomName())
-                        .build());
+        return Swimmer.builder()
+                .firstName(getRandomName())
+                .lastName(getRandomName())
+                .build();
     }
+
+    private static final List<String> names = List.of("Stephany", "Camdyn", "Korey", "Eddy", "Preston", "Myka", "Braelyn", "Emmalynn", "Tatum", "Jaxen", "Jaya", "Don", "Bryer", "Teagan", "Brenna", "Khloee", "Ingrid", "Nigel", "Yaritza", "Jessa", "Rilynn", "Mark", "Angel", "Brady", "Deacon", "Melvin", "Dyllan", "Bronx", "Elisha", "Elan", "Kenia", "Alonzo", "Dean", "Cortez", "Latrell", "Lochlan", "Landin", "Alannah", "Kaiya", "Helena", "Braylan", "Chyna", "Mack", "Madison", "Darien", "Raegan", "Lorraine", "Ryleigh", "Raylan", "Aayden", "Lana", "Case", "Shanaya", "Steven", "Jaelynn", "Zeke", "Maryam", "Trinity", "Weston", "Micaela", "Eliyahu", "Kalen", "Ayman", "Yuna", "Zia", "Jaylynn", "Kole", "Joyce", "Tatianna", "Juancarlos", "Thea", "Soleil", "Alma", "Arleth", "Vicente", "Jethro", "Myra", "Hans", "Sidney", "Jeffery", "Coleman", "Adelynn", "Bryson", "Eddie", "Aiza", "Niall", "Annmarie", "Lina", "Rylie", "Kai", "Walter", "Ivory", "Violeta", "Jazzlyn", "Nick", "Immanuel", "Matthew", "Dyson", "Estevan", "Tala");
+    private static final Random random = new Random();
 
     private static String getRandomName() {
         return names.get(random.nextInt(names.size()));
+    }
+
+    private static class CircularIterator<T> implements Iterator<T> {
+
+        Iterable<T> iterable;
+        Iterator<T> iterator;
+
+        public CircularIterator(Iterable<T> iterable) {
+            this.iterable = iterable;
+            this.iterator = iterable.iterator();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return true;
+        }
+
+        @Override
+        public T next() {
+            if (!iterator.hasNext()) {
+                iterator = iterable.iterator();
+            }
+            return iterator.next();
+        }
     }
 }

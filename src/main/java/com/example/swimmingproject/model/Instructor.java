@@ -22,7 +22,7 @@ public class Instructor {
     private String lastName;
 
     @OneToMany(mappedBy = "instructor", fetch = FetchType.EAGER)
-    private List<Lesson> lessons;
+    private List<Lesson> lessons = new ArrayList<>();
 
     public void addLesson(Lesson lesson) {
         if (lessons == null) {
