@@ -15,7 +15,7 @@
 
 <body>
 
-<!--/*@thymesVar id="instructor" type="com.example.swimmingproject.model.Instructor"*/-->
+<!--/*@thymesVar id="instructor" type="com.example.sgswimming.model.Instructor"*/-->
 
 <h1 th:text="'Instructor - ' + ${instructor.firstName} + ' ' + ${instructor.lastName}">Instructor - George Kowalski
     <a style="color:blue; font-size:medium" href="#"
@@ -32,20 +32,18 @@
     <tr>
         <th>ID</th>
         <th>Date</th>
-        <th>Description</th>
+        <th th:colspan="${instructor.lessons.get(0).swimmers.size()}">Participants</th>
     </tr>
     </thead>
 
     <tbody>
-    <!--/*@thymesVar id="lesson" type="com.example.swimmingproject.model.Lesson"*/-->
-
+    <!--/*@thymesVar id="lesson" type="com.example.sgswimming.model.Lesson"*/-->
 
     <tr th:each="lesson : ${instructor.lessons}">
         <td>
             <a th:text="${lesson.id}" href="#" th:href="@{'/lessons/' + ${lesson.id}}">1</a>
         </td>
-        <td th:text="${lesson.localDateTime}">Date</td>
-        <td th:text="${lesson.description}">Description</td>
+        <td th:text="${#temporals.format(lesson.localDateTime,'dd-MM-yyyy hh:mm')}">Date</td>
         <td th:each="swimmer : ${lesson.swimmers}" >
             <a th:text="${swimmer.firstName + ' ' + swimmer.lastName}" href="#" th:href="@{'/swimmers/' + ${swimmer.id}}">Swimmer</a>
         </td>

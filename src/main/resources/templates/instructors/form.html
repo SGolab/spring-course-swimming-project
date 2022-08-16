@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Instructor form</title>
+</head>
+<body>
+<h1>Instructor creation form</h1>
+
+<!--/*@thymesVar id="instructor" type="com.example.sgswimming.DTOs.InstructorDTO"*/-->
+<form method="POST" th:object="${instructor}" th:action="@{/new}">
+
+    <p>First name: <input type="text" th:field="*{firstName}"/></p>
+    <p>Last name: <input type="text" th:field="*{lastName}"/></p>
+    <p><input type="submit" value="Submit"/>
+
+</form>
+</body>
+</html>

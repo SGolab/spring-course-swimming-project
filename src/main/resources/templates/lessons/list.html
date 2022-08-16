@@ -24,9 +24,9 @@
     </tr>
     </thead>
     <tr th:each="lesson : ${lessons}">
-        <!--/*@thymesVar id="lesson" type="com.example.swimmingproject.model.Lesson"*/-->
+        <!--/*@thymesVar id="lesson" type="com.example.sgswimming.model.Lesson"*/-->
         <td th:text="${lesson.id}">3</td>
-        <td th:text="${lesson.localDateTime}">01.01.01</td>
+        <td th:text="${#temporals.format(lesson.localDateTime,'dd-MM-yyyy')}">01.01.01</td>
         <td th:text="${lesson.description}">Desc</td>
         <td><a href="#" th:href="@{'/lessons/' + ${lesson.id}}">View</a></td>
         <td><a href="#" th:href="@{'/lessons/' + ${lesson.id} + '/update'}">Update</a></td>
