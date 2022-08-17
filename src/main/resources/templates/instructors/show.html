@@ -32,7 +32,7 @@
     <tr>
         <th>ID</th>
         <th>Date</th>
-        <th th:colspan="${instructor.lessons.get(0).swimmers.size()}">Participants</th>
+        <th th:unless="${#lists.isEmpty(instructor.getLessons())}" th:colspan="${instructor.lessons.get(0).swimmers.size()}">Participants</th>
     </tr>
     </thead>
 
