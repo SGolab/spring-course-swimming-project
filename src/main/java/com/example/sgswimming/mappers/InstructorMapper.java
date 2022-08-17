@@ -9,6 +9,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface InstructorMapper {
     InstructorMapper INSTANCE = Mappers.getMapper(InstructorMapper.class);
-    InstructorDTO toDto(Instructor doctor);
+    InstructorDTO toDto(Instructor instructor);
     Instructor toInstructor(InstructorDTO dto);
 }
