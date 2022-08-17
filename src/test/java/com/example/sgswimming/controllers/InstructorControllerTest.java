@@ -13,9 +13,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class InstructorControllerTest {
@@ -52,5 +55,22 @@ class InstructorControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("instructors/show"))
                 .andExpect(model().attributeExists("instructor"));
+    }
+
+    @Test
+    void getInstructorCreationForm() throws Exception {
+        mockMvc.perform(get("/instructors/new"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/instructors/form"))
+                .andExpect(model().attributeExists("instructor"));
+    }
+
+    @Test
+    void saveOrUpdateInstructor() throws Exception {
+        mockMvc.perform(post("/instructors/new"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/instructors/"));
+
+        verify(instructorService).saveOrUpdate(any());
     }
 }

@@ -1,5 +1,6 @@
 package com.example.sgswimming.services;
 
+import com.example.sgswimming.DTOs.InstructorDTO;
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.NotFoundException;
 import com.example.sgswimming.repositories.InstructorRepository;
@@ -14,7 +15,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class InstructorServiceImplTest {
 
@@ -52,5 +53,20 @@ class InstructorServiceImplTest {
     void findByIdNotFound() {
         when(instructorRepository.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> instructorService.findById(1L));
+    }
+
+    @Test
+    void saveOrUpdate() {
+        InstructorDTO instructorDTO = new InstructorDTO();
+        Instructor instructor = new Instructor();
+
+        when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(instructor));
+
+        instructorService.saveOrUpdate(instructorDTO);
+        Instructor foundInstructor = instructorService.findById(1L);
+
+        assertNotNull(foundInstructor);
+        verify(instructorRepository).save(any(Instructor.class));
+        verify(instructorRepository).findById(anyLong());
     }
 }
