@@ -37,4 +37,14 @@ public class InstructorServiceImpl implements InstructorService {
         Instructor savedInstructor = instructorRepository.save(instructorMapper.toInstructor(instructorDTO));
         return instructorMapper.toDto(savedInstructor);
     }
+
+    @Override
+    public void deleteById(Long id) {
+
+        Instructor instructor = instructorRepository.findById(id).orElseThrow(NotFoundException::new);
+
+        instructor.getLessons().forEach(lesson -> lesson.setInstructor(null));
+
+        instructorRepository.deleteById(id);
+    }
 }

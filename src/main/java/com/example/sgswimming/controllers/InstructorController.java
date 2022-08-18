@@ -2,9 +2,7 @@ package com.example.sgswimming.controllers;
 
 import com.example.sgswimming.DTOs.InstructorDTO;
 import com.example.sgswimming.services.InstructorService;
-import com.example.sgswimming.services.SwimmerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +35,12 @@ public class InstructorController {
     @PostMapping(value = "/new")
     public String saveOrUpdateInstructor(@ModelAttribute InstructorDTO instructorDTO) {
         instructorService.saveOrUpdate(instructorDTO);
+        return "redirect:/instructors/";
+    }
+
+    @GetMapping("/{id}/delete") //TODO wrong mapping but makes html work.
+    public String deleteInstructorById(@PathVariable Long id) {
+        instructorService.deleteById(id);
         return "redirect:/instructors/";
     }
 }

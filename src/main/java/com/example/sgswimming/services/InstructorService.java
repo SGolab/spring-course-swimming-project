@@ -1,7 +1,6 @@
 package com.example.sgswimming.services;
 
 import com.example.sgswimming.DTOs.InstructorDTO;
-import com.example.sgswimming.model.Instructor;
 
 import java.util.List;
 
@@ -12,4 +11,6 @@ public interface InstructorService {
     InstructorDTO findById(Long id);
 
     InstructorDTO saveOrUpdate(InstructorDTO instructorDTO);
+
+    void deleteById(Long id);
 }
