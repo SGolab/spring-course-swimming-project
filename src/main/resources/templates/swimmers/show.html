@@ -39,7 +39,8 @@
     <tbody>
     <tr th:each="lesson : ${swimmer.lessons}">
         <td th:text="${lesson.id}">1</td>
-        <td th:text="${lesson.instructor.firstName + ' ' + lesson.instructor.lastName}">Instructor</td>
+        <td th:unless="${lesson.instructor==null}" th:text="${lesson.instructor.firstName}">George</td>
+        <td th:if="${lesson.instructor==null}" th:text="'No Instructor'">null</td>
         <td th:text="${lesson.description}">Description</td>
         <td th:text="${lesson.localDateTime}">Date</td>
     </tr>

@@ -19,6 +19,7 @@
     <thead class="thead-inverse">
     <tr>
         <th>ID</th>
+        <th>Instructor</th>
         <th>Date</th>
         <th>Description</th>
     </tr>
@@ -26,6 +27,8 @@
     <tr th:each="lesson : ${lessons}">
         <!--/*@thymesVar id="lesson" type="com.example.sgswimming.DTOs.LessonDTO"*/-->
         <td th:text="${lesson.id}">3</td>
+        <td th:unless="${lesson.instructor==null}" th:text="${lesson.instructor.firstName}">George</td>
+        <td th:if="${lesson.instructor==null}" th:text="'No Instructor'">null</td>
         <td th:text="${#temporals.format(lesson.localDateTime,'dd-MM-yyyy')}">01.01.01</td>
         <td th:text="${lesson.description}">Desc</td>
         <td><a href="#" th:href="@{'/lessons/' + ${lesson.id}}">View</a></td>
