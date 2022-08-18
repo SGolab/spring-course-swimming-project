@@ -29,14 +29,29 @@
         <td th:text="${instructor.id}">3</td>
         <td th:text="${instructor.firstName}">George</td>
         <td th:text="${instructor.lastName}">Kowalski</td>
-        <td><a href="#" th:href="@{'/instructors/' + ${instructor.id}}">View</a></td>
-        <td><a href="#" th:href="@{'/instructors/' + ${instructor.id} + '/update'}">Update</a></td>
-        <td><a href="#" th:href="@{'/instructors/' + ${instructor.id} + '/delete'}">Delete</a></td>
+        <td>
+            <form th:action="@{'/instructors/' + ${instructor.id} + '/'}">
+                <input type="submit" value="VIEW" />
+            </form>
+        </td>
+        <td>
+            <form th:action="@{'/instructors/' + ${instructor.id} + '/update'}">
+                <input type="submit" value="UPDATE" />
+            </form>
+        </td>
+        <td>
+            <form th:action="@{'/instructors/' + ${instructor.id} + '/delete'}">
+                <input type="submit" value="DELETE" />
+            </form>
+        </td>
     </tr>
 </table>
 
-<a style="color:blue; font-size:large" href="#"
-   th:href="@{'/instructors/new'}">Create New Instructor</a>
+<br>
+
+<form th:action="@{'/instructors/new'}">
+    <input type="submit" value="CREATE NEW INSTRUCTOR" />
+</form>
 
 </body>
 </html>
