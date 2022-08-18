@@ -15,7 +15,7 @@
 
 <body>
 
-<!--/*@thymesVar id="instructor" type="com.example.sgswimming.model.Instructor"*/-->
+<!--/*@thymesVar id="instructor" type="com.example.sgswimming.DTOs.InstructorDTO"*/-->
 
 <h1 th:text="'Instructor - ' + ${instructor.firstName} + ' ' + ${instructor.lastName}">Instructor - George Kowalski
     <a style="color:blue; font-size:medium" href="#"
@@ -37,7 +37,7 @@
     </thead>
 
     <tbody>
-    <!--/*@thymesVar id="lesson" type="com.example.sgswimming.model.Lesson"*/-->
+    <!--/*@thymesVar id="lesson" type="com.example.sgswimming.DTOs.LessonDTO"*/-->
 
     <tr th:each="lesson : ${instructor.lessons}">
         <td>

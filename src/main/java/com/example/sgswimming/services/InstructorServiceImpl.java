@@ -9,23 +9,27 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class InstructorServiceImpl implements InstructorService {
 
     private final InstructorRepository instructorRepository;
-
     private final InstructorMapper instructorMapper = InstructorMapper.INSTANCE;
 
     @Override
-    public List<Instructor> findAll() {
-        return instructorRepository.findAll();
+    public List<InstructorDTO> findAll() {
+        return instructorRepository
+                .findAll()
+                .stream()
+                .map(instructorMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Instructor findById(Long id) {
-        return instructorRepository.findById(id).orElseThrow(NotFoundException::new);
+    public InstructorDTO findById(Long id) {
+        return instructorMapper.toDto(instructorRepository.findById(id).orElseThrow(NotFoundException::new));
     }
 
     @Override

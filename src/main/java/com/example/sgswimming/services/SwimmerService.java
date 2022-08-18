@@ -1,12 +1,12 @@
 package com.example.sgswimming.services;
 
-import com.example.sgswimming.model.Swimmer;
+import com.example.sgswimming.DTOs.SwimmerDTO;
 
 import java.util.List;
 
 public interface SwimmerService {
 
-    List<Swimmer> findAll();
+    List<SwimmerDTO> findAll();
 
-    Swimmer findById(Long id);
+    SwimmerDTO findById(Long id);
 }

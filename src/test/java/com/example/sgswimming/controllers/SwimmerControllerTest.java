@@ -1,5 +1,6 @@
 package com.example.sgswimming.controllers;
 
+import com.example.sgswimming.DTOs.SwimmerDTO;
 import com.example.sgswimming.model.Swimmer;
 import com.example.sgswimming.services.SwimmerService;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +47,7 @@ class SwimmerControllerTest {
 
     @Test
     void getSwimmerById() throws Exception {
-        when(swimmerService.findById(anyLong())).thenReturn(new Swimmer());
+        when(swimmerService.findById(anyLong())).thenReturn(new SwimmerDTO());
 
         mockMvc.perform(get("/swimmers/1"))
                 .andExpect(status().isOk())

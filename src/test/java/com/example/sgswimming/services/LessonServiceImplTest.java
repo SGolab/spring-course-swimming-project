@@ -1,5 +1,6 @@
 package com.example.sgswimming.services;
 
+import com.example.sgswimming.DTOs.LessonDTO;
 import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.model.NotFoundException;
 import com.example.sgswimming.repositories.LessonRepository;
@@ -33,7 +34,7 @@ class LessonServiceImplTest {
     void findAll() {
         when(lessonRepository.findAll()).thenReturn(List.of(new Lesson(), new Lesson()));
 
-        List<Lesson> Lessons = lessonService.findAll();
+        List<LessonDTO> Lessons = lessonService.findAll();
 
         assertNotNull(Lessons);
         assertEquals(2, Lessons.size());
@@ -43,7 +44,7 @@ class LessonServiceImplTest {
     void findById() {
         when(lessonRepository.findById(anyLong())).thenReturn(Optional.of(new Lesson()));
 
-        Lesson lesson = lessonService.findById(1L);
+        LessonDTO lesson = lessonService.findById(1L);
 
         assertNotNull(lesson);
     }

@@ -1,5 +1,6 @@
 package com.example.sgswimming.controllers;
 
+import com.example.sgswimming.DTOs.InstructorDTO;
 import com.example.sgswimming.services.InstructorService;
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.services.InstructorService;
@@ -49,7 +50,7 @@ class InstructorControllerTest {
 
     @Test
     void getInstructorById() throws Exception {
-        when(instructorService.findById(anyLong())).thenReturn(new Instructor());
+        when(instructorService.findById(anyLong())).thenReturn(new InstructorDTO());
 
         mockMvc.perform(get("/instructors/1"))
                 .andExpect(status().isOk())

@@ -43,7 +43,7 @@
                 <td><a href="#">Delete</a></td>
             </tr>
             <tr th:each="swimmer : ${swimmers}">
-                <!--/*@thymesVar id="swimmer" type="com.example.sgswimming.model.Swimmer"*/-->
+                <!--/*@thymesVar id="swimmer" type="com.example.sgswimming.DTOs.SwimmerDTO"*/-->
                 <td th:text="${swimmer.id}">3</td>
                 <td th:text="${swimmer.firstName}">George</td>
                 <td th:text="${swimmer.lastName}">Kowalski</td>

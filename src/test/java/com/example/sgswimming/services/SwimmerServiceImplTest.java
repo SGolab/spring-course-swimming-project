@@ -1,5 +1,6 @@
 package com.example.sgswimming.services;
 
+import com.example.sgswimming.DTOs.SwimmerDTO;
 import com.example.sgswimming.model.NotFoundException;
 import com.example.sgswimming.model.Swimmer;
 import com.example.sgswimming.repositories.SwimmerRepository;
@@ -33,7 +34,7 @@ class SwimmerServiceImplTest {
     void findAll() {
         when(swimmerRepository.findAll()).thenReturn(List.of(new Swimmer(), new Swimmer()));
 
-        List<Swimmer> Swimmers = swimmerService.findAll();
+        List<SwimmerDTO> Swimmers = swimmerService.findAll();
 
         assertNotNull(Swimmers);
         assertEquals(2, Swimmers.size());
@@ -43,7 +44,7 @@ class SwimmerServiceImplTest {
     void findById() {
         when(swimmerRepository.findById(anyLong())).thenReturn(Optional.of(new Swimmer()));
 
-        Swimmer swimmer = swimmerService.findById(1L);
+        SwimmerDTO swimmer = swimmerService.findById(1L);
 
         assertNotNull(swimmer);
     }

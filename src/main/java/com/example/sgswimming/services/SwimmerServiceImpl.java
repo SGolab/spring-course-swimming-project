@@ -1,27 +1,33 @@
 package com.example.sgswimming.services;
 
+import com.example.sgswimming.DTOs.SwimmerDTO;
+import com.example.sgswimming.mappers.SwimmerMapper;
 import com.example.sgswimming.model.NotFoundException;
-import com.example.sgswimming.model.Swimmer;
 import com.example.sgswimming.repositories.SwimmerRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class SwimmerServiceImpl implements SwimmerService{
 
     private final SwimmerRepository swimmerRepository;
+    private final SwimmerMapper mapper = SwimmerMapper.INSTANCE;
 
     @Override
-    public List<Swimmer> findAll() {
-        return swimmerRepository.findAll();
+    public List<SwimmerDTO> findAll() {
+        return swimmerRepository
+                .findAll()
+                .stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Swimmer findById(Long id) {
-        return swimmerRepository.findById(id).orElseThrow(NotFoundException::new);
+    public SwimmerDTO findById(Long id) {
+        return mapper.toDto(swimmerRepository.findById(id).orElseThrow(NotFoundException::new));
     }
 }

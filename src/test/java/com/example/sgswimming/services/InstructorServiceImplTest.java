@@ -34,7 +34,7 @@ class InstructorServiceImplTest {
     void findAll() {
         when(instructorRepository.findAll()).thenReturn(List.of(new Instructor(), new Instructor()));
 
-        List<Instructor> instructors = instructorService.findAll();
+        List<InstructorDTO> instructors = instructorService.findAll();
 
         assertNotNull(instructors);
         assertEquals(2, instructors.size());
@@ -44,7 +44,7 @@ class InstructorServiceImplTest {
     void findById() {
         when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(new Instructor()));
 
-        Instructor instructor = instructorService.findById(1L);
+        InstructorDTO instructor = instructorService.findById(1L);
 
         assertNotNull(instructor);
     }
@@ -63,7 +63,7 @@ class InstructorServiceImplTest {
         when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(instructor));
 
         instructorService.saveOrUpdate(instructorDTO);
-        Instructor foundInstructor = instructorService.findById(1L);
+        InstructorDTO foundInstructor = instructorService.findById(1L);
 
         assertNotNull(foundInstructor);
         verify(instructorRepository).save(any(Instructor.class));

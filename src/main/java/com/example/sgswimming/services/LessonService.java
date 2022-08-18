@@ -1,13 +1,12 @@
 package com.example.sgswimming.services;
 
-import com.example.sgswimming.model.Instructor;
-import com.example.sgswimming.model.Lesson;
+import com.example.sgswimming.DTOs.LessonDTO;
 
 import java.util.List;
 
 public interface LessonService {
 
-    List<Lesson> findAll();
+    List<LessonDTO> findAll();
 
-    Lesson findById(Long id);
+    LessonDTO findById(Long id);
 }
