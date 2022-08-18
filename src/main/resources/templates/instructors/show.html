@@ -19,9 +19,9 @@
 
 <h1 th:text="'Instructor - ' + ${instructor.firstName} + ' ' + ${instructor.lastName}">Instructor - George Kowalski
     <a style="color:blue; font-size:medium" href="#"
-       th:href="@{'/instructor/' + ${instructor.id} + '/update'}">Update</a>
+       th:href="@{'/instructors/' + ${instructor.id} + '/update'}">Update</a>
     <a style="color:red; font-size:medium" href="#"
-       th:href="@{'/instructor/' + ${instructor.id} + '/delete'}">Delete</a>
+       th:href="@{'/instructors/' + ${instructor.id} + '/delete'}">Delete</a>
 </h1>
 
 <table style="width:75%;  text-align:center">
