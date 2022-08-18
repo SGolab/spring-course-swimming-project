@@ -23,6 +23,7 @@
         <th>Last Name</th>
     </tr>
     </thead>
+
     <tr th:each="instructor : ${instructors}">
         <!--/*@thymesVar id="instructor" type="com.example.sgswimming.model.Instructor"*/-->
         <td th:text="${instructor.id}">3</td>
@@ -33,6 +34,9 @@
         <td><a href="#" th:href="@{'/instructors/' + ${instructor.id} + '/delete'}">Delete</a></td>
     </tr>
 </table>
+
+<a style="color:blue; font-size:large" href="#"
+   th:href="@{'/instructors/new'}">Create New Instructor</a>
 
 </body>
 </html>
