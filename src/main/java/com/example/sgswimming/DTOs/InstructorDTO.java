@@ -1,10 +1,13 @@
 package com.example.sgswimming.DTOs;
 
 import com.example.sgswimming.model.Lesson;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class InstructorDTO {
 
