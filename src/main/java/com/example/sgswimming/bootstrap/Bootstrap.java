@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.Iterator;
 import java.util.Set;
 
-import static com.example.sgswimming.bootstrap.BootStrapHelper.*;
+import static com.example.sgswimming.bootstrap.BootstrapHelper.*;
 
 @RequiredArgsConstructor
 @Component

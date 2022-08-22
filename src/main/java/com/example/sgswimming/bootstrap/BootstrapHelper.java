@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class BootStrapHelper {
+public abstract class BootstrapHelper {
 
     static Set<Swimmer> createSwimmerSet(int amount) {
         Set<Swimmer> result = new HashSet<>();
