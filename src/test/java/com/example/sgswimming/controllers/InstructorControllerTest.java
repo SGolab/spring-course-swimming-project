@@ -67,8 +67,28 @@ class InstructorControllerTest {
     }
 
     @Test
-    void saveOrUpdateInstructor() throws Exception {
+    void processSaveInstructor() throws Exception {
         mockMvc.perform(post("/instructors/new"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/instructors/"));
+
+        verify(instructorService).saveOrUpdate(any());
+    }
+
+    @Test
+    void getInstructorUpdateForm() throws Exception {
+
+        when(instructorService.findById(anyLong())).thenReturn(new InstructorDTO());
+
+        mockMvc.perform(get("/instructors/1/update"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/instructors/form"))
+                .andExpect(model().attributeExists("instructor"));
+    }
+
+    @Test
+    void processUpdateInstructor() throws Exception {
+        mockMvc.perform(post("/instructors/1/update"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/instructors/"));
 

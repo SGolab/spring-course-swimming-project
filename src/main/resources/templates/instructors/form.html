@@ -8,7 +8,7 @@
 <h1>Instructor creation form</h1>
 
 <!--/*@thymesVar id="instructor" type="com.example.sgswimming.DTOs.InstructorDTO"*/-->
-<form method="POST" th:object="${instructor}" th:action="@{/instructors/new}">
+<form method="POST" th:object="${instructor}">
 
     <p>First name: <input type="text" th:field="*{firstName}"/></p>
     <p>Last name: <input type="text" th:field="*{lastName}"/></p>

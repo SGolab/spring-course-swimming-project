@@ -33,7 +33,21 @@ public class InstructorController {
     }
 
     @PostMapping(value = "/new")
-    public String saveOrUpdateInstructor(@ModelAttribute InstructorDTO instructorDTO) {
+    public String processSaveInstructor(@ModelAttribute InstructorDTO instructorDTO) {
+        instructorService.saveOrUpdate(instructorDTO);
+        return "redirect:/instructors/";
+    }
+
+    @GetMapping("/{id}/update")
+    public String getInstructorUpdateForm(@PathVariable Long id, Model model) {
+        InstructorDTO dto = instructorService.findById(id);
+        model.addAttribute("instructor", dto);
+        return "/instructors/form";
+    }
+
+    @PostMapping("/{id}/update") //TODO wrong mapping but makes html work.
+    public String processUpdateInstructor(@PathVariable Long id, @ModelAttribute InstructorDTO instructorDTO) {
+        instructorDTO.setId(id);
         instructorService.saveOrUpdate(instructorDTO);
         return "redirect:/instructors/";
     }
