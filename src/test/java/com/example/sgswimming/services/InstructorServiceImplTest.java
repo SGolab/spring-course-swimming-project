@@ -69,4 +69,16 @@ class InstructorServiceImplTest {
         verify(instructorRepository).save(any(Instructor.class));
         verify(instructorRepository).findById(anyLong());
     }
+
+    @Test
+    void deleteById() {
+
+        Long id = 1L;
+
+        when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(new Instructor()));
+
+        instructorService.deleteById(id);
+
+        verify(instructorRepository).deleteById(anyLong());
+    }
 }

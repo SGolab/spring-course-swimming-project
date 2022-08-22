@@ -74,4 +74,13 @@ class InstructorControllerTest {
 
         verify(instructorService).saveOrUpdate(any());
     }
+
+    @Test
+    void deleteInstructorById() throws Exception {
+        mockMvc.perform(get("/instructors/1/delete/"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/instructors/"));
+
+        verify(instructorService).deleteById(anyLong());
+    }
 }
