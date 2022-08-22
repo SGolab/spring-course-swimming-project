@@ -40,11 +40,8 @@ public class InstructorServiceImpl implements InstructorService {
 
     @Override
     public void deleteById(Long id) {
-
         Instructor instructor = instructorRepository.findById(id).orElseThrow(NotFoundException::new);
-
         instructor.getLessons().forEach(lesson -> lesson.setInstructor(null));
-
         instructorRepository.deleteById(id);
     }
 }
