@@ -3,7 +3,7 @@ package com.example.sgswimming.services;
 import com.example.sgswimming.DTOs.InstructorDTO;
 import com.example.sgswimming.mappers.InstructorMapper;
 import com.example.sgswimming.model.Instructor;
-import com.example.sgswimming.model.NotFoundException;
+import com.example.sgswimming.controllers.exceptions.NotFoundException;
 import com.example.sgswimming.repositories.InstructorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,8 @@ public class InstructorServiceImpl implements InstructorService {
 
     @Override
     public InstructorDTO findById(Long id) {
-        return instructorMapper.toDto(instructorRepository.findById(id).orElseThrow(NotFoundException::new));
+        return instructorMapper.toDto(instructorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(id, Instructor.class)));
     }
 
     @Override
@@ -40,7 +41,9 @@ public class InstructorServiceImpl implements InstructorService {
 
     @Override
     public void deleteById(Long id) {
-        Instructor instructor = instructorRepository.findById(id).orElseThrow(NotFoundException::new);
+        Instructor instructor = instructorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(id, Instructor.class));
+
         instructor.getLessons().forEach(lesson -> lesson.setInstructor(null));
         instructorRepository.deleteById(id);
     }

@@ -2,7 +2,8 @@ package com.example.sgswimming.services;
 
 import com.example.sgswimming.DTOs.SwimmerDTO;
 import com.example.sgswimming.mappers.SwimmerMapper;
-import com.example.sgswimming.model.NotFoundException;
+import com.example.sgswimming.controllers.exceptions.NotFoundException;
+import com.example.sgswimming.model.Swimmer;
 import com.example.sgswimming.repositories.SwimmerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class SwimmerServiceImpl implements SwimmerService{
 
     @Override
     public SwimmerDTO findById(Long id) {
-        return mapper.toDto(swimmerRepository.findById(id).orElseThrow(NotFoundException::new));
+        return mapper.toDto(swimmerRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(id, Swimmer.class)));
     }
 }
