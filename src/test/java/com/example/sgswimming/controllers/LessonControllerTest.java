@@ -1,7 +1,7 @@
 package com.example.sgswimming.controllers;
 
 import com.example.sgswimming.DTOs.LessonDTO;
-import com.example.sgswimming.model.Lesson;
+import com.example.sgswimming.controllers.ui.LessonController;
 import com.example.sgswimming.services.LessonService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

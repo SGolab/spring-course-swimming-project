@@ -1,6 +1,6 @@
-package com.example.sgswimming.controllers.handlers;
+package com.example.sgswimming.controllers.ui.handlers;
 
-import com.example.sgswimming.controllers.exceptions.NotFoundException;
+import com.example.sgswimming.model.exceptions.NotFoundException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

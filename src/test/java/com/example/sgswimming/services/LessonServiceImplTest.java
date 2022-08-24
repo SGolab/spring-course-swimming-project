@@ -2,7 +2,7 @@ package com.example.sgswimming.services;
 
 import com.example.sgswimming.DTOs.LessonDTO;
 import com.example.sgswimming.model.Lesson;
-import com.example.sgswimming.controllers.exceptions.NotFoundException;
+import com.example.sgswimming.model.exceptions.NotFoundException;
 import com.example.sgswimming.repositories.LessonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

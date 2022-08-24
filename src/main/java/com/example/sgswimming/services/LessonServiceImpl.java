@@ -2,7 +2,7 @@ package com.example.sgswimming.services;
 
 import com.example.sgswimming.DTOs.LessonDTO;
 import com.example.sgswimming.mappers.LessonMapper;
-import com.example.sgswimming.controllers.exceptions.NotFoundException;
+import com.example.sgswimming.model.exceptions.NotFoundException;
 import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.repositories.LessonRepository;
 import lombok.RequiredArgsConstructor;

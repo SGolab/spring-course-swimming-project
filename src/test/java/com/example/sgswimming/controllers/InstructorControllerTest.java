@@ -1,8 +1,7 @@
 package com.example.sgswimming.controllers;
 
 import com.example.sgswimming.DTOs.InstructorDTO;
-import com.example.sgswimming.services.InstructorService;
-import com.example.sgswimming.model.Instructor;
+import com.example.sgswimming.controllers.ui.InstructorController;
 import com.example.sgswimming.services.InstructorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

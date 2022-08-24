@@ -3,7 +3,7 @@ package com.example.sgswimming.services;
 import com.example.sgswimming.DTOs.InstructorDTO;
 import com.example.sgswimming.mappers.InstructorMapper;
 import com.example.sgswimming.model.Instructor;
-import com.example.sgswimming.controllers.exceptions.NotFoundException;
+import com.example.sgswimming.model.exceptions.NotFoundException;
 import com.example.sgswimming.repositories.InstructorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

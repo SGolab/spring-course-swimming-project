@@ -1,4 +1,4 @@
-package com.example.sgswimming.controllers;
+package com.example.sgswimming.controllers.ui;
 
 import com.example.sgswimming.DTOs.InstructorDTO;
 import com.example.sgswimming.services.InstructorService;
