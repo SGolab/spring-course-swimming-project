@@ -3,10 +3,12 @@ package com.example.sgswimming.controllers.ui;
 import com.example.sgswimming.DTOs.InstructorDTO;
 import com.example.sgswimming.services.InstructorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+@Profile("ui")
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/instructors")

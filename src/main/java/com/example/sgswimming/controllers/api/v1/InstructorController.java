@@ -3,14 +3,16 @@ package com.example.sgswimming.controllers.api.v1;
 import com.example.sgswimming.DTOs.InstructorDTO;
 import com.example.sgswimming.services.InstructorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequiredArgsConstructor
+@Profile("api")
 @RestController
 @RequestMapping("api/v1/instructors")
+@RequiredArgsConstructor
 public class InstructorController {
 
     private final InstructorService instructorService;
