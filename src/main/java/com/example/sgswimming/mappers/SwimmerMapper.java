@@ -1,25 +1,35 @@
 package com.example.sgswimming.mappers;
 
 import com.example.sgswimming.DTOs.SwimmerDTO;
+import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.model.Swimmer;
-import org.mapstruct.Context;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Mapper(uses = LessonMapper.Skinny.class)
 public interface SwimmerMapper {
     SwimmerMapper INSTANCE = Mappers.getMapper(SwimmerMapper.class);
 
-    SwimmerDTO toDto(Swimmer swimmer, @Context CycleAvoidingMappingContext context);
-    Swimmer toSwimmer(SwimmerDTO dto, @Context CycleAvoidingMappingContext context);
+    SwimmerDTO toDto(Swimmer swimmer);
+    Swimmer toSwimmer(SwimmerDTO dto);
 
-    @DoIgnore
-    default SwimmerDTO toDto(Swimmer swimmer) {
-        return toDto(swimmer, new CycleAvoidingMappingContext());
-    }
+    @Mapper
+    interface Skinny {
+        SwimmerMapper.Skinny INSTANCE = Mappers.getMapper(SwimmerMapper.Skinny.class);
 
-    @DoIgnore
-    default Swimmer toSwimmer(SwimmerDTO dto) {
-        return toSwimmer(dto, new CycleAvoidingMappingContext());
+        @Mapping(source = "lessons", target = "lessonIds", qualifiedByName = "lessonsToLessonIds")
+        SwimmerDTO.Skinny toDto(Swimmer swimmer);
+
+        @Named("lessonsToLessonIds")
+        static List<Long> lessonsToLessonIds(List<Lesson> lessons) {
+            return lessons.stream()
+                    .map(Lesson::getId)
+                    .collect(Collectors.toList());
+        }
     }
 }
