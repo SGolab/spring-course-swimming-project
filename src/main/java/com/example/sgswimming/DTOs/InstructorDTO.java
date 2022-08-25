@@ -1,6 +1,5 @@
 package com.example.sgswimming.DTOs;
 
-import com.example.sgswimming.model.Lesson;
 import lombok.*;
 
 import java.util.List;
@@ -9,10 +8,19 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class InstructorDTO {
 
+public class InstructorDTO {
     private Long id;
     private String firstName;
     private String lastName;
-    private List<Lesson> lessons;
+    private List<LessonDTO.Skinny> lessons;
+
+    @Data
+    public static class Skinny {
+        private Long id;
+        private String firstName;
+        private String lastName;
+
+        private List<Long> lessonIds;
+    }
 }
