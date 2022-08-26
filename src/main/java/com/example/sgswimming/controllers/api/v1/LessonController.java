@@ -1,13 +1,12 @@
 package com.example.sgswimming.controllers.api.v1;
 
 import com.example.sgswimming.DTOs.LessonDTO;
+import com.example.sgswimming.DTOs.LessonDTO;
 import com.example.sgswimming.services.LessonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,7 +24,24 @@ public class LessonController {
     }
 
     @GetMapping("/{id}")
-    public LessonDTO getInstructorById(@PathVariable Long id) {
+    public LessonDTO getLessonById(@PathVariable Long id) {
         return lessonService.findById(id);
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/")
+    public LessonDTO saveNewLesson(@RequestBody LessonDTO lessonDTO) {
+        return lessonService.saveOrUpdate(lessonDTO);
+    }
+
+    @PutMapping("/{id}")
+    public LessonDTO processUpdateLesson(@PathVariable Long id, @RequestBody LessonDTO lessonDTO) {
+        lessonDTO.setId(id);
+        return lessonService.saveOrUpdate(lessonDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteLessonById(@PathVariable Long id) {
+        lessonService.deleteById(id);
     }
 }
