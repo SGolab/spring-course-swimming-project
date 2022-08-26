@@ -1,6 +1,8 @@
 package com.example.sgswimming.services;
 
 import com.example.sgswimming.DTOs.SwimmerDTO;
+import com.example.sgswimming.DTOs.SwimmerDTO;
+import com.example.sgswimming.model.Swimmer;
 import com.example.sgswimming.model.exceptions.NotFoundException;
 import com.example.sgswimming.model.Swimmer;
 import com.example.sgswimming.repositories.SwimmerRepository;
@@ -14,7 +16,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class SwimmerServiceImplTest {
@@ -53,5 +57,42 @@ class SwimmerServiceImplTest {
     void findByIdNotFound() {
         when(swimmerRepository.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> swimmerService.findById(1L));
+    }
+
+    @Test
+    void saveOrUpdate() {
+        SwimmerDTO swimmerDTO = new SwimmerDTO();
+        Swimmer swimmer = new Swimmer();
+
+        when(swimmerRepository.findById(anyLong())).thenReturn(Optional.of(swimmer));
+
+        swimmerService.saveOrUpdate(swimmerDTO);
+        SwimmerDTO foundSwimmer = swimmerService.findById(1L);
+
+        assertNotNull(foundSwimmer);
+        verify(swimmerRepository).save(any(Swimmer.class));
+        verify(swimmerRepository).findById(anyLong());
+    }
+
+    @Test
+    void updateNotFound() {
+        SwimmerDTO swimmerDTO = new SwimmerDTO();
+
+        when(swimmerRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        swimmerService.saveOrUpdate(swimmerDTO);
+        assertThrows(NotFoundException.class, () -> swimmerService.findById(1L));
+    }
+
+    @Test
+    void deleteById() {
+
+        Long id = 1L;
+
+        when(swimmerRepository.findById(anyLong())).thenReturn(Optional.of(new Swimmer()));
+
+        swimmerService.deleteById(id);
+
+        verify(swimmerRepository).deleteById(anyLong());
     }
 }

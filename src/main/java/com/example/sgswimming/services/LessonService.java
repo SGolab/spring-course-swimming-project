@@ -9,4 +9,8 @@ public interface LessonService {
     List<LessonDTO> findAll();
 
     LessonDTO findById(Long id);
+
+    LessonDTO saveOrUpdate(LessonDTO lessonDTO);
+
+    void deleteById(Long id);
 }

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class LessonServiceImpl implements LessonService{
+public class LessonServiceImpl implements LessonService {
 
     private final LessonRepository lessonRepository;
     private final LessonMapper mapper = LessonMapper.INSTANCE;
@@ -31,5 +31,21 @@ public class LessonServiceImpl implements LessonService{
     public LessonDTO findById(Long id) {
         return mapper.toDto(lessonRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(id, Lesson.class)));
+    }
+
+    @Override
+    public LessonDTO saveOrUpdate(LessonDTO lessonDTO) {
+
+        if (lessonDTO.getId() != null) { //update
+            findById(lessonDTO.getId()); //check if entity to update exists
+        }
+
+        Lesson lesson = lessonRepository.save(mapper.toLesson(lessonDTO));
+        return mapper.toDto(lesson);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        lessonRepository.deleteById(id);
     }
 }

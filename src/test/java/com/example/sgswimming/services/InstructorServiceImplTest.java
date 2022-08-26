@@ -71,6 +71,16 @@ class InstructorServiceImplTest {
     }
 
     @Test
+    void updateNotFound() {
+        InstructorDTO instructorDTO = new InstructorDTO();
+
+        when(instructorRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        instructorService.saveOrUpdate(instructorDTO);
+        assertThrows(NotFoundException.class, () -> instructorService.findById(1L));
+    }
+
+    @Test
     void deleteById() {
 
         Long id = 1L;

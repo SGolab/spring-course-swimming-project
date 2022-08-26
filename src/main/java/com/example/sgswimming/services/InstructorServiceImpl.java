@@ -35,6 +35,11 @@ public class InstructorServiceImpl implements InstructorService {
 
     @Override
     public InstructorDTO saveOrUpdate(InstructorDTO instructorDTO) {
+
+        if (instructorDTO.getId() != null) { //update
+            findById(instructorDTO.getId()); //check if entity to update exists
+        }
+
         Instructor savedInstructor = instructorRepository.save(instructorMapper.toInstructor(instructorDTO));
         return instructorMapper.toDto(savedInstructor);
     }

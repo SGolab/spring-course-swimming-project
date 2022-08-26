@@ -9,4 +9,8 @@ public interface SwimmerService {
     List<SwimmerDTO> findAll();
 
     SwimmerDTO findById(Long id);
+
+    SwimmerDTO saveOrUpdate(SwimmerDTO swimmerDTO);
+
+    void deleteById(Long id);
 }
