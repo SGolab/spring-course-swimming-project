@@ -56,14 +56,30 @@ class InstructorServiceImplTest {
     }
 
     @Test
-    void saveOrUpdate() {
+    void save() {
         InstructorDTO instructorDTO = new InstructorDTO();
         Instructor instructor = new Instructor();
 
-        when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(instructor));
+        when(instructorRepository.save(any())).thenReturn(instructor);
 
-        instructorService.saveOrUpdate(instructorDTO);
-        InstructorDTO foundInstructor = instructorService.findById(1L);
+        InstructorDTO foundInstructor = instructorService.saveOrUpdate(instructorDTO);
+
+        assertNotNull(foundInstructor);
+        verify(instructorRepository).save(any(Instructor.class));
+        verify(instructorRepository, never()).findById(anyLong());
+    }
+
+    @Test
+    void update() {
+        InstructorDTO instructorDTO = new InstructorDTO();
+        instructorDTO.setId(1L);
+
+        Instructor instructor = new Instructor();
+
+        when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(instructor));
+        when(instructorRepository.save(any())).thenReturn(instructor);
+
+        InstructorDTO foundInstructor = instructorService.saveOrUpdate(instructorDTO);
 
         assertNotNull(foundInstructor);
         verify(instructorRepository).save(any(Instructor.class));
