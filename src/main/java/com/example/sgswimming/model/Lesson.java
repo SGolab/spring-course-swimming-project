@@ -1,9 +1,6 @@
 package com.example.sgswimming.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,6 +22,7 @@ public class Lesson {
     @JoinColumn(name = "instructor_id")
     private Instructor instructor;
 
+    @Singular
     @ManyToMany
     @JoinTable(
             joinColumns = @JoinColumn(name = "lesson_id"),

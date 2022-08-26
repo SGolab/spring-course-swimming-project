@@ -21,6 +21,7 @@ public class Instructor {
     private String firstName;
     private String lastName;
 
+    @Singular
     @OneToMany(mappedBy = "instructor", fetch = FetchType.EAGER)
     private List<Lesson> lessons = new ArrayList<>();
 

@@ -13,6 +13,8 @@ public class InstructorDTO {
     private Long id;
     private String firstName;
     private String lastName;
+
+    @Singular
     private List<LessonDTO.Skinny> lessons;
 
     @Data
@@ -21,6 +23,7 @@ public class InstructorDTO {
         private String firstName;
         private String lastName;
 
+        @Singular
         private List<Long> lessonIds;
     }
 }

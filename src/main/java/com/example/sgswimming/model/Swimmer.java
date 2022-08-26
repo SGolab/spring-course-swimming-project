@@ -21,6 +21,7 @@ public class Swimmer {
     private String firstName;
     private String lastName;
 
+    @Singular
     @ManyToMany(mappedBy = "swimmers")
     private List<Lesson> lessons = new ArrayList<>();
 

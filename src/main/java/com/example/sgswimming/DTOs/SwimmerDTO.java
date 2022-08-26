@@ -3,10 +3,7 @@ package com.example.sgswimming.DTOs;
 import com.example.sgswimming.model.Lesson;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +18,7 @@ public class SwimmerDTO {
     private String firstName;
     private String lastName;
 
+    @Singular
     private List<LessonDTO.Skinny> lessons;
 
     @Data
@@ -29,6 +27,7 @@ public class SwimmerDTO {
         private String firstName;
         private String lastName;
 
+        @Singular
         private List<Long> lessonIds;
     }
 }
