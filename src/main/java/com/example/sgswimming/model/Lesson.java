@@ -8,9 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Lesson {
 
@@ -22,7 +20,6 @@ public class Lesson {
     @JoinColumn(name = "instructor_id")
     private Instructor instructor;
 
-    @Singular
     @ManyToMany
     @JoinTable(
             joinColumns = @JoinColumn(name = "lesson_id"),
@@ -32,6 +29,14 @@ public class Lesson {
     private String description;
 
     private LocalDateTime localDateTime;
+
+    @Builder
+    public Lesson(Long id, Instructor instructor, String description, LocalDateTime localDateTime) {
+        this.id = id;
+        this.instructor = instructor;
+        this.description = description;
+        this.localDateTime = localDateTime;
+    }
 
     public void addSwimmer(Swimmer swimmer) {
         if (swimmers == null) {

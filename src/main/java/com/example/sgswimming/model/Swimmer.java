@@ -7,9 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @ToString(exclude = "lessons")
 @Entity
 public class Swimmer {
@@ -21,9 +19,15 @@ public class Swimmer {
     private String firstName;
     private String lastName;
 
-    @Singular
     @ManyToMany(mappedBy = "swimmers")
     private List<Lesson> lessons = new ArrayList<>();
+
+    @Builder
+    public Swimmer(Long id, String firstName, String lastName) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
     public void addLesson(Lesson lesson) {
         if (lessons == null) {
