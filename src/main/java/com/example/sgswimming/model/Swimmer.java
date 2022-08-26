@@ -30,9 +30,6 @@ public class Swimmer {
     }
 
     public void addLesson(Lesson lesson) {
-        if (lessons == null) {
-            lessons = new ArrayList<>();
-        }
         lessons.add(lesson);
     }
 }

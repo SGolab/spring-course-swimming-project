@@ -30,9 +30,6 @@ public class Instructor {
     private List<Lesson> lessons = new ArrayList<>();
 
     public void addLesson(Lesson lesson) {
-        if (lessons == null) {
-            lessons = new ArrayList<>();
-        }
         lessons.add(lesson);
     }
 }
