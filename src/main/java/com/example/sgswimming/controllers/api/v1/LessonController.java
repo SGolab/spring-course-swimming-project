@@ -12,9 +12,11 @@ import java.util.List;
 
 @Profile("api")
 @RestController
-@RequestMapping("api/v1/lessons")
+@RequestMapping(LessonController.URL)
 @RequiredArgsConstructor
 public class LessonController {
+
+    public static final String URL = "/api/v1/lessons/";
 
     private final LessonService lessonService;
 

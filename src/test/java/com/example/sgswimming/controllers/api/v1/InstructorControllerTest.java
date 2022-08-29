@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.util.UriBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -27,24 +29,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class InstructorControllerTest {
 
+    MockMvc mockMvc;
+
     @Mock
     InstructorService instructorService;
 
     @InjectMocks
     InstructorController instructorController;
 
-    MockMvc mockMvc;
-
-    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectMapper objectMapper;
+    UriBuilder uriBuilder;
 
     @BeforeEach
     void setUp() {
+        uriBuilder = UriComponentsBuilder.fromUriString(InstructorController.URL);
+        objectMapper = new ObjectMapper();
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(instructorController).build();
     }
 
     String FIRST_NAME = "John";
     String LAST_NAME = "Kowalski";
+    String ID = "1";
 
     InstructorDTO INSTRUCTOR = InstructorDTO.builder()
             .firstName(FIRST_NAME)
@@ -63,7 +69,7 @@ class InstructorControllerTest {
     void getAllInstructors() throws Exception {
         when(instructorService.findAll()).thenReturn(instructors);
 
-        mockMvc.perform(get("/api/v1/instructors/")
+        mockMvc.perform(get(uriBuilder.build())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
@@ -76,7 +82,7 @@ class InstructorControllerTest {
     void getInstructorById() throws Exception {
         when(instructorService.findById(anyLong())).thenReturn(INSTRUCTOR);
 
-        mockMvc.perform(get("/api/v1/instructors/1")
+        mockMvc.perform(get(uriBuilder.path(ID).build())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
@@ -89,7 +95,7 @@ class InstructorControllerTest {
     void saveNewInstructor() throws Exception {
         when(instructorService.saveOrUpdate(any())).thenReturn(INSTRUCTOR);
 
-        MockHttpServletRequestBuilder mockRequest = post("/api/v1/instructors/")
+        MockHttpServletRequestBuilder mockRequest = post(uriBuilder.build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INSTRUCTOR));
@@ -106,7 +112,7 @@ class InstructorControllerTest {
     void processUpdateInstructor() throws Exception {
         when(instructorService.saveOrUpdate(any())).thenReturn(INSTRUCTOR);
 
-        MockHttpServletRequestBuilder mockRequest = put("/api/v1/instructors/1")
+        MockHttpServletRequestBuilder mockRequest = put(uriBuilder.path(ID).build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INSTRUCTOR));
@@ -121,7 +127,7 @@ class InstructorControllerTest {
 
     @Test
     void deleteInstructorById() throws Exception {
-        mockMvc.perform(delete("/api/v1/instructors/1"))
+        mockMvc.perform(delete(uriBuilder.path(ID).build()))
                 .andExpect(status().isOk());
 
         verify(instructorService).deleteById(anyLong());

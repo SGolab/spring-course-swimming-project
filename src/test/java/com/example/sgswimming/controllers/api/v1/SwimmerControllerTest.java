@@ -14,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.util.UriBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -28,26 +30,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class SwimmerControllerTest {
 
+    MockMvc mockMvc;
+
     @Mock
     SwimmerService swimmerService;
 
     @InjectMocks
     SwimmerController swimmerController;
 
-    MockMvc mockMvc;
-
-    ObjectMapper objectMapper = JsonMapper.builder()
-            .findAndAddModules()
-            .build();
+    ObjectMapper objectMapper;
+    UriBuilder uriBuilder;
 
     @BeforeEach
     void setUp() {
+        uriBuilder = UriComponentsBuilder.fromUriString(SwimmerController.URL);
+        objectMapper = JsonMapper.builder().findAndAddModules().build();
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(swimmerController).build();
     }
 
     String FIRST_NAME = "John";
     String LAST_NAME = "Kowalski";
+    String ID = "1";
 
     SwimmerDTO SWIMMER = SwimmerDTO.builder()
             .firstName(FIRST_NAME)
@@ -66,7 +70,7 @@ class SwimmerControllerTest {
     void getAllInstructors() throws Exception {
         when(swimmerService.findAll()).thenReturn(swimmers);
 
-        mockMvc.perform(get("/api/v1/swimmers/")
+        mockMvc.perform(get(uriBuilder.build())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
@@ -79,7 +83,7 @@ class SwimmerControllerTest {
     void getInstructorById() throws Exception {
         when(swimmerService.findById(anyLong())).thenReturn(SWIMMER);
 
-        mockMvc.perform(get("/api/v1/swimmers/1")
+        mockMvc.perform(get(uriBuilder.path(ID).build())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
@@ -92,7 +96,7 @@ class SwimmerControllerTest {
     void saveNewInstructor() throws Exception {
         when(swimmerService.saveOrUpdate(any())).thenReturn(SWIMMER);
 
-        MockHttpServletRequestBuilder mockRequest = post("/api/v1/swimmers/")
+        MockHttpServletRequestBuilder mockRequest = post(uriBuilder.build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(SWIMMER));
@@ -109,7 +113,7 @@ class SwimmerControllerTest {
     void processUpdateInstructor() throws Exception {
         when(swimmerService.saveOrUpdate(any())).thenReturn(SWIMMER);
 
-        MockHttpServletRequestBuilder mockRequest = put("/api/v1/swimmers/1")
+        MockHttpServletRequestBuilder mockRequest = put(uriBuilder.path(ID).build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(SWIMMER));
@@ -124,7 +128,7 @@ class SwimmerControllerTest {
 
     @Test
     void deleteInstructorById() throws Exception {
-        mockMvc.perform(delete("/api/v1/swimmers/1"))
+        mockMvc.perform(delete(uriBuilder.path(ID).build()))
                 .andExpect(status().isOk());
 
         verify(swimmerService).deleteById(anyLong());

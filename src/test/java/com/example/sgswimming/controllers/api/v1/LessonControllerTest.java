@@ -14,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.util.UriBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,26 +31,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class LessonControllerTest {
 
+    MockMvc mockMvc;
+
     @Mock
     LessonService lessonService;
 
     @InjectMocks
     LessonController lessonController;
 
-    MockMvc mockMvc;
-
-    ObjectMapper objectMapper = JsonMapper.builder()
-            .findAndAddModules()
-            .build();
+    ObjectMapper objectMapper;
+    UriBuilder uriBuilder;
 
     @BeforeEach
     void setUp() {
+        uriBuilder = UriComponentsBuilder.fromUriString(LessonController.URL);
+        objectMapper = JsonMapper.builder().findAndAddModules().build();
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(lessonController).build();
     }
 
     String DESC = "Description";
     LocalDateTime TIME = LocalDateTime.now();
+    String ID = "1";
 
     LessonDTO LESSON = LessonDTO.builder()
             .description(DESC)
@@ -67,7 +71,7 @@ class LessonControllerTest {
     void getAllLessons() throws Exception {
         when(lessonService.findAll()).thenReturn(lessons);
 
-        mockMvc.perform(get("/api/v1/lessons/")
+        mockMvc.perform(get(uriBuilder.build())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
@@ -80,7 +84,7 @@ class LessonControllerTest {
     void getLessonById() throws Exception {
         when(lessonService.findById(anyLong())).thenReturn(LESSON);
 
-        mockMvc.perform(get("/api/v1/lessons/1")
+        mockMvc.perform(get(uriBuilder.path(ID).build())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.description", equalTo(DESC)))
@@ -92,7 +96,7 @@ class LessonControllerTest {
     void saveNewLesson() throws Exception {
         when(lessonService.saveOrUpdate(any())).thenReturn(LESSON);
 
-        MockHttpServletRequestBuilder mockRequest = post("/api/v1/lessons/")
+        MockHttpServletRequestBuilder mockRequest = post(uriBuilder.build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(LESSON));
@@ -108,7 +112,7 @@ class LessonControllerTest {
     void updateLesson() throws Exception {
         when(lessonService.saveOrUpdate(any())).thenReturn(LESSON);
 
-        MockHttpServletRequestBuilder mockRequest = put("/api/v1/lessons/1")
+        MockHttpServletRequestBuilder mockRequest = put(uriBuilder.path(ID).build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(LESSON));
@@ -122,7 +126,7 @@ class LessonControllerTest {
 
     @Test
     void deleteLessonById() throws Exception {
-        mockMvc.perform(delete("/api/v1/lessons/1"))
+        mockMvc.perform(delete(uriBuilder.path(ID).build()))
                 .andExpect(status().isOk());
 
         verify(lessonService).deleteById(anyLong());

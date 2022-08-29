@@ -11,9 +11,11 @@ import java.util.List;
 
 @Profile("api")
 @RestController
-@RequestMapping("api/v1/instructors")
+@RequestMapping(InstructorController.URL)
 @RequiredArgsConstructor
 public class InstructorController {
+    
+    public static final String URL = "/api/v1/instructors/";
 
     private final InstructorService instructorService;
 

@@ -13,9 +13,11 @@ import java.util.List;
 
 @Profile("api")
 @RestController
-@RequestMapping("/api/v1/swimmers")
+@RequestMapping(SwimmerController.URL)
 @RequiredArgsConstructor
 public class SwimmerController {
+
+    public static final String URL = "/api/v1/swimmers/";
 
     private final SwimmerService swimmerService;
 
