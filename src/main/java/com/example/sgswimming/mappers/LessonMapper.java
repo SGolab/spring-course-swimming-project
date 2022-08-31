@@ -18,6 +18,7 @@ public interface LessonMapper {
     LessonMapper INSTANCE = Mappers.getMapper(LessonMapper.class);
 
     LessonDTO toDto(Lesson lesson);
+
     Lesson toLesson(LessonDTO dto);
 
     @Mapper
@@ -40,5 +41,7 @@ public interface LessonMapper {
                     .map(Swimmer::getId)
                     .collect(Collectors.toList());
         }
+
+        Lesson fromSkinnyToLesson(LessonDTO.Skinny dto);
     }
 }
