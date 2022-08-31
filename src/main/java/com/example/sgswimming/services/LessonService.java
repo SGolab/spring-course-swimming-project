@@ -10,7 +10,7 @@ public interface LessonService {
 
     LessonDTO findById(Long id);
 
-    LessonDTO saveOrUpdate(LessonDTO lessonDTO);
+    LessonDTO saveOrUpdate(LessonDTO.Skinny lessonDTO);
 
     void deleteById(Long id);
 }

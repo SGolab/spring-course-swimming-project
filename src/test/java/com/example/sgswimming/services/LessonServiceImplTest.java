@@ -62,7 +62,7 @@ class LessonServiceImplTest {
 
     @Test
     void saveOrUpdate() {
-        LessonDTO lessonDTO = new LessonDTO();
+        LessonDTO.Skinny lessonDTO = new LessonDTO.Skinny();
         Lesson lesson = new Lesson();
 
         when(lessonRepository.findById(anyLong())).thenReturn(Optional.of(lesson));
@@ -77,7 +77,7 @@ class LessonServiceImplTest {
 
     @Test
     void updateNotFound() {
-        LessonDTO lessonDTO = new LessonDTO();
+        LessonDTO.Skinny lessonDTO = new LessonDTO.Skinny();
 
         when(lessonRepository.findById(anyLong())).thenReturn(Optional.empty());
 

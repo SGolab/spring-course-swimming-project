@@ -32,12 +32,12 @@ public class LessonController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/")
-    public LessonDTO saveNewLesson(@RequestBody LessonDTO lessonDTO) {
+    public LessonDTO saveNewLesson(@Valid @RequestBody LessonDTO.Skinny lessonDTO) {
         return lessonService.saveOrUpdate(lessonDTO);
     }
 
     @PutMapping("/{id}")
-    public LessonDTO processUpdateLesson(@PathVariable Long id, @RequestBody LessonDTO lessonDTO) {
+    public LessonDTO processUpdateLesson(@PathVariable Long id, @Valid @RequestBody LessonDTO.Skinny lessonDTO) {
         lessonDTO.setId(id);
         return lessonService.saveOrUpdate(lessonDTO);
     }
