@@ -3,10 +3,14 @@ package com.example.sgswimming.services;
 import com.example.sgswimming.DTOs.LessonDTO;
 import com.example.sgswimming.DTOs.LessonDTO;
 import com.example.sgswimming.DTOs.LessonDTO;
+import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.model.Lesson;
+import com.example.sgswimming.model.Swimmer;
 import com.example.sgswimming.model.exceptions.NotFoundException;
+import com.example.sgswimming.repositories.InstructorRepository;
 import com.example.sgswimming.repositories.LessonRepository;
+import com.example.sgswimming.repositories.SwimmerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,13 +23,18 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class LessonServiceImplTest {
 
     @Mock
     LessonRepository lessonRepository;
+
+    @Mock
+    InstructorRepository instructorRepository;
+
+    @Mock
+    SwimmerRepository swimmerRepository;
 
     @InjectMocks
     LessonServiceImpl lessonService;
@@ -61,25 +70,54 @@ class LessonServiceImplTest {
     }
 
     @Test
-    void saveOrUpdate() {
+    void save() {
         LessonDTO.Skinny lessonDTO = new LessonDTO.Skinny();
+        lessonDTO.setInstructorId(1L);
+        lessonDTO.setSwimmerIds(List.of(1L, 2L, 3L));
+
         Lesson lesson = new Lesson();
 
-        when(lessonRepository.findById(anyLong())).thenReturn(Optional.of(lesson));
+        when(lessonRepository.save(any(Lesson.class))).thenReturn(lesson);
+        when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(new Instructor()));
+        when(swimmerRepository.findById(anyLong())).thenReturn(Optional.of(new Swimmer()));
 
-        lessonService.saveOrUpdate(lessonDTO);
-        LessonDTO foundLesson = lessonService.findById(1L);
+        LessonDTO foundLesson = lessonService.saveOrUpdate(lessonDTO);
 
         assertNotNull(foundLesson);
         verify(lessonRepository).save(any(Lesson.class));
-        verify(lessonRepository).findById(anyLong());
+        verify(lessonRepository, never()).findById(anyLong());
     }
 
     @Test
-    void updateNotFound() {
+    void update() {
         LessonDTO.Skinny lessonDTO = new LessonDTO.Skinny();
+        lessonDTO.setId(1L);
+        lessonDTO.setInstructorId(1L);
+        lessonDTO.setSwimmerIds(List.of(1L, 2L, 3L));
+
+        Lesson lesson = new Lesson();
+
+        when(lessonRepository.save(any(Lesson.class))).thenReturn(lesson);
+        when(lessonRepository.findById(anyLong())).thenReturn(Optional.of(lesson));
+        when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(new Instructor()));
+        when(swimmerRepository.findById(anyLong())).thenReturn(Optional.of(new Swimmer()));
+
+        LessonDTO foundLesson = lessonService.saveOrUpdate(lessonDTO);
+
+        assertNotNull(foundLesson);
+        verify(lessonRepository).save(any(Lesson.class));
+        verify(lessonRepository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void updateLessonNotFound() {
+        LessonDTO.Skinny lessonDTO = new LessonDTO.Skinny();
+        lessonDTO.setInstructorId(1L);
+        lessonDTO.setSwimmerIds(List.of(1L, 2L, 3L));
 
         when(lessonRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(new Instructor()));
+        when(swimmerRepository.findById(anyLong())).thenReturn(Optional.of(new Swimmer()));
 
         lessonService.saveOrUpdate(lessonDTO);
         assertThrows(NotFoundException.class, () -> lessonService.findById(1L));
