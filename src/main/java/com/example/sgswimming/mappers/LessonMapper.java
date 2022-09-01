@@ -42,6 +42,7 @@ public interface LessonMapper {
                     .collect(Collectors.toList());
         }
 
+        @Mapping(target = "localDateTime", dateFormat = "HH:mm dd.MM.yyyy")
         Lesson fromSkinnyToLesson(LessonDTO.Skinny dto);
     }
 }
