@@ -1,12 +1,11 @@
 package com.example.sgswimming.controllers.api.v1;
 
-import com.example.sgswimming.DTOs.SwimmerDTO;
-import com.example.sgswimming.DTOs.SwimmerDTO;
+import com.example.sgswimming.DTOs.SwimmerFatDto;
+import com.example.sgswimming.DTOs.SwimmerSkinnyDto;
 import com.example.sgswimming.services.SwimmerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -27,23 +26,23 @@ public class SwimmerController {
     private final SwimmerService swimmerService;
 
     @GetMapping("/")
-    public List<SwimmerDTO> getAllSwimmers() {
+    public List<SwimmerFatDto> getAllSwimmers() {
         return swimmerService.findAll();
     }
 
     @GetMapping("/{id}")
-    public SwimmerDTO getInstructorById(@PathVariable Long id) {
+    public SwimmerFatDto getInstructorById(@PathVariable Long id) {
         return swimmerService.findById(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/")
-    public SwimmerDTO saveNewSwimmer(@Valid @RequestBody SwimmerDTO swimmerDTO) {
+    public SwimmerFatDto saveNewSwimmer(@Valid @RequestBody SwimmerSkinnyDto swimmerDTO) {
         return swimmerService.saveOrUpdate(swimmerDTO);
     }
 
     @PutMapping("/{id}")
-    public SwimmerDTO processUpdateSwimmer(@PathVariable Long id, @Valid @RequestBody SwimmerDTO swimmerDTO) {
+    public SwimmerFatDto processUpdateSwimmer(@PathVariable Long id, @Valid @RequestBody SwimmerSkinnyDto swimmerDTO) {
         swimmerDTO.setId(id);
         return swimmerService.saveOrUpdate(swimmerDTO);
     }

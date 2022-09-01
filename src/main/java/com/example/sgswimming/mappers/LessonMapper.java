@@ -1,6 +1,8 @@
 package com.example.sgswimming.mappers;
 
-import com.example.sgswimming.DTOs.LessonDTO;
+import com.example.sgswimming.DTOs.LessonFatDto;
+import com.example.sgswimming.DTOs.LessonSkinnyDto;
+import com.example.sgswimming.config.JsonDateMappingConfig;
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.model.Swimmer;
@@ -10,16 +12,52 @@ import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(uses = {InstructorMapper.Skinny.class, SwimmerMapper.Skinny.class})
-public interface LessonMapper {
-    LessonMapper INSTANCE = Mappers.getMapper(LessonMapper.class);
+public class LessonMapper {
 
-    LessonDTO toDto(Lesson lesson);
+    private static LessonMapper INSTANCE;
 
-    Lesson toLesson(LessonDTO dto);
+    private LessonMapper() {
+    }
+
+    public static LessonMapper getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new LessonMapper();
+        }
+        return INSTANCE;
+    }
+
+    LessonMapper.Fat fatMapper = Mappers.getMapper(LessonMapper.Fat.class);
+    LessonMapper.Skinny skinnyMapper = Mappers.getMapper(LessonMapper.Skinny.class);
+
+    public LessonFatDto toFatDto(Lesson lesson) {
+        return fatMapper.toFatDto(lesson);
+    }
+
+    public Lesson fromFatToLesson(LessonFatDto dto) {
+        return fatMapper.fromFatToLesson(dto);
+    }
+
+    public LessonSkinnyDto toSkinnyDto(Lesson lesson) {
+        return skinnyMapper.toDto(lesson);
+    }
+
+    public Lesson fromSkinnyToLesson(LessonSkinnyDto dto) {
+        return skinnyMapper.fromSkinnyToLesson(dto);
+    }
+
+
+    @Mapper(uses = {InstructorMapper.Skinny.class, SwimmerMapper.Skinny.class})
+    interface Fat {
+        LessonMapper.Fat INSTANCE = Mappers.getMapper(LessonMapper.Fat.class);
+
+        LessonFatDto toFatDto(Lesson lesson);
+        Lesson fromFatToLesson(LessonFatDto dto);
+    }
 
     @Mapper
     interface Skinny {
@@ -27,8 +65,13 @@ public interface LessonMapper {
 
         @Mappings({
                 @Mapping(source = "instructor", target = "instructorId", qualifiedByName = "instructorToId"),
-                @Mapping(source = "swimmers", target = "swimmerIds", qualifiedByName = "swimmersToSwimmerIds")})
-        LessonDTO.Skinny toDto(Lesson lesson);
+                @Mapping(source = "swimmers", target = "swimmerIds", qualifiedByName = "swimmersToSwimmerIds"),
+                @Mapping(target = "localDateTime", dateFormat = "HH:mm dd.MM.yyyy")
+        })
+        LessonSkinnyDto toDto(Lesson lesson);
+
+        @Mapping(target = "localDateTime", dateFormat = "HH:mm dd.MM.yyyy")
+        Lesson fromSkinnyToLesson(LessonSkinnyDto dto);
 
         @Named("instructorToId")
         static Long instructorToId(Instructor instructor) {
@@ -42,7 +85,9 @@ public interface LessonMapper {
                     .collect(Collectors.toList());
         }
 
-        @Mapping(target = "localDateTime", dateFormat = "HH:mm dd.MM.yyyy")
-        Lesson fromSkinnyToLesson(LessonDTO.Skinny dto);
+        @Named("localDateTimeToString")
+        static String localDateTimeToString(LocalDateTime localDateTime) {
+            return localDateTime.format(DateTimeFormatter.ofPattern(JsonDateMappingConfig.DATE_TIME_FORMAT));
+        }
     }
 }

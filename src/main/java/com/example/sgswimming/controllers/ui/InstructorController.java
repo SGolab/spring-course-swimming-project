@@ -1,6 +1,7 @@
 package com.example.sgswimming.controllers.ui;
 
-import com.example.sgswimming.DTOs.InstructorDTO;
+import com.example.sgswimming.DTOs.InstructorFatDto;
+import com.example.sgswimming.DTOs.InstructorSkinnyDto;
 import com.example.sgswimming.services.InstructorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
@@ -30,25 +31,25 @@ public class InstructorController {
 
     @GetMapping("/new")
     public String getInstructorCreationForm(Model model) {
-        model.addAttribute("instructor", new InstructorDTO());
+        model.addAttribute("instructor", InstructorFatDto.builder().build());
         return "/instructors/form";
     }
 
     @PostMapping(value = "/new")
-    public String processSaveInstructor(@ModelAttribute InstructorDTO instructorDTO) {
+    public String processSaveInstructor(@ModelAttribute InstructorSkinnyDto instructorDTO) {
         instructorService.saveOrUpdate(instructorDTO);
         return "redirect:/instructors/";
     }
 
     @GetMapping("/{id}/update")
     public String getInstructorUpdateForm(@PathVariable Long id, Model model) {
-        InstructorDTO dto = instructorService.findById(id);
+        InstructorFatDto dto = instructorService.findById(id);
         model.addAttribute("instructor", dto);
         return "/instructors/form";
     }
 
     @PostMapping("/{id}/update") //TODO wrong mapping but makes html work.
-    public String processUpdateInstructor(@PathVariable Long id, @ModelAttribute InstructorDTO instructorDTO) {
+    public String processUpdateInstructor(@PathVariable Long id, @ModelAttribute InstructorSkinnyDto instructorDTO) {
         instructorDTO.setId(id);
         instructorService.saveOrUpdate(instructorDTO);
         return "redirect:/instructors/";

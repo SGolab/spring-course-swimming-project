@@ -1,10 +1,13 @@
 package com.example.sgswimming.services;
 
-import com.example.sgswimming.DTOs.InstructorDTO;
+import com.example.sgswimming.DTOs.InstructorFatDto;
+import com.example.sgswimming.DTOs.InstructorSkinnyDto;
 import com.example.sgswimming.mappers.InstructorMapper;
 import com.example.sgswimming.model.Instructor;
+import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.model.exceptions.NotFoundException;
 import com.example.sgswimming.repositories.InstructorRepository;
+import com.example.sgswimming.repositories.LessonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,32 +19,45 @@ import java.util.stream.Collectors;
 public class InstructorServiceImpl implements InstructorService {
 
     private final InstructorRepository instructorRepository;
-    private final InstructorMapper instructorMapper = InstructorMapper.INSTANCE;
+    private final LessonRepository lessonRepository;
+
+    private final InstructorMapper mapper = InstructorMapper.getInstance();
 
     @Override
-    public List<InstructorDTO> findAll() {
+    public List<InstructorFatDto> findAll() {
         return instructorRepository
                 .findAll()
                 .stream()
-                .map(instructorMapper::toDto)
+                .map(mapper::toFatDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public InstructorDTO findById(Long id) {
-        return instructorMapper.toDto(instructorRepository.findById(id)
+    public InstructorFatDto findById(Long id) {
+        return mapper.toFatDto(instructorRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(id, Instructor.class)));
     }
 
     @Override
-    public InstructorDTO saveOrUpdate(InstructorDTO instructorDTO) {
+    public InstructorFatDto saveOrUpdate(InstructorSkinnyDto instructorDTO) {
 
         if (instructorDTO.getId() != null) { //update
             findById(instructorDTO.getId()); //check if entity to update exists
         }
 
-        Instructor savedInstructor = instructorRepository.save(instructorMapper.toInstructor(instructorDTO));
-        return instructorMapper.toDto(savedInstructor);
+        Instructor instructor = mapper.fromSkinnyToInstructor(instructorDTO);
+
+        instructorDTO.getLessonIds()
+                .stream()
+                .map((id) -> lessonRepository.findById(id).orElseThrow(() -> new NotFoundException(id, Lesson.class)))
+                .forEach((lesson) -> {
+                    lesson.setInstructor(instructor);
+                    instructor.addLesson(lesson);
+                });
+
+        Instructor savedInstructor = instructorRepository.save(instructor);
+
+        return mapper.toFatDto(savedInstructor);
     }
 
     @Override

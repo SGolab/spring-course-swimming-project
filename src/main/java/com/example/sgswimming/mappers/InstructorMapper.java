@@ -1,7 +1,8 @@
 package com.example.sgswimming.mappers;
 
 
-import com.example.sgswimming.DTOs.InstructorDTO;
+import com.example.sgswimming.DTOs.InstructorFatDto;
+import com.example.sgswimming.DTOs.InstructorSkinnyDto;
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.Lesson;
 import org.mapstruct.Mapper;
@@ -12,19 +13,56 @@ import org.mapstruct.factory.Mappers;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(uses = LessonMapper.Skinny.class)
-public interface InstructorMapper {
-    InstructorMapper INSTANCE = Mappers.getMapper(InstructorMapper.class);
+public class InstructorMapper {
 
-    InstructorDTO toDto(Instructor instructor);
-    Instructor toInstructor(InstructorDTO dto);
+    private static InstructorMapper INSTANCE;
+
+    private InstructorMapper() {
+    }
+
+    public static InstructorMapper getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new InstructorMapper();
+        }
+        return INSTANCE;
+    }
+
+    InstructorMapper.Fat fatMapper = Mappers.getMapper(InstructorMapper.Fat.class);
+    InstructorMapper.Skinny skinnyMapper = Mappers.getMapper(InstructorMapper.Skinny.class);
+
+    public InstructorFatDto toFatDto(Instructor instructor) {
+        return fatMapper.toFatDto(instructor);
+    }
+
+    public Instructor fromFatToInstructor(InstructorFatDto dto) {
+        return fatMapper.fromFatToInstructor(dto);
+    }
+
+    public InstructorSkinnyDto toSkinnyDto(Instructor instructor) {
+        return skinnyMapper.toSkinnyDto(instructor);
+    }
+
+    public Instructor fromSkinnyToInstructor(InstructorSkinnyDto dto) {
+        return skinnyMapper.fromSkinnyToInstructor(dto);
+    }
+
+    @Mapper(uses = LessonMapper.Skinny.class)
+    interface Fat {
+        InstructorMapper.Fat INSTANCE = Mappers.getMapper(InstructorMapper.Fat.class);
+
+        InstructorFatDto toFatDto(Instructor instructor);
+
+        Instructor fromFatToInstructor(InstructorFatDto dto);
+    }
 
     @Mapper
     interface Skinny {
         InstructorMapper.Skinny INSTANCE = Mappers.getMapper(InstructorMapper.Skinny.class);
 
         @Mapping(source = "lessons", target = "lessonIds", qualifiedByName = "lessonsToLessonIds")
-        InstructorDTO.Skinny toDto(Instructor instructor);
+        InstructorSkinnyDto toSkinnyDto(Instructor instructor);
+
+        Instructor fromSkinnyToInstructor(InstructorSkinnyDto dto);
 
         @Named("lessonsToLessonIds")
         static List<Long> lessonsToLessonIds(List<Lesson> lessons) {

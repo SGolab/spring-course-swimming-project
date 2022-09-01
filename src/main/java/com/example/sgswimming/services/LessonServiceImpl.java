@@ -1,6 +1,7 @@
 package com.example.sgswimming.services;
 
-import com.example.sgswimming.DTOs.LessonDTO;
+import com.example.sgswimming.DTOs.LessonFatDto;
+import com.example.sgswimming.DTOs.LessonSkinnyDto;
 import com.example.sgswimming.mappers.LessonMapper;
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.exceptions.NotFoundException;
@@ -23,32 +24,31 @@ public class LessonServiceImpl implements LessonService {
     private final InstructorRepository instructorRepository;
     private final SwimmerRepository swimmerRepository;
 
-    private final LessonMapper fatMapper = LessonMapper.INSTANCE;
-    private final LessonMapper.Skinny skinnyMapper = LessonMapper.Skinny.INSTANCE;
+    private final LessonMapper mapper = LessonMapper.getInstance();
 
     @Override
-    public List<LessonDTO> findAll() {
+    public List<LessonFatDto> findAll() {
         return lessonRepository
                 .findAll()
                 .stream()
-                .map(fatMapper::toDto)
+                .map(mapper::toFatDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public LessonDTO findById(Long id) {
-        return fatMapper.toDto(lessonRepository.findById(id)
+    public LessonFatDto findById(Long id) {
+        return mapper.toFatDto(lessonRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(id, Lesson.class)));
     }
 
     @Override
-    public LessonDTO saveOrUpdate(LessonDTO.Skinny dto) {
+    public LessonFatDto saveOrUpdate(LessonSkinnyDto dto) {
 
         if (dto.getId() != null) { //update
             findById(dto.getId()); //check if entity to update exists
         }
 
-        Lesson lesson = skinnyMapper.fromSkinnyToLesson(dto);
+        Lesson lesson = mapper.fromSkinnyToLesson(dto);
 
         Stream.of(dto.getInstructorId())
                 .map((id) -> instructorRepository.findById(id).orElseThrow(() -> new NotFoundException(id, Instructor.class)))
@@ -66,7 +66,7 @@ public class LessonServiceImpl implements LessonService {
 
         Lesson savedLesson = lessonRepository.save(lesson);
 
-        return fatMapper.toDto(savedLesson);
+        return mapper.toFatDto(savedLesson);
     }
 
     @Override

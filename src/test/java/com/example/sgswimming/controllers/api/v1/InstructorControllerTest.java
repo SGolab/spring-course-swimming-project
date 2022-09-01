@@ -1,7 +1,8 @@
 package com.example.sgswimming.controllers.api.v1;
 
-import com.example.sgswimming.DTOs.InstructorDTO;
-import com.example.sgswimming.DTOs.LessonDTO;
+import com.example.sgswimming.DTOs.InstructorFatDto;
+import com.example.sgswimming.DTOs.InstructorSkinnyDto;
+import com.example.sgswimming.DTOs.LessonSkinnyDto;
 import com.example.sgswimming.services.InstructorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,18 +53,24 @@ class InstructorControllerTest {
     String LAST_NAME = "Kowalski";
     String ID = "1";
 
-    InstructorDTO INSTRUCTOR = InstructorDTO.builder()
+    InstructorFatDto INSTRUCTOR_FAT_DTO = InstructorFatDto.builder()
             .firstName(FIRST_NAME)
             .lastName(LAST_NAME)
-            .lesson(new LessonDTO.Skinny())
-            .lesson(new LessonDTO.Skinny())
-            .lesson(new LessonDTO.Skinny())
+            .lesson(new LessonSkinnyDto())
+            .lesson(new LessonSkinnyDto())
+            .lesson(new LessonSkinnyDto())
             .build();
 
-    List<InstructorDTO> instructors = List.of(
-            INSTRUCTOR,
-            new InstructorDTO(),
-            new InstructorDTO());
+    InstructorSkinnyDto INSTRUCTOR_SKINNY_DTO = InstructorSkinnyDto.builder()
+            .firstName(FIRST_NAME)
+            .lastName(LAST_NAME)
+            .lessonIds(List.of(1L, 2L, 3L))
+            .build();
+
+    List<InstructorFatDto> instructors = List.of(
+            INSTRUCTOR_FAT_DTO,
+            new InstructorFatDto(),
+            new InstructorFatDto());
 
     @Test
     void getAllInstructors() throws Exception {
@@ -80,7 +87,7 @@ class InstructorControllerTest {
 
     @Test
     void getInstructorById() throws Exception {
-        when(instructorService.findById(anyLong())).thenReturn(INSTRUCTOR);
+        when(instructorService.findById(anyLong())).thenReturn(INSTRUCTOR_FAT_DTO);
 
         mockMvc.perform(get(uriBuilder.path(ID).build())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -93,12 +100,12 @@ class InstructorControllerTest {
 
     @Test
     void saveNewInstructor() throws Exception {
-        when(instructorService.saveOrUpdate(any())).thenReturn(INSTRUCTOR);
+        when(instructorService.saveOrUpdate(any())).thenReturn(INSTRUCTOR_FAT_DTO);
 
         MockHttpServletRequestBuilder mockRequest = post(uriBuilder.build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INSTRUCTOR));
+                .content(objectMapper.writeValueAsString(INSTRUCTOR_SKINNY_DTO));
 
         mockMvc.perform(mockRequest)
                 .andExpect(status().isCreated())
@@ -110,12 +117,12 @@ class InstructorControllerTest {
 
     @Test
     void processUpdateInstructor() throws Exception {
-        when(instructorService.saveOrUpdate(any())).thenReturn(INSTRUCTOR);
+        when(instructorService.saveOrUpdate(any())).thenReturn(INSTRUCTOR_FAT_DTO);
 
         MockHttpServletRequestBuilder mockRequest = put(uriBuilder.path(ID).build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INSTRUCTOR));
+                .content(objectMapper.writeValueAsString(INSTRUCTOR_SKINNY_DTO));
 
         mockMvc.perform(mockRequest)
                 .andExpect(status().isOk())

@@ -1,6 +1,7 @@
 package com.example.sgswimming.controllers.api.v1;
 
-import com.example.sgswimming.DTOs.LessonDTO;
+import com.example.sgswimming.DTOs.LessonFatDto;
+import com.example.sgswimming.DTOs.LessonSkinnyDto;
 import com.example.sgswimming.services.LessonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
@@ -25,23 +26,23 @@ public class LessonController {
     private final LessonService lessonService;
 
     @GetMapping("/")
-    public List<LessonDTO> getAllLessons() {
+    public List<LessonFatDto> getAllLessons() {
         return lessonService.findAll();
     }
 
     @GetMapping("/{id}")
-    public LessonDTO getLessonById(@PathVariable Long id) {
+    public LessonFatDto getLessonById(@PathVariable Long id) {
         return lessonService.findById(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/")
-    public LessonDTO saveNewLesson(@Valid @RequestBody LessonDTO.Skinny lessonDTO) {
+    public LessonFatDto saveNewLesson(@Valid @RequestBody LessonSkinnyDto lessonDTO) {
         return lessonService.saveOrUpdate(lessonDTO);
     }
 
     @PutMapping("/{id}")
-    public LessonDTO processUpdateLesson(@PathVariable Long id, @Valid @RequestBody LessonDTO.Skinny lessonDTO) {
+    public LessonFatDto processUpdateLesson(@PathVariable Long id, @Valid @RequestBody LessonSkinnyDto lessonDTO) {
         lessonDTO.setId(id);
         return lessonService.saveOrUpdate(lessonDTO);
     }

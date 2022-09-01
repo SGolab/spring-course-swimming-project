@@ -1,7 +1,8 @@
 package com.example.sgswimming.controllers.api.v1;
 
-import com.example.sgswimming.DTOs.LessonDTO;
-import com.example.sgswimming.DTOs.SwimmerDTO;
+import com.example.sgswimming.DTOs.LessonSkinnyDto;
+import com.example.sgswimming.DTOs.SwimmerFatDto;
+import com.example.sgswimming.DTOs.SwimmerSkinnyDto;
 import com.example.sgswimming.services.SwimmerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -53,18 +54,24 @@ class SwimmerControllerTest {
     String LAST_NAME = "Kowalski";
     String ID = "1";
 
-    SwimmerDTO SWIMMER = SwimmerDTO.builder()
+    SwimmerFatDto SWIMMER_FAT_DTO = SwimmerFatDto.builder()
             .firstName(FIRST_NAME)
             .lastName(LAST_NAME)
-            .lesson(new LessonDTO.Skinny())
-            .lesson(new LessonDTO.Skinny())
-            .lesson(new LessonDTO.Skinny())
+            .lesson(new LessonSkinnyDto())
+            .lesson(new LessonSkinnyDto())
+            .lesson(new LessonSkinnyDto())
             .build();
 
-    List<SwimmerDTO> swimmers = List.of(
-            SWIMMER,
-            new SwimmerDTO(),
-            new SwimmerDTO());
+    SwimmerSkinnyDto SWIMMER_SKINNY_DTO = SwimmerSkinnyDto.builder()
+            .firstName(FIRST_NAME)
+            .lastName(LAST_NAME)
+            .lessonIds(List.of(1L, 2L, 3L))
+            .build();
+
+    List<SwimmerFatDto> swimmers = List.of(
+            SWIMMER_FAT_DTO,
+            new SwimmerFatDto(),
+            new SwimmerFatDto());
 
     @Test
     void getAllInstructors() throws Exception {
@@ -81,7 +88,7 @@ class SwimmerControllerTest {
 
     @Test
     void getInstructorById() throws Exception {
-        when(swimmerService.findById(anyLong())).thenReturn(SWIMMER);
+        when(swimmerService.findById(anyLong())).thenReturn(SWIMMER_FAT_DTO);
 
         mockMvc.perform(get(uriBuilder.path(ID).build())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -94,12 +101,12 @@ class SwimmerControllerTest {
 
     @Test
     void saveNewInstructor() throws Exception {
-        when(swimmerService.saveOrUpdate(any())).thenReturn(SWIMMER);
+        when(swimmerService.saveOrUpdate(any())).thenReturn(SWIMMER_FAT_DTO);
 
         MockHttpServletRequestBuilder mockRequest = post(uriBuilder.build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(SWIMMER));
+                .content(objectMapper.writeValueAsString(SWIMMER_SKINNY_DTO));
 
         mockMvc.perform(mockRequest)
                 .andExpect(status().isCreated())
@@ -111,12 +118,12 @@ class SwimmerControllerTest {
 
     @Test
     void processUpdateInstructor() throws Exception {
-        when(swimmerService.saveOrUpdate(any())).thenReturn(SWIMMER);
+        when(swimmerService.saveOrUpdate(any())).thenReturn(SWIMMER_FAT_DTO);
 
         MockHttpServletRequestBuilder mockRequest = put(uriBuilder.path(ID).build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(SWIMMER));
+                .content(objectMapper.writeValueAsString(SWIMMER_SKINNY_DTO));
 
         mockMvc.perform(mockRequest)
                 .andExpect(status().isOk())

@@ -1,10 +1,8 @@
 package com.example.sgswimming.services;
 
-import com.example.sgswimming.DTOs.LessonDTO;
-import com.example.sgswimming.DTOs.LessonDTO;
-import com.example.sgswimming.DTOs.LessonDTO;
+import com.example.sgswimming.DTOs.LessonFatDto;
+import com.example.sgswimming.DTOs.LessonSkinnyDto;
 import com.example.sgswimming.model.Instructor;
-import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.model.Swimmer;
 import com.example.sgswimming.model.exceptions.NotFoundException;
@@ -48,7 +46,7 @@ class LessonServiceImplTest {
     void findAll() {
         when(lessonRepository.findAll()).thenReturn(List.of(new Lesson(), new Lesson()));
 
-        List<LessonDTO> Lessons = lessonService.findAll();
+        List<LessonFatDto> Lessons = lessonService.findAll();
 
         assertNotNull(Lessons);
         assertEquals(2, Lessons.size());
@@ -58,7 +56,7 @@ class LessonServiceImplTest {
     void findById() {
         when(lessonRepository.findById(anyLong())).thenReturn(Optional.of(new Lesson()));
 
-        LessonDTO lesson = lessonService.findById(1L);
+        LessonFatDto lesson = lessonService.findById(1L);
 
         assertNotNull(lesson);
     }
@@ -71,7 +69,7 @@ class LessonServiceImplTest {
 
     @Test
     void save() {
-        LessonDTO.Skinny lessonDTO = new LessonDTO.Skinny();
+        LessonSkinnyDto lessonDTO = LessonSkinnyDto.builder().build();
         lessonDTO.setInstructorId(1L);
         lessonDTO.setSwimmerIds(List.of(1L, 2L, 3L));
 
@@ -81,7 +79,7 @@ class LessonServiceImplTest {
         when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(new Instructor()));
         when(swimmerRepository.findById(anyLong())).thenReturn(Optional.of(new Swimmer()));
 
-        LessonDTO foundLesson = lessonService.saveOrUpdate(lessonDTO);
+        LessonFatDto foundLesson = lessonService.saveOrUpdate(lessonDTO);
 
         assertNotNull(foundLesson);
         verify(lessonRepository).save(any(Lesson.class));
@@ -90,7 +88,7 @@ class LessonServiceImplTest {
 
     @Test
     void update() {
-        LessonDTO.Skinny lessonDTO = new LessonDTO.Skinny();
+        LessonSkinnyDto lessonDTO = LessonSkinnyDto.builder().build();
         lessonDTO.setId(1L);
         lessonDTO.setInstructorId(1L);
         lessonDTO.setSwimmerIds(List.of(1L, 2L, 3L));
@@ -102,7 +100,7 @@ class LessonServiceImplTest {
         when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(new Instructor()));
         when(swimmerRepository.findById(anyLong())).thenReturn(Optional.of(new Swimmer()));
 
-        LessonDTO foundLesson = lessonService.saveOrUpdate(lessonDTO);
+        LessonFatDto foundLesson = lessonService.saveOrUpdate(lessonDTO);
 
         assertNotNull(foundLesson);
         verify(lessonRepository).save(any(Lesson.class));
@@ -111,7 +109,7 @@ class LessonServiceImplTest {
 
     @Test
     void updateLessonNotFound() {
-        LessonDTO.Skinny lessonDTO = new LessonDTO.Skinny();
+        LessonSkinnyDto lessonDTO = LessonSkinnyDto.builder().build();
         lessonDTO.setInstructorId(1L);
         lessonDTO.setSwimmerIds(List.of(1L, 2L, 3L));
 

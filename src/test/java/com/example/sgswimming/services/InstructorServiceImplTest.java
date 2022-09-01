@@ -1,6 +1,7 @@
 package com.example.sgswimming.services;
 
-import com.example.sgswimming.DTOs.InstructorDTO;
+import com.example.sgswimming.DTOs.InstructorFatDto;
+import com.example.sgswimming.DTOs.InstructorSkinnyDto;
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.exceptions.NotFoundException;
 import com.example.sgswimming.repositories.InstructorRepository;
@@ -34,7 +35,7 @@ class InstructorServiceImplTest {
     void findAll() {
         when(instructorRepository.findAll()).thenReturn(List.of(new Instructor(), new Instructor()));
 
-        List<InstructorDTO> instructors = instructorService.findAll();
+        List<InstructorFatDto> instructors = instructorService.findAll();
 
         assertNotNull(instructors);
         assertEquals(2, instructors.size());
@@ -44,7 +45,7 @@ class InstructorServiceImplTest {
     void findById() {
         when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(new Instructor()));
 
-        InstructorDTO instructor = instructorService.findById(1L);
+        InstructorFatDto instructor = instructorService.findById(1L);
 
         assertNotNull(instructor);
     }
@@ -57,12 +58,12 @@ class InstructorServiceImplTest {
 
     @Test
     void save() {
-        InstructorDTO instructorDTO = new InstructorDTO();
+        InstructorSkinnyDto instructorDTO = InstructorSkinnyDto.builder().build();
         Instructor instructor = new Instructor();
 
         when(instructorRepository.save(any())).thenReturn(instructor);
 
-        InstructorDTO foundInstructor = instructorService.saveOrUpdate(instructorDTO);
+        InstructorFatDto foundInstructor = instructorService.saveOrUpdate(instructorDTO);
 
         assertNotNull(foundInstructor);
         verify(instructorRepository).save(any(Instructor.class));
@@ -71,7 +72,7 @@ class InstructorServiceImplTest {
 
     @Test
     void update() {
-        InstructorDTO instructorDTO = new InstructorDTO();
+        InstructorSkinnyDto instructorDTO = InstructorSkinnyDto.builder().build();
         instructorDTO.setId(1L);
 
         Instructor instructor = new Instructor();
@@ -79,7 +80,7 @@ class InstructorServiceImplTest {
         when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(instructor));
         when(instructorRepository.save(any())).thenReturn(instructor);
 
-        InstructorDTO foundInstructor = instructorService.saveOrUpdate(instructorDTO);
+        InstructorFatDto foundInstructor = instructorService.saveOrUpdate(instructorDTO);
 
         assertNotNull(foundInstructor);
         verify(instructorRepository).save(any(Instructor.class));
@@ -88,7 +89,7 @@ class InstructorServiceImplTest {
 
     @Test
     void updateNotFound() {
-        InstructorDTO instructorDTO = new InstructorDTO();
+        InstructorSkinnyDto instructorDTO = InstructorSkinnyDto.builder().build();
 
         when(instructorRepository.findById(anyLong())).thenReturn(Optional.empty());
 

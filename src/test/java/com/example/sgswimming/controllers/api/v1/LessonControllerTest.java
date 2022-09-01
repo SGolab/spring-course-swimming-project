@@ -1,7 +1,9 @@
 package com.example.sgswimming.controllers.api.v1;
 
-import com.example.sgswimming.DTOs.LessonDTO;
-import com.example.sgswimming.DTOs.SwimmerDTO;
+import com.example.sgswimming.DTOs.LessonFatDto;
+import com.example.sgswimming.DTOs.LessonSkinnyDto;
+import com.example.sgswimming.DTOs.SwimmerSkinnyDto;
+import com.example.sgswimming.config.JsonDateMappingConfig;
 import com.example.sgswimming.services.LessonService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -18,6 +20,7 @@ import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
@@ -54,18 +57,24 @@ class LessonControllerTest {
     LocalDateTime TIME = LocalDateTime.now();
     String ID = "1";
 
-    LessonDTO LESSON = LessonDTO.builder()
+    LessonFatDto LESSON_FAT_DTO = LessonFatDto.builder()
             .description(DESC)
             .localDateTime(TIME)
-            .swimmer(new SwimmerDTO.Skinny())
-            .swimmer(new SwimmerDTO.Skinny())
-            .swimmer(new SwimmerDTO.Skinny())
+            .swimmer(SwimmerSkinnyDto.builder().build())
+            .swimmer(SwimmerSkinnyDto.builder().build())
+            .swimmer(SwimmerSkinnyDto.builder().build())
             .build();
 
-    List<LessonDTO> lessons = List.of(
-            LESSON,
-            new LessonDTO(),
-            new LessonDTO());
+    LessonSkinnyDto LESSON_SKINNY_DTO = LessonSkinnyDto.builder()
+            .description(DESC)
+            .localDateTime(TIME.format(DateTimeFormatter.ofPattern(JsonDateMappingConfig.DATE_TIME_FORMAT)))
+            .swimmerIds(List.of(1L, 2L, 3L))
+            .build();
+
+    List<LessonFatDto> lessons = List.of(
+            LESSON_FAT_DTO,
+            new LessonFatDto(),
+            new LessonFatDto());
 
     @Test
     void getAllLessons() throws Exception {
@@ -82,7 +91,7 @@ class LessonControllerTest {
 
     @Test
     void getLessonById() throws Exception {
-        when(lessonService.findById(anyLong())).thenReturn(LESSON);
+        when(lessonService.findById(anyLong())).thenReturn(LESSON_FAT_DTO);
 
         mockMvc.perform(get(uriBuilder.path(ID).build())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -94,12 +103,12 @@ class LessonControllerTest {
 
     @Test
     void saveNewLesson() throws Exception {
-        when(lessonService.saveOrUpdate(any())).thenReturn(LESSON);
+        when(lessonService.saveOrUpdate(any())).thenReturn(LESSON_FAT_DTO);
 
         MockHttpServletRequestBuilder mockRequest = post(uriBuilder.build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(LESSON));
+                .content(objectMapper.writeValueAsString(LESSON_SKINNY_DTO));
 
         mockMvc.perform(mockRequest)
                 .andExpect(status().isCreated())
@@ -110,12 +119,12 @@ class LessonControllerTest {
 
     @Test
     void updateLesson() throws Exception {
-        when(lessonService.saveOrUpdate(any())).thenReturn(LESSON);
+        when(lessonService.saveOrUpdate(any())).thenReturn(LESSON_FAT_DTO);
 
         MockHttpServletRequestBuilder mockRequest = put(uriBuilder.path(ID).build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(LESSON));
+                .content(objectMapper.writeValueAsString(LESSON_SKINNY_DTO));
 
         mockMvc.perform(mockRequest)
                 .andExpect(status().isOk())

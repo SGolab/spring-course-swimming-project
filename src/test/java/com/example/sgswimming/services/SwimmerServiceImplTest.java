@@ -1,10 +1,9 @@
 package com.example.sgswimming.services;
 
-import com.example.sgswimming.DTOs.SwimmerDTO;
-import com.example.sgswimming.DTOs.SwimmerDTO;
+import com.example.sgswimming.DTOs.SwimmerFatDto;
+import com.example.sgswimming.DTOs.SwimmerSkinnyDto;
 import com.example.sgswimming.model.Swimmer;
 import com.example.sgswimming.model.exceptions.NotFoundException;
-import com.example.sgswimming.model.Swimmer;
 import com.example.sgswimming.repositories.SwimmerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +37,7 @@ class SwimmerServiceImplTest {
     void findAll() {
         when(swimmerRepository.findAll()).thenReturn(List.of(new Swimmer(), new Swimmer()));
 
-        List<SwimmerDTO> Swimmers = swimmerService.findAll();
+        List<SwimmerFatDto> Swimmers = swimmerService.findAll();
 
         assertNotNull(Swimmers);
         assertEquals(2, Swimmers.size());
@@ -48,7 +47,7 @@ class SwimmerServiceImplTest {
     void findById() {
         when(swimmerRepository.findById(anyLong())).thenReturn(Optional.of(new Swimmer()));
 
-        SwimmerDTO swimmer = swimmerService.findById(1L);
+        SwimmerFatDto swimmer = swimmerService.findById(1L);
 
         assertNotNull(swimmer);
     }
@@ -61,13 +60,14 @@ class SwimmerServiceImplTest {
 
     @Test
     void saveOrUpdate() {
-        SwimmerDTO swimmerDTO = new SwimmerDTO();
+        SwimmerSkinnyDto swimmerDTO = SwimmerSkinnyDto.builder().build();
         Swimmer swimmer = new Swimmer();
 
         when(swimmerRepository.findById(anyLong())).thenReturn(Optional.of(swimmer));
 
         swimmerService.saveOrUpdate(swimmerDTO);
-        SwimmerDTO foundSwimmer = swimmerService.findById(1L);
+
+        SwimmerFatDto foundSwimmer = swimmerService.findById(1L);
 
         assertNotNull(foundSwimmer);
         verify(swimmerRepository).save(any(Swimmer.class));
@@ -76,7 +76,7 @@ class SwimmerServiceImplTest {
 
     @Test
     void updateNotFound() {
-        SwimmerDTO swimmerDTO = new SwimmerDTO();
+        SwimmerSkinnyDto swimmerDTO = SwimmerSkinnyDto.builder().build();
 
         when(swimmerRepository.findById(anyLong())).thenReturn(Optional.empty());
 

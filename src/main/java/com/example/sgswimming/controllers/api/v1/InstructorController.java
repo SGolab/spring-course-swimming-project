@@ -1,6 +1,7 @@
 package com.example.sgswimming.controllers.api.v1;
 
-import com.example.sgswimming.DTOs.InstructorDTO;
+import com.example.sgswimming.DTOs.InstructorFatDto;
+import com.example.sgswimming.DTOs.InstructorSkinnyDto;
 import com.example.sgswimming.services.InstructorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
@@ -25,23 +26,23 @@ public class InstructorController {
     private final InstructorService instructorService;
 
     @GetMapping("/")
-    public List<InstructorDTO> getAllInstructors() {
+    public List<InstructorFatDto> getAllInstructors() {
         return instructorService.findAll();
     }
 
     @GetMapping("/{id}")
-    public InstructorDTO getInstructorById(@PathVariable Long id) {
+    public InstructorFatDto getInstructorById(@PathVariable Long id) {
         return instructorService.findById(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/")
-    public InstructorDTO saveNewInstructor(@Valid @RequestBody InstructorDTO instructorDTO) {
+    public InstructorFatDto saveNewInstructor(@Valid @RequestBody InstructorSkinnyDto instructorDTO) {
         return instructorService.saveOrUpdate(instructorDTO);
     }
 
     @PutMapping("/{id}")
-    public InstructorDTO updateInstructor(@PathVariable Long id, @Valid @RequestBody InstructorDTO instructorDTO) {
+    public InstructorFatDto updateInstructor(@PathVariable Long id, @Valid @RequestBody InstructorSkinnyDto instructorDTO) {
         instructorDTO.setId(id);
         return instructorService.saveOrUpdate(instructorDTO);
     }

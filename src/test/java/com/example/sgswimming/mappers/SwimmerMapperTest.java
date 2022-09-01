@@ -1,6 +1,7 @@
 package com.example.sgswimming.mappers;
 
-import com.example.sgswimming.DTOs.SwimmerDTO;
+import com.example.sgswimming.DTOs.SwimmerFatDto;
+import com.example.sgswimming.DTOs.SwimmerSkinnyDto;
 import com.example.sgswimming.model.Swimmer;
 import org.junit.jupiter.api.Test;
 
@@ -16,12 +17,11 @@ public class SwimmerMapperTest {
             .lastName(LAST_NAME)
             .build();
 
-    SwimmerMapper mapper = SwimmerMapper.INSTANCE;
-    SwimmerMapper.Skinny skinnyMapper = SwimmerMapper.Skinny.INSTANCE;
+    SwimmerMapper mapper = SwimmerMapper.getInstance();
 
     @Test
     void objectToDTO() {
-        SwimmerDTO dto = mapper.toDto(SWIMMER);
+        SwimmerFatDto dto = mapper.toFatDto(SWIMMER);
 
         assertEquals(FIRST_NAME, dto.getFirstName());
         assertEquals(LAST_NAME, dto.getLastName());
@@ -29,8 +29,23 @@ public class SwimmerMapperTest {
     }
 
     @Test
+    void DTOtoObject() {
+        SwimmerFatDto dto = SwimmerFatDto
+                .builder()
+                .firstName(FIRST_NAME)
+                .lastName(LAST_NAME)
+                .build();
+
+        Swimmer swimmer = mapper.fromFatToSwimmer(dto);
+
+        assertEquals(swimmer.getFirstName(), dto.getFirstName());
+        assertEquals(swimmer.getLastName(), dto.getLastName());
+        assertNotNull(swimmer.getLessons());
+    }
+
+    @Test
     void objectToSkinnyDTO() {
-        SwimmerDTO.Skinny dto = skinnyMapper.toDto(SWIMMER);
+        SwimmerSkinnyDto dto = mapper.toSkinnyDto(SWIMMER);
 
         assertEquals(FIRST_NAME, dto.getFirstName());
         assertEquals(LAST_NAME, dto.getLastName());
@@ -38,18 +53,17 @@ public class SwimmerMapperTest {
     }
 
     @Test
-    void DTOtoObject() {
-        SwimmerDTO dto = SwimmerDTO
+    void skinnyDtoToObject() {
+        SwimmerSkinnyDto dto = SwimmerSkinnyDto
                 .builder()
                 .firstName(FIRST_NAME)
                 .lastName(LAST_NAME)
                 .build();
 
-        Swimmer swimmer = mapper.toSwimmer(dto);
+        Swimmer swimmer = mapper.fromSkinnyToSwimmer(dto);
 
         assertEquals(swimmer.getFirstName(), dto.getFirstName());
         assertEquals(swimmer.getLastName(), dto.getLastName());
         assertNotNull(swimmer.getLessons());
     }
-
 }

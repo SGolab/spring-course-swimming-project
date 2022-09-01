@@ -1,16 +1,17 @@
 package com.example.sgswimming.services;
 
-import com.example.sgswimming.DTOs.InstructorDTO;
+import com.example.sgswimming.DTOs.InstructorFatDto;
+import com.example.sgswimming.DTOs.InstructorSkinnyDto;
 
 import java.util.List;
 
 public interface InstructorService {
 
-    List<InstructorDTO> findAll();
+    List<InstructorFatDto> findAll();
 
-    InstructorDTO findById(Long id);
+    InstructorFatDto findById(Long id);
 
-    InstructorDTO saveOrUpdate(InstructorDTO instructorDTO);
+    InstructorFatDto saveOrUpdate(InstructorSkinnyDto instructorDTO);
 
     void deleteById(Long id);
 }

@@ -1,11 +1,15 @@
 package com.example.sgswimming.mappers;
 
-import com.example.sgswimming.DTOs.LessonDTO;
+import com.example.sgswimming.DTOs.InstructorSkinnyDto;
+import com.example.sgswimming.DTOs.LessonFatDto;
+import com.example.sgswimming.DTOs.LessonSkinnyDto;
+import com.example.sgswimming.config.JsonDateMappingConfig;
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.Lesson;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -13,12 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class LessonMapperTest {
 
     String DESCRIPTION = "Desc";
-    LocalDateTime LOCAL_DATE_TIME = LocalDateTime.MAX;
+    LocalDateTime LOCAL_DATE_TIME = LocalDateTime.now();
+    String LOCAL_DATE_TIME_STRING = LOCAL_DATE_TIME.format(DateTimeFormatter.ofPattern(JsonDateMappingConfig.DATE_TIME_FORMAT));
     Long INSTRUCTOR_ID = 1L;
     Instructor INSTRUCTOR = Instructor.builder().id(INSTRUCTOR_ID).build();
 
-    LessonMapper mapper = LessonMapper.INSTANCE;
-    LessonMapper.Skinny skinnyMapper = LessonMapper.Skinny.INSTANCE;
+    LessonMapper mapper = LessonMapper.getInstance();
 
     @Test
     void objectToDTO() {
@@ -29,12 +33,27 @@ public class LessonMapperTest {
                         .instructor(INSTRUCTOR)
                         .build();
 
-        LessonDTO dto = mapper.toDto(lesson);
+        LessonFatDto dto = mapper.toFatDto(lesson);
 
-        assertEquals(lesson.getDescription(), dto.getDescription());
-        assertEquals(lesson.getLocalDateTime(), dto.getLocalDateTime());
+        assertEquals(DESCRIPTION, dto.getDescription());
+        assertEquals(LOCAL_DATE_TIME, dto.getLocalDateTime());
         assertEquals(INSTRUCTOR_ID, dto.getInstructor().getId());
         assertNotNull(dto.getSwimmers());
+    }
+
+    @Test
+    void DTOtoObject() {
+        LessonFatDto dto = LessonFatDto
+                .builder()
+                .description(DESCRIPTION)
+                .localDateTime(LOCAL_DATE_TIME)
+                .build();
+
+        Lesson lesson = mapper.fromFatToLesson(dto);
+
+        assertEquals(DESCRIPTION, lesson.getDescription());
+        assertEquals(LOCAL_DATE_TIME, lesson.getLocalDateTime());
+        assertNotNull(lesson.getSwimmers());
     }
 
     @Test
@@ -46,26 +65,26 @@ public class LessonMapperTest {
                         .instructor(INSTRUCTOR)
                         .build();
 
-        LessonDTO.Skinny dto = skinnyMapper.toDto(lesson);
+        LessonSkinnyDto dto = mapper.toSkinnyDto(lesson);
 
-        assertEquals(lesson.getDescription(), dto.getDescription());
-        assertEquals(lesson.getLocalDateTime(), dto.getLocalDateTime());
+        assertEquals(DESCRIPTION, dto.getDescription());
+        assertEquals(LOCAL_DATE_TIME_STRING, dto.getLocalDateTime());
         assertEquals(INSTRUCTOR_ID, dto.getInstructorId());
         assertNotNull(dto.getSwimmerIds());
     }
 
     @Test
-    void DTOtoObject() {
-        LessonDTO dto = LessonDTO
+    void skinnyDtoToObject() {
+        LessonSkinnyDto dto = LessonSkinnyDto
                 .builder()
                 .description(DESCRIPTION)
-                .localDateTime(LOCAL_DATE_TIME)
+                .localDateTime(LOCAL_DATE_TIME_STRING)
                 .build();
 
-        Lesson lesson = mapper.toLesson(dto);
+        Lesson lesson = mapper.fromSkinnyToLesson(dto);
 
-        assertEquals(dto.getDescription(), lesson.getDescription());
-        assertEquals(dto.getLocalDateTime(), lesson.getLocalDateTime());
+        assertEquals(DESCRIPTION, lesson.getDescription());
+        assertEquals(LOCAL_DATE_TIME_STRING, lesson.getLocalDateTime().format(DateTimeFormatter.ofPattern(JsonDateMappingConfig.DATE_TIME_FORMAT)));
         assertNotNull(lesson.getSwimmers());
     }
 }
