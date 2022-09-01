@@ -28,7 +28,9 @@ public class LessonDTO {
     public static class Skinny {
         private Long id;
         private String description;
-        private LocalDateTime localDateTime;
+
+        @Pattern(regexp = JsonDateMappingConfig.DATE_TIME_FORMAT_REGEX)
+        private String localDateTime;
 
         private Long instructorId;
 
