@@ -67,6 +67,11 @@ class InstructorControllerTest {
             .lessonIds(List.of(1L, 2L, 3L))
             .build();
 
+    InstructorSkinnyDto INSTRUCTOR_SKINNY_DTO_MALFORMED = InstructorSkinnyDto.builder()
+            .firstName("")
+            .lastName("")
+            .build();
+
     List<InstructorFatDto> instructors = List.of(
             INSTRUCTOR_FAT_DTO,
             new InstructorFatDto(),
@@ -113,6 +118,20 @@ class InstructorControllerTest {
                 .andExpect(jsonPath("$.firstName", equalTo(FIRST_NAME)))
                 .andExpect(jsonPath("$.lastName", equalTo(LAST_NAME)))
                 .andExpect(jsonPath("$.lessons", hasSize(3)));
+    }
+
+    @Test
+    void saveNewInstructorMalformedJson() throws Exception {
+        when(instructorService.saveOrUpdate(any())).thenReturn(INSTRUCTOR_FAT_DTO);
+
+        MockHttpServletRequestBuilder mockRequest = post(uriBuilder.build())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(INSTRUCTOR_SKINNY_DTO_MALFORMED));
+
+        mockMvc.perform(mockRequest)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$", notNullValue()));
     }
 
     @Test

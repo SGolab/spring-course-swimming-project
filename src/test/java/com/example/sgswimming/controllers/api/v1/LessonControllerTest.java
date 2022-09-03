@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static com.example.sgswimming.config.JsonDateMappingConfig.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -67,8 +68,13 @@ class LessonControllerTest {
 
     LessonSkinnyDto LESSON_SKINNY_DTO = LessonSkinnyDto.builder()
             .description(DESC)
-            .localDateTime(TIME.format(DateTimeFormatter.ofPattern(JsonDateMappingConfig.DATE_TIME_FORMAT)))
+            .localDateTime(TIME.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)))
             .swimmerIds(List.of(1L, 2L, 3L))
+            .build();
+
+    LessonSkinnyDto LESSON_SKINNY_DTO_MALFORMED = LessonSkinnyDto.builder()
+            .description("")
+            .localDateTime("12:33 01-32-2000")
             .build();
 
     List<LessonFatDto> lessons = List.of(
@@ -113,8 +119,21 @@ class LessonControllerTest {
         mockMvc.perform(mockRequest)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.description", equalTo(DESC)))
-                .andExpect(jsonPath("$.localDateTime", notNullValue()))
-                .andExpect(jsonPath("$.swimmers", hasSize(3)));
+                .andExpect(jsonPath("$.localDateTime", notNullValue()));
+    }
+
+    @Test
+    void saveNewLessonMalformedJson() throws Exception {
+        when(lessonService.saveOrUpdate(any())).thenReturn(LESSON_FAT_DTO);
+
+        MockHttpServletRequestBuilder mockRequest = post(uriBuilder.build())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(LESSON_SKINNY_DTO_MALFORMED));
+
+        mockMvc.perform(mockRequest)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$", notNullValue()));
     }
 
     @Test

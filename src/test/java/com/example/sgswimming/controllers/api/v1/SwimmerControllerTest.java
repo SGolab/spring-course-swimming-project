@@ -68,13 +68,18 @@ class SwimmerControllerTest {
             .lessonIds(List.of(1L, 2L, 3L))
             .build();
 
+    SwimmerSkinnyDto SWIMMER_SKINNY_DTO_MALFORMED = SwimmerSkinnyDto.builder()
+            .firstName("")
+            .lastName("")
+            .build();
+
     List<SwimmerFatDto> swimmers = List.of(
             SWIMMER_FAT_DTO,
             new SwimmerFatDto(),
             new SwimmerFatDto());
 
     @Test
-    void getAllInstructors() throws Exception {
+    void getAllSwimmers() throws Exception {
         when(swimmerService.findAll()).thenReturn(swimmers);
 
         mockMvc.perform(get(uriBuilder.build())
@@ -87,7 +92,7 @@ class SwimmerControllerTest {
     }
 
     @Test
-    void getInstructorById() throws Exception {
+    void getSwimmerById() throws Exception {
         when(swimmerService.findById(anyLong())).thenReturn(SWIMMER_FAT_DTO);
 
         mockMvc.perform(get(uriBuilder.path(ID).build())
@@ -100,7 +105,7 @@ class SwimmerControllerTest {
     }
 
     @Test
-    void saveNewInstructor() throws Exception {
+    void saveNewSwimmer() throws Exception {
         when(swimmerService.saveOrUpdate(any())).thenReturn(SWIMMER_FAT_DTO);
 
         MockHttpServletRequestBuilder mockRequest = post(uriBuilder.build())
@@ -117,7 +122,21 @@ class SwimmerControllerTest {
     }
 
     @Test
-    void processUpdateInstructor() throws Exception {
+    void saveNewSwimmerMalformedJson() throws Exception {
+        when(swimmerService.saveOrUpdate(any())).thenReturn(SWIMMER_FAT_DTO);
+
+        MockHttpServletRequestBuilder mockRequest = post(uriBuilder.build())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(SWIMMER_SKINNY_DTO_MALFORMED));
+
+        mockMvc.perform(mockRequest)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$", notNullValue()));
+    }
+
+    @Test
+    void updateSwimmer() throws Exception {
         when(swimmerService.saveOrUpdate(any())).thenReturn(SWIMMER_FAT_DTO);
 
         MockHttpServletRequestBuilder mockRequest = put(uriBuilder.path(ID).build())
@@ -134,7 +153,7 @@ class SwimmerControllerTest {
     }
 
     @Test
-    void deleteInstructorById() throws Exception {
+    void deleteSwimmerById() throws Exception {
         mockMvc.perform(delete(uriBuilder.path(ID).build()))
                 .andExpect(status().isOk());
 
