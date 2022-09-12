@@ -1,7 +1,6 @@
-package com.example.sgswimming.controllers.ui;
+package com.example.sgswimming.web.controllers.ui;
 
-import com.example.sgswimming.services.InstructorService;
-import com.example.sgswimming.services.LessonService;
+import com.example.sgswimming.services.SwimmerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
@@ -13,20 +12,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Profile("ui")
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/lessons")
-public class LessonController {
+@RequestMapping("/swimmers")
+public class SwimmerController {
 
-    private final LessonService lessonService;
+    private final SwimmerService swimmerService;
 
     @GetMapping("/")
-    public String getAllLessons(Model model) {
-        model.addAttribute("lessons", lessonService.findAll());
-        return "lessons/list";
+    public String getAllSwimmers(Model model) {
+        model.addAttribute("swimmers", swimmerService.findAll());
+        return "swimmers/list";
     }
 
     @GetMapping("/{id}")
     public String getInstructorById(Model model, @PathVariable Long id) {
-        model.addAttribute("lesson", lessonService.findById(id));
-        return "lessons/show";
+        model.addAttribute("swimmer", swimmerService.findById(id));
+        return "swimmers/show";
     }
+
 }

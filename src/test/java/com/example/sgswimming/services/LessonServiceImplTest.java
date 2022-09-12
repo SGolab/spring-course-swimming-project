@@ -1,7 +1,7 @@
 package com.example.sgswimming.services;
 
-import com.example.sgswimming.DTOs.LessonFatDto;
-import com.example.sgswimming.DTOs.LessonSkinnyDto;
+import com.example.sgswimming.web.DTOs.LessonFatDto;
+import com.example.sgswimming.web.DTOs.LessonSkinnyDto;
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.model.Swimmer;

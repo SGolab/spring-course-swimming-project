@@ -1,8 +1,8 @@
-package com.example.sgswimming.controllers.api.v1;
+package com.example.sgswimming.web.controllers.api.v1;
 
-import com.example.sgswimming.DTOs.LessonFatDto;
-import com.example.sgswimming.DTOs.LessonSkinnyDto;
-import com.example.sgswimming.services.LessonService;
+import com.example.sgswimming.web.DTOs.SwimmerFatDto;
+import com.example.sgswimming.web.DTOs.SwimmerSkinnyDto;
+import com.example.sgswimming.services.SwimmerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -17,39 +17,39 @@ import java.util.Map;
 
 @Profile("api")
 @RestController
-@RequestMapping(LessonController.URL)
+@RequestMapping(SwimmerController.URL)
 @RequiredArgsConstructor
-public class LessonController {
+public class SwimmerController {
 
-    public static final String URL = "/api/v1/lessons/";
+    public static final String URL = "/api/v1/swimmers/";
 
-    private final LessonService lessonService;
+    private final SwimmerService swimmerService;
 
     @GetMapping("/")
-    public List<LessonFatDto> getAllLessons() {
-        return lessonService.findAll();
+    public List<SwimmerFatDto> getAllSwimmers() {
+        return swimmerService.findAll();
     }
 
     @GetMapping("/{id}")
-    public LessonFatDto getLessonById(@PathVariable Long id) {
-        return lessonService.findById(id);
+    public SwimmerFatDto getInstructorById(@PathVariable Long id) {
+        return swimmerService.findById(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/")
-    public LessonFatDto saveNewLesson(@Valid @RequestBody LessonSkinnyDto lessonDTO) {
-        return lessonService.saveOrUpdate(lessonDTO);
+    public SwimmerFatDto saveNewSwimmer(@Valid @RequestBody SwimmerSkinnyDto swimmerDTO) {
+        return swimmerService.saveOrUpdate(swimmerDTO);
     }
 
     @PutMapping("/{id}")
-    public LessonFatDto processUpdateLesson(@PathVariable Long id, @Valid @RequestBody LessonSkinnyDto lessonDTO) {
-        lessonDTO.setId(id);
-        return lessonService.saveOrUpdate(lessonDTO);
+    public SwimmerFatDto processUpdateSwimmer(@PathVariable Long id, @Valid @RequestBody SwimmerSkinnyDto swimmerDTO) {
+        swimmerDTO.setId(id);
+        return swimmerService.saveOrUpdate(swimmerDTO);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteLessonById(@PathVariable Long id) {
-        lessonService.deleteById(id);
+    public void deleteSwimmerById(@PathVariable Long id) {
+        swimmerService.deleteById(id);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -1,7 +1,7 @@
 package com.example.sgswimming.services;
 
-import com.example.sgswimming.DTOs.InstructorFatDto;
-import com.example.sgswimming.DTOs.InstructorSkinnyDto;
+import com.example.sgswimming.web.DTOs.InstructorFatDto;
+import com.example.sgswimming.web.DTOs.InstructorSkinnyDto;
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.exceptions.NotFoundException;
 import com.example.sgswimming.repositories.InstructorRepository;

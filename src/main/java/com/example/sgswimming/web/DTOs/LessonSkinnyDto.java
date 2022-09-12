@@ -1,6 +1,6 @@
-package com.example.sgswimming.DTOs;
+package com.example.sgswimming.web.DTOs;
 
-import com.example.sgswimming.config.JsonDateMappingConfig;
+import com.example.sgswimming.web.config.JsonDateMappingConfig;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 

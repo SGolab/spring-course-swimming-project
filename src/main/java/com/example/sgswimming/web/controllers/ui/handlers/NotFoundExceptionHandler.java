@@ -1,4 +1,4 @@
-package com.example.sgswimming.controllers.ui.handlers;
+package com.example.sgswimming.web.controllers.ui.handlers;
 
 import com.example.sgswimming.model.exceptions.NotFoundException;
 import org.springframework.ui.Model;

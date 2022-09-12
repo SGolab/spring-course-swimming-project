@@ -1,4 +1,4 @@
-package com.example.sgswimming.DTOs;
+package com.example.sgswimming.web.DTOs;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SwimmerSkinnyDto {
+public class InstructorSkinnyDto {
 
     private Long id;
 

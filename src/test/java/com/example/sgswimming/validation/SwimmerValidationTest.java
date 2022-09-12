@@ -1,6 +1,6 @@
 package com.example.sgswimming.validation;
 
-import com.example.sgswimming.DTOs.SwimmerSkinnyDto;
+import com.example.sgswimming.web.DTOs.SwimmerSkinnyDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

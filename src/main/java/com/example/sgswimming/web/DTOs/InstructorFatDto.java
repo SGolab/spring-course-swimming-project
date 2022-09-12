@@ -1,4 +1,4 @@
-package com.example.sgswimming.DTOs;
+package com.example.sgswimming.web.DTOs;
 
 import lombok.*;
 
@@ -8,13 +8,11 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SwimmerFatDto {
-
+public class InstructorFatDto {
     private Long id;
     private String firstName;
     private String lastName;
 
     @Singular
     private List<LessonSkinnyDto> lessons;
-
 }

@@ -1,4 +1,4 @@
-package com.example.sgswimming.config;
+package com.example.sgswimming.web.config;
 
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;

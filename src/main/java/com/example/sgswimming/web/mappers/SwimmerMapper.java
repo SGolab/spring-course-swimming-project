@@ -1,7 +1,7 @@
-package com.example.sgswimming.mappers;
+package com.example.sgswimming.web.mappers;
 
-import com.example.sgswimming.DTOs.SwimmerFatDto;
-import com.example.sgswimming.DTOs.SwimmerSkinnyDto;
+import com.example.sgswimming.web.DTOs.SwimmerFatDto;
+import com.example.sgswimming.web.DTOs.SwimmerSkinnyDto;
 import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.model.Swimmer;
 import org.mapstruct.Mapper;

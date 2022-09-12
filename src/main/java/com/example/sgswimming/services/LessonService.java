@@ -1,7 +1,7 @@
 package com.example.sgswimming.services;
 
-import com.example.sgswimming.DTOs.LessonFatDto;
-import com.example.sgswimming.DTOs.LessonSkinnyDto;
+import com.example.sgswimming.web.DTOs.LessonFatDto;
+import com.example.sgswimming.web.DTOs.LessonSkinnyDto;
 
 import java.util.List;
 

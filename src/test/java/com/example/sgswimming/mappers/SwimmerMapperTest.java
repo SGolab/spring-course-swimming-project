@@ -1,8 +1,9 @@
 package com.example.sgswimming.mappers;
 
-import com.example.sgswimming.DTOs.SwimmerFatDto;
-import com.example.sgswimming.DTOs.SwimmerSkinnyDto;
+import com.example.sgswimming.web.DTOs.SwimmerFatDto;
+import com.example.sgswimming.web.DTOs.SwimmerSkinnyDto;
 import com.example.sgswimming.model.Swimmer;
+import com.example.sgswimming.web.mappers.SwimmerMapper;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

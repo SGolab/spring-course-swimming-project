@@ -1,6 +1,6 @@
 package com.example.sgswimming.validation;
 
-import com.example.sgswimming.DTOs.LessonSkinnyDto;
+import com.example.sgswimming.web.DTOs.LessonSkinnyDto;
 import org.junit.jupiter.api.Test;
 
 import javax.validation.ConstraintViolation;

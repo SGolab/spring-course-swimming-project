@@ -1,4 +1,4 @@
-package com.example.sgswimming.DTOs;
+package com.example.sgswimming.web.DTOs;
 
 import lombok.*;
 

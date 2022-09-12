@@ -1,7 +1,7 @@
-package com.example.sgswimming.controllers.ui;
+package com.example.sgswimming.web.controllers.ui;
 
-import com.example.sgswimming.DTOs.InstructorFatDto;
-import com.example.sgswimming.DTOs.InstructorSkinnyDto;
+import com.example.sgswimming.web.DTOs.InstructorFatDto;
+import com.example.sgswimming.web.DTOs.InstructorSkinnyDto;
 import com.example.sgswimming.services.InstructorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
