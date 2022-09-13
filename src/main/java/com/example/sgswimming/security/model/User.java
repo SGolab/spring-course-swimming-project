@@ -1,5 +1,6 @@
 package com.example.sgswimming.security.model;
 
+import com.example.sgswimming.model.Swimmer;
 import lombok.*;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,11 +26,14 @@ public class User implements UserDetails, CredentialsContainer {
     private String username;
     private String password;
 
+    @OneToMany
+    private Set<Swimmer> swimmers;
+
     @Singular
     @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
-            joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
-            inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")})
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private Set<Role> roles;
 
     @Transient

@@ -1,5 +1,6 @@
 package com.example.sgswimming.model;
 
+import com.example.sgswimming.security.model.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,6 +22,10 @@ public class Swimmer {
 
     @ManyToMany(mappedBy = "swimmers")
     private List<Lesson> lessons = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Builder
     public Swimmer(Long id, String firstName, String lastName) {
