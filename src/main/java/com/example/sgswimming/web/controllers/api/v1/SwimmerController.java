@@ -1,5 +1,12 @@
 package com.example.sgswimming.web.controllers.api.v1;
 
+import com.example.sgswimming.model.exceptions.NotFoundException;
+import com.example.sgswimming.security.model.User;
+import com.example.sgswimming.security.model.exceptions.InvalidUserException;
+import com.example.sgswimming.security.perms.swimmers.CreateSwimmerPermission;
+import com.example.sgswimming.security.perms.swimmers.DeleteSwimmerPermission;
+import com.example.sgswimming.security.perms.swimmers.ReadSwimmerPermission;
+import com.example.sgswimming.security.perms.swimmers.UpdateSwimmerPermission;
 import com.example.sgswimming.web.DTOs.SwimmerFatDto;
 import com.example.sgswimming.web.DTOs.SwimmerSkinnyDto;
 import com.example.sgswimming.services.SwimmerService;
@@ -25,28 +32,33 @@ public class SwimmerController {
 
     private final SwimmerService swimmerService;
 
+    @ReadSwimmerPermission
     @GetMapping("/")
     public List<SwimmerFatDto> getAllSwimmers() {
         return swimmerService.findAll();
     }
 
+    @ReadSwimmerPermission
     @GetMapping("/{id}")
     public SwimmerFatDto getInstructorById(@PathVariable Long id) {
         return swimmerService.findById(id);
     }
 
+    @CreateSwimmerPermission
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/")
     public SwimmerFatDto saveNewSwimmer(@Valid @RequestBody SwimmerSkinnyDto swimmerDTO) {
         return swimmerService.saveOrUpdate(swimmerDTO);
     }
 
+    @UpdateSwimmerPermission
     @PutMapping("/{id}")
     public SwimmerFatDto processUpdateSwimmer(@PathVariable Long id, @Valid @RequestBody SwimmerSkinnyDto swimmerDTO) {
         swimmerDTO.setId(id);
         return swimmerService.saveOrUpdate(swimmerDTO);
     }
 
+    @DeleteSwimmerPermission
     @DeleteMapping("/{id}")
     public void deleteSwimmerById(@PathVariable Long id) {
         swimmerService.deleteById(id);
@@ -65,5 +77,11 @@ public class SwimmerController {
         });
 
         return errors;
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    protected Map<String, String> handle(NotFoundException ex) {
+        return Map.of(ex.getAClass().getSimpleName(), String.valueOf(ex.getId()));
     }
 }
