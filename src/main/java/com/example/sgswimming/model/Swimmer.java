@@ -8,7 +8,9 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -23,10 +25,13 @@ public class Swimmer {
     private String firstName;
     private String lastName;
 
-    @ManyToMany(mappedBy = "swimmers")
+    @ManyToMany(mappedBy = "swimmers", fetch = FetchType.EAGER)
     private List<Lesson> lessons = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToMany(mappedBy = "swimmers", fetch = FetchType.EAGER)
+    private Set<ClientData> clientData = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 

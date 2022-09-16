@@ -1,5 +1,6 @@
 package com.example.sgswimming.security.model;
 
+import com.example.sgswimming.model.ClientData;
 import com.example.sgswimming.model.Swimmer;
 import lombok.*;
 import org.springframework.security.core.CredentialsContainer;
@@ -27,8 +28,8 @@ public class User implements UserDetails, CredentialsContainer {
     private String username;
     private String password;
 
-    @OneToMany
-    private Set<Swimmer> swimmers;
+    @OneToOne(fetch = FetchType.EAGER)
+    private ClientData clientData;
 
     @Singular
     @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
