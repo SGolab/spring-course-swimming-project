@@ -32,7 +32,7 @@ public class Instructor {
     @OneToMany(mappedBy = "instructor", fetch = FetchType.EAGER)
     private List<Lesson> lessons = new ArrayList<>();
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "client_data_id")
     private ClientData clientData;
 

@@ -22,7 +22,7 @@ public class ClientData {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "client_data_id")
     private Instructor instructor;
 
@@ -31,4 +31,6 @@ public class ClientData {
             joinColumns = @JoinColumn(name = "client_data_id"),
             inverseJoinColumns = @JoinColumn(name = "swimmer_id"))
     private List<Swimmer> swimmers = new ArrayList<>();
+
+
 }
