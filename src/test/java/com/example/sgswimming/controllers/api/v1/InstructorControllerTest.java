@@ -1,9 +1,9 @@
 package com.example.sgswimming.controllers.api.v1;
 
+import com.example.sgswimming.services.InstructorService;
 import com.example.sgswimming.web.DTOs.InstructorFatDto;
 import com.example.sgswimming.web.DTOs.InstructorSkinnyDto;
 import com.example.sgswimming.web.DTOs.LessonSkinnyDto;
-import com.example.sgswimming.services.InstructorService;
 import com.example.sgswimming.web.controllers.api.v1.InstructorController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

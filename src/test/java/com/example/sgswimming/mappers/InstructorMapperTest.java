@@ -1,8 +1,8 @@
 package com.example.sgswimming.mappers;
 
+import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.web.DTOs.InstructorFatDto;
 import com.example.sgswimming.web.DTOs.InstructorSkinnyDto;
-import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.web.mappers.InstructorMapper;
 import org.junit.jupiter.api.Test;
 

@@ -1,9 +1,9 @@
 package com.example.sgswimming.controllers.api.v1;
 
+import com.example.sgswimming.services.SwimmerService;
 import com.example.sgswimming.web.DTOs.LessonSkinnyDto;
 import com.example.sgswimming.web.DTOs.SwimmerFatDto;
 import com.example.sgswimming.web.DTOs.SwimmerSkinnyDto;
-import com.example.sgswimming.services.SwimmerService;
 import com.example.sgswimming.web.controllers.api.v1.SwimmerController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;

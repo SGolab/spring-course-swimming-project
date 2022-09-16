@@ -1,6 +1,5 @@
 package com.example.sgswimming.web.controllers.ui;
 
-import com.example.sgswimming.services.InstructorService;
 import com.example.sgswimming.services.LessonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;

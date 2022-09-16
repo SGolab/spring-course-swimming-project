@@ -1,7 +1,6 @@
 package com.example.sgswimming.model.exceptions;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 
 @Getter

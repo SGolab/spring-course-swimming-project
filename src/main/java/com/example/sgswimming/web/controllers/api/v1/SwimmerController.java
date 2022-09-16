@@ -1,15 +1,13 @@
 package com.example.sgswimming.web.controllers.api.v1;
 
 import com.example.sgswimming.model.exceptions.NotFoundException;
-import com.example.sgswimming.security.model.User;
-import com.example.sgswimming.security.model.exceptions.InvalidUserException;
 import com.example.sgswimming.security.perms.swimmers.CreateSwimmerPermission;
 import com.example.sgswimming.security.perms.swimmers.DeleteSwimmerPermission;
 import com.example.sgswimming.security.perms.swimmers.ReadSwimmerPermission;
 import com.example.sgswimming.security.perms.swimmers.UpdateSwimmerPermission;
+import com.example.sgswimming.services.SwimmerService;
 import com.example.sgswimming.web.DTOs.SwimmerFatDto;
 import com.example.sgswimming.web.DTOs.SwimmerSkinnyDto;
-import com.example.sgswimming.services.SwimmerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;

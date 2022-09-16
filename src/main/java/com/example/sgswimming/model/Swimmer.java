@@ -1,7 +1,10 @@
 package com.example.sgswimming.model;
 
 import com.example.sgswimming.security.model.User;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;

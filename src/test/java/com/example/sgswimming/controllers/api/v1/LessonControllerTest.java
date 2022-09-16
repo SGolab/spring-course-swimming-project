@@ -1,9 +1,9 @@
 package com.example.sgswimming.controllers.api.v1;
 
+import com.example.sgswimming.services.LessonService;
 import com.example.sgswimming.web.DTOs.LessonFatDto;
 import com.example.sgswimming.web.DTOs.LessonSkinnyDto;
 import com.example.sgswimming.web.DTOs.SwimmerSkinnyDto;
-import com.example.sgswimming.services.LessonService;
 import com.example.sgswimming.web.controllers.api.v1.LessonController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static com.example.sgswimming.web.config.JsonDateMappingConfig.*;
+import static com.example.sgswimming.web.config.JsonDateMappingConfig.DATE_TIME_FORMAT;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;

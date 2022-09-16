@@ -1,19 +1,16 @@
 package com.example.sgswimming.web.controllers.api.v1;
 
 import com.example.sgswimming.model.exceptions.NotFoundException;
-import com.example.sgswimming.security.model.User;
 import com.example.sgswimming.security.perms.instructors.CreateInstructorPermission;
 import com.example.sgswimming.security.perms.instructors.ReadInstructorPermission;
 import com.example.sgswimming.security.perms.instructors.RemoveInstructorPermission;
 import com.example.sgswimming.security.perms.instructors.UpdateInstructorPermission;
+import com.example.sgswimming.services.InstructorService;
 import com.example.sgswimming.web.DTOs.InstructorFatDto;
 import com.example.sgswimming.web.DTOs.InstructorSkinnyDto;
-import com.example.sgswimming.services.InstructorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;

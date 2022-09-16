@@ -1,13 +1,13 @@
 package com.example.sgswimming.services;
 
-import com.example.sgswimming.web.DTOs.InstructorFatDto;
-import com.example.sgswimming.web.DTOs.InstructorSkinnyDto;
-import com.example.sgswimming.web.mappers.InstructorMapper;
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.model.exceptions.NotFoundException;
 import com.example.sgswimming.repositories.InstructorRepository;
 import com.example.sgswimming.repositories.LessonRepository;
+import com.example.sgswimming.web.DTOs.InstructorFatDto;
+import com.example.sgswimming.web.DTOs.InstructorSkinnyDto;
+import com.example.sgswimming.web.mappers.InstructorMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

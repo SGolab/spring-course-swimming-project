@@ -1,9 +1,9 @@
 package com.example.sgswimming.web.mappers;
 
-import com.example.sgswimming.web.DTOs.SwimmerFatDto;
-import com.example.sgswimming.web.DTOs.SwimmerSkinnyDto;
 import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.model.Swimmer;
+import com.example.sgswimming.web.DTOs.SwimmerFatDto;
+import com.example.sgswimming.web.DTOs.SwimmerSkinnyDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

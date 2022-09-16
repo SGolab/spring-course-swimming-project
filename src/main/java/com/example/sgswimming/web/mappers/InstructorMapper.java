@@ -1,17 +1,16 @@
 package com.example.sgswimming.web.mappers;
 
 
-import com.example.sgswimming.web.DTOs.InstructorFatDto;
-import com.example.sgswimming.web.DTOs.InstructorSkinnyDto;
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.Lesson;
+import com.example.sgswimming.web.DTOs.InstructorFatDto;
+import com.example.sgswimming.web.DTOs.InstructorSkinnyDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Entity;
 import java.util.List;
 import java.util.stream.Collectors;
 

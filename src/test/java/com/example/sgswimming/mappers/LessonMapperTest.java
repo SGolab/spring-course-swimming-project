@@ -1,10 +1,10 @@
 package com.example.sgswimming.mappers;
 
+import com.example.sgswimming.model.Instructor;
+import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.web.DTOs.LessonFatDto;
 import com.example.sgswimming.web.DTOs.LessonSkinnyDto;
 import com.example.sgswimming.web.config.JsonDateMappingConfig;
-import com.example.sgswimming.model.Instructor;
-import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.web.mappers.LessonMapper;
 import org.junit.jupiter.api.Test;
 
