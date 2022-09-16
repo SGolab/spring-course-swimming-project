@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Builder
 @Entity
+@Table(name = "users")
 public class User implements UserDetails, CredentialsContainer {
 
     @Id
