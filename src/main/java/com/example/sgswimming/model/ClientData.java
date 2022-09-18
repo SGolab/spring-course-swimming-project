@@ -21,65 +21,82 @@ public class ClientData {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    private User user; //todo make user final?
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @Builder.Default
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
             joinColumns = @JoinColumn(name = "client_data_id"),
             inverseJoinColumns = @JoinColumn(name = "swimmer_id"))
     private Set<Instructor> instructors = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @Builder.Default
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
             joinColumns = @JoinColumn(name = "client_data_id"),
             inverseJoinColumns = @JoinColumn(name = "swimmer_id"))
     private Set<Swimmer> swimmers = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @Builder.Default
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
             joinColumns = @JoinColumn(name = "client_data_id"),
             inverseJoinColumns = @JoinColumn(name = "lesson_id"))
     private Set<Lesson> lessons = new HashSet<>();
 
     @Transactional
-    public ClientData addSwimmer(Swimmer swimmer) {
-        if (swimmer != null) {
-            swimmers.add(swimmer);
-            Collection<Lesson> fetchedLessons = swimmer.getLessons();
-            lessons.addAll(fetchedLessons);
-            instructors.addAll(
-                    fetchedLessons
-                            .stream()
-                            .map(Lesson::getInstructor)
-                            .distinct()
-                            .collect(Collectors.toList()));
+    public void setSwimmers(Collection<Swimmer> swimmers) {
+        if (swimmers != null && !swimmers.isEmpty()) {
+
+            this.instructors.clear();
+            this.lessons.clear();
+            this.swimmers.clear();
+
+            List<Lesson> newLessons = swimmers
+                    .stream()
+                    .flatMap(swimmer -> swimmer.getLessons().stream())
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            List<Instructor> newInstructors = newLessons
+                    .stream()
+                    .map(Lesson::getInstructor)
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            swimmers.forEach(swimmer -> swimmer.addClientData(this));
+            newLessons.forEach(lesson -> lesson.addClientData(this));
+            newInstructors.forEach(instructor -> instructor.addClientData(this));
+
+            this.instructors.addAll(newInstructors);
+            this.lessons.addAll(newLessons);
+            this.swimmers.addAll(swimmers);
         }
-        return this;
     }
 
     @Transactional
-    public ClientData addLesson(Lesson lesson) {
-        if (lesson != null) {
-            lessons.add(lesson);
-            swimmers.addAll(lesson.getSwimmers());
-            instructors.add(lesson.getInstructor());
-        }
-        return this;
-    }
-
-    @Transactional
-    public ClientData addInstructor(Instructor instructor) {
+    public void setInstructor(Instructor instructor) {
         if (instructor != null) {
-            instructors.clear();
-            instructors.add(instructor);
-            lessons.addAll(instructor.getLessons());
-            swimmers.addAll(
-                    instructor.getLessons()
-                            .stream()
-                            .flatMap(lesson -> lesson.getSwimmers().stream())
-                            .distinct()
-                            .collect(Collectors.toList()));
+
+            this.instructors.clear();
+            this.lessons.clear();
+            this.swimmers.clear();
+
+            List<Lesson> newLessons = instructor.getLessons();
+            List<Swimmer> newSwimmers = instructor
+                    .getLessons()
+                    .stream()
+                    .flatMap(lesson -> lesson.getSwimmers().stream())
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            instructor.addClientData(this);
+            newLessons.forEach(lesson -> lesson.addClientData(this));
+            newSwimmers.forEach(swimmer -> swimmer.addClientData(this));
+
+            this.instructors.add(instructor);
+            this.lessons.addAll(newLessons);
+            this.swimmers.addAll(newSwimmers);
         }
-        return this;
     }
 }

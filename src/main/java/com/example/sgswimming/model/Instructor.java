@@ -7,7 +7,9 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -32,11 +34,14 @@ public class Instructor {
     @OneToMany(mappedBy = "instructor", fetch = FetchType.EAGER)
     private List<Lesson> lessons = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    @JoinColumn(name = "client_data_id")
-    private ClientData clientData;
+    @ManyToMany(mappedBy = "swimmers", fetch = FetchType.EAGER)
+    private Set<ClientData> clientDataSet = new HashSet<>();
 
     public void addLesson(Lesson lesson) {
         lessons.add(lesson);
+    }
+
+    public void addClientData(ClientData clientData) {
+        this.clientDataSet.add(clientData);
     }
 }

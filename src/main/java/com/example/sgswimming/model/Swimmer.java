@@ -1,10 +1,6 @@
 package com.example.sgswimming.model;
 
-import com.example.sgswimming.security.model.User;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -29,11 +25,7 @@ public class Swimmer {
     private List<Lesson> lessons = new ArrayList<>();
 
     @ManyToMany(mappedBy = "swimmers", fetch = FetchType.EAGER)
-    private Set<ClientData> clientData = new HashSet<>();
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User user;
+    private Set<ClientData> clientDataSet = new HashSet<>();
 
     @Builder
     public Swimmer(Long id, String firstName, String lastName) {
@@ -44,5 +36,9 @@ public class Swimmer {
 
     public void addLesson(Lesson lesson) {
         lessons.add(lesson);
+    }
+
+    public void addClientData(ClientData clientData) {
+        this.clientDataSet.add(clientData);
     }
 }
