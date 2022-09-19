@@ -19,7 +19,6 @@ public class ClientDataLogicTest {
 
         Instructor instructor = new Instructor();
         instructor.setLessons(List.of(lesson, new Lesson(), new Lesson()));
-        instructor.setClientDataSet(new HashSet<>(Set.of(oldClientData))); //has to be mutable
 
         ClientData newClientData = new ClientData();
         newClientData.setInstructor(instructor);
@@ -27,12 +26,6 @@ public class ClientDataLogicTest {
         assertFalse(newClientData.getInstructors().isEmpty());
         assertFalse(newClientData.getLessons().isEmpty());
         assertFalse(newClientData.getSwimmers().isEmpty());
-
-        assertEquals(2, instructor.getClientDataSet().size());
-        assertTrue(instructor.getClientDataSet().contains(newClientData));
-        assertTrue(instructor.getClientDataSet().contains(oldClientData));
-
-        assertTrue(instructor.getLessons().get(0).getClientDataSet().contains(newClientData));
     }
 
     @Test
@@ -44,7 +37,6 @@ public class ClientDataLogicTest {
 
         Swimmer swimmer = new Swimmer();
         swimmer.setLessons(List.of(lesson));
-        swimmer.setClientDataSet(new HashSet<>(Set.of(oldClientData))); //has to be mutable
 
         List<Swimmer> swimmers = List.of(
                 swimmer,
@@ -57,11 +49,5 @@ public class ClientDataLogicTest {
         assertFalse(newClientData.getInstructors().isEmpty());
         assertFalse(newClientData.getLessons().isEmpty());
         assertFalse(newClientData.getSwimmers().isEmpty());
-
-        assertEquals(2, swimmer.getClientDataSet().size());
-        assertTrue(swimmer.getClientDataSet().contains(newClientData));
-        assertTrue(swimmer.getClientDataSet().contains(oldClientData));
-
-        assertTrue(swimmer.getLessons().get(0).getInstructor().getClientDataSet().contains(newClientData));
     }
 }

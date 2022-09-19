@@ -46,11 +46,12 @@ public class ClientData {
 
     @Transactional
     public void setSwimmers(Collection<Swimmer> swimmers) {
-        if (swimmers != null && !swimmers.isEmpty()) {
 
-            this.instructors.clear();
-            this.lessons.clear();
-            this.swimmers.clear();
+        this.instructors.clear();
+        this.lessons.clear();
+        this.swimmers.clear();
+
+        if (swimmers != null && !swimmers.isEmpty()) {
 
             List<Lesson> newLessons = swimmers
                     .stream()
@@ -64,10 +65,6 @@ public class ClientData {
                     .distinct()
                     .collect(Collectors.toList());
 
-            swimmers.forEach(swimmer -> swimmer.addClientData(this));
-            newLessons.forEach(lesson -> lesson.addClientData(this));
-            newInstructors.forEach(instructor -> instructor.addClientData(this));
-
             this.instructors.addAll(newInstructors);
             this.lessons.addAll(newLessons);
             this.swimmers.addAll(swimmers);
@@ -76,12 +73,12 @@ public class ClientData {
 
     @Transactional
     public void setInstructor(Instructor instructor) {
+
+        this.instructors.clear();
+        this.lessons.clear();
+        this.swimmers.clear();
+
         if (instructor != null) {
-
-            this.instructors.clear();
-            this.lessons.clear();
-            this.swimmers.clear();
-
             List<Lesson> newLessons = instructor.getLessons();
             List<Swimmer> newSwimmers = instructor
                     .getLessons()
@@ -89,10 +86,6 @@ public class ClientData {
                     .flatMap(lesson -> lesson.getSwimmers().stream())
                     .distinct()
                     .collect(Collectors.toList());
-
-            instructor.addClientData(this);
-            newLessons.forEach(lesson -> lesson.addClientData(this));
-            newSwimmers.forEach(swimmer -> swimmer.addClientData(this));
 
             this.instructors.add(instructor);
             this.lessons.addAll(newLessons);

@@ -36,6 +36,9 @@ public class InstructorController {
         return instructorService.findAll();
     }
 
+    //todo instead of @AuthPrinciple user try to get user.clientData.
+    // This should allow standard controller tests to work
+    // (no user.getClientData which caused NPE)
     @ReadInstructorPermission
     @GetMapping("/{id}")
     public InstructorFatDto getInstructorById(@PathVariable Long id) {
