@@ -1,19 +1,15 @@
-package com.example.sgswimming.web.DTOs;
+package com.example.sgswimming.web.DTOs.save;
 
 import com.example.sgswimming.web.config.JsonDateMappingConfig;
-import lombok.*;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import java.util.List;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class LessonSkinnyDto {
-    private Long id;
+public class LessonSaveOrUpdateDto {
+    private Long id; //todo save dto should not have an id, update should
 
     @NotBlank
     @Length(max = 1000)
@@ -21,9 +17,4 @@ public class LessonSkinnyDto {
 
     @Pattern(regexp = JsonDateMappingConfig.DATE_TIME_FORMAT_REGEX)
     private String localDateTime;
-
-    private Long instructorId;
-
-    @Singular
-    private List<Long> swimmerIds;
 }

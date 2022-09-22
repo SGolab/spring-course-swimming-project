@@ -6,8 +6,8 @@ import com.example.sgswimming.security.perms.lessons.DeleteLessonPermission;
 import com.example.sgswimming.security.perms.lessons.ReadLessonPermission;
 import com.example.sgswimming.security.perms.lessons.UpdateLessonPermission;
 import com.example.sgswimming.services.LessonService;
-import com.example.sgswimming.web.DTOs.LessonFatDto;
-import com.example.sgswimming.web.DTOs.LessonSkinnyDto;
+import com.example.sgswimming.web.DTOs.read.LessonReadDto;
+import com.example.sgswimming.web.DTOs.save.LessonSaveOrUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -32,28 +32,28 @@ public class LessonController {
 
     @ReadLessonPermission
     @GetMapping("/")
-    public List<LessonFatDto> getAllLessons() {
+    public List<LessonReadDto> getAllLessons() {
         return lessonService.findAll();
     }
 
     @ReadLessonPermission
     @GetMapping("/{id}")
-    public LessonFatDto getLessonById(@PathVariable Long id) {
+    public LessonReadDto getLessonById(@PathVariable Long id) {
         return lessonService.findById(id);
     }
 
     @CreateLessonPermission
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/")
-    public LessonFatDto saveNewLesson(@Valid @RequestBody LessonSkinnyDto lessonDTO) {
-        return lessonService.saveOrUpdate(lessonDTO);
+    public LessonReadDto saveNewLesson(@Valid @RequestBody LessonSaveOrUpdateDto lessonDTO) {
+        return lessonService.save(lessonDTO);
     }
 
     @UpdateLessonPermission
     @PutMapping("/{id}")
-    public LessonFatDto processUpdateLesson(@PathVariable Long id, @Valid @RequestBody LessonSkinnyDto lessonDTO) {
+    public LessonReadDto processUpdateLesson(@PathVariable Long id, @Valid @RequestBody LessonSaveOrUpdateDto lessonDTO) {
         lessonDTO.setId(id);
-        return lessonService.saveOrUpdate(lessonDTO);
+        return lessonService.update(lessonDTO);
     }
 
     @DeleteLessonPermission

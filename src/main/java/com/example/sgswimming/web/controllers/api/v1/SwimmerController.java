@@ -6,8 +6,9 @@ import com.example.sgswimming.security.perms.swimmers.DeleteSwimmerPermission;
 import com.example.sgswimming.security.perms.swimmers.ReadSwimmerPermission;
 import com.example.sgswimming.security.perms.swimmers.UpdateSwimmerPermission;
 import com.example.sgswimming.services.SwimmerService;
-import com.example.sgswimming.web.DTOs.SwimmerFatDto;
-import com.example.sgswimming.web.DTOs.SwimmerSkinnyDto;
+import com.example.sgswimming.web.DTOs.read.SwimmerReadDto;
+import com.example.sgswimming.web.DTOs.save.SwimmerSaveDto;
+import com.example.sgswimming.web.DTOs.update.SwimmerUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -32,28 +33,28 @@ public class SwimmerController {
 
     @ReadSwimmerPermission
     @GetMapping("/")
-    public List<SwimmerFatDto> getAllSwimmers() {
+    public List<SwimmerReadDto> getAllSwimmers() {
         return swimmerService.findAll();
     }
 
     @ReadSwimmerPermission
     @GetMapping("/{id}")
-    public SwimmerFatDto getInstructorById(@PathVariable Long id) {
+    public SwimmerReadDto getInstructorById(@PathVariable Long id) {
         return swimmerService.findById(id);
     }
 
     @CreateSwimmerPermission
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/")
-    public SwimmerFatDto saveNewSwimmer(@Valid @RequestBody SwimmerSkinnyDto swimmerDTO) {
-        return swimmerService.saveOrUpdate(swimmerDTO);
+    public SwimmerReadDto saveNewSwimmer(@Valid @RequestBody SwimmerSaveDto swimmerDTO) {
+        return swimmerService.save(swimmerDTO);
     }
 
     @UpdateSwimmerPermission
     @PutMapping("/{id}")
-    public SwimmerFatDto processUpdateSwimmer(@PathVariable Long id, @Valid @RequestBody SwimmerSkinnyDto swimmerDTO) {
+    public SwimmerReadDto processUpdateSwimmer(@PathVariable Long id, @Valid @RequestBody SwimmerUpdateDto swimmerDTO) {
         swimmerDTO.setId(id);
-        return swimmerService.saveOrUpdate(swimmerDTO);
+        return swimmerService.update(swimmerDTO);
     }
 
     @DeleteSwimmerPermission

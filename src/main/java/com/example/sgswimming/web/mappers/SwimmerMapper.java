@@ -1,17 +1,12 @@
 package com.example.sgswimming.web.mappers;
 
-import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.model.Swimmer;
-import com.example.sgswimming.web.DTOs.SwimmerFatDto;
-import com.example.sgswimming.web.DTOs.SwimmerSkinnyDto;
+import com.example.sgswimming.web.DTOs.read.SwimmerReadDto;
+import com.example.sgswimming.web.DTOs.save.SwimmerSaveDto;
+import com.example.sgswimming.web.DTOs.update.SwimmerUpdateDto;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class SwimmerMapper {
@@ -28,46 +23,37 @@ public class SwimmerMapper {
         return INSTANCE;
     }
 
-    SwimmerMapper.Fat fatMapper = Mappers.getMapper(SwimmerMapper.Fat.class);
-    SwimmerMapper.Skinny skinnyMapper = Mappers.getMapper(SwimmerMapper.Skinny.class);
+    SwimmerMapper.Read readMapper = Mappers.getMapper(SwimmerMapper.Read.class);
+    SwimmerMapper.Save saveMapper = Mappers.getMapper(SwimmerMapper.Save.class);
+    SwimmerMapper.Update updateMapper = Mappers.getMapper(SwimmerMapper.Update.class);
 
-    public SwimmerFatDto toFatDto(Swimmer swimmer) {
-        return fatMapper.toFatDto(swimmer);
+    public SwimmerReadDto toReadDto(Swimmer swimmer) {
+        return readMapper.toReadDto(swimmer);
     }
 
-    public Swimmer fromFatToSwimmer(SwimmerFatDto dto) {
-        return fatMapper.fromFatToSwimmer(dto);
+    public Swimmer fromSaveDtoToSwimmer(SwimmerSaveDto dto) {
+        return saveMapper.fromSaveDtoToSwimmer(dto);
     }
 
-    public SwimmerSkinnyDto toSkinnyDto(Swimmer swimmer) {
-        return skinnyMapper.toDto(swimmer);
+    public Swimmer fromUpdateDtoToSwimmer(SwimmerUpdateDto dto) {
+        return updateMapper.fromUpdateDtoToSwimmer(dto);
     }
 
-    public Swimmer fromSkinnyToSwimmer(SwimmerSkinnyDto dto) {
-        return skinnyMapper.fromSkinnyToSwimmer(dto);
-    }
-
-    @Mapper(uses = LessonMapper.Skinny.class)
-    interface Fat {
-        SwimmerMapper.Fat INSTANCE = Mappers.getMapper(SwimmerMapper.Fat.class);
-
-        SwimmerFatDto toFatDto(Swimmer swimmer);
-        Swimmer fromFatToSwimmer(SwimmerFatDto dto);
+    @Mapper(uses = LessonMapper.Read.class)
+    interface Read {
+        SwimmerMapper.Read INSTANCE = Mappers.getMapper(SwimmerMapper.Read.class);
+        SwimmerReadDto toReadDto(Swimmer swimmer);
     }
 
     @Mapper
-    interface Skinny {
-        SwimmerMapper.Skinny INSTANCE = Mappers.getMapper(SwimmerMapper.Skinny.class);
+    interface Save {
+        SwimmerMapper.Save INSTANCE = Mappers.getMapper(SwimmerMapper.Save.class);
+        Swimmer fromSaveDtoToSwimmer(SwimmerSaveDto dto);
+    }
 
-        @Mapping(source = "lessons", target = "lessonIds", qualifiedByName = "lessonsToLessonIds")
-        SwimmerSkinnyDto toDto(Swimmer swimmer);
-        Swimmer fromSkinnyToSwimmer(SwimmerSkinnyDto dto);
-
-        @Named("lessonsToLessonIds")
-        static List<Long> lessonsToLessonIds(List<Lesson> lessons) {
-            return lessons.stream()
-                    .map(Lesson::getId)
-                    .collect(Collectors.toList());
-        }
+    @Mapper(uses = LessonMapper.SaveOrUpdate.class)
+    interface Update {
+        SwimmerMapper.Update INSTANCE = Mappers.getMapper(SwimmerMapper.Update.class);
+        Swimmer fromUpdateDtoToSwimmer(SwimmerUpdateDto dto);
     }
 }

@@ -1,25 +1,25 @@
 package com.example.sgswimming.services;
 
-import com.example.sgswimming.web.DTOs.InstructorFatDto;
-import com.example.sgswimming.web.DTOs.InstructorSkinnyDto;
+import com.example.sgswimming.model.ClientData;
+import com.example.sgswimming.web.DTOs.read.InstructorReadDto;
+import com.example.sgswimming.web.DTOs.save.InstructorSaveDto;
+import com.example.sgswimming.web.DTOs.update.InstructorUpdateDto;
 
 import java.util.List;
 
 public interface InstructorService {
 
-    List<InstructorFatDto> findAll();
+    List<InstructorReadDto> findAll();
 
-    List<InstructorFatDto> findAll(Long clientDataId);
+    List<InstructorReadDto> findAll(ClientData clientData);
 
-    InstructorFatDto findById(Long id);
+    InstructorReadDto findById(Long id);
 
-    InstructorFatDto findById(Long clientDataId, Long instructorId);
+    InstructorReadDto findById(ClientData clientData, Long id);
 
-    InstructorFatDto saveOrUpdate(InstructorSkinnyDto instructorDTO);
+    InstructorReadDto save(InstructorSaveDto dto);
 
-    InstructorFatDto saveOrUpdate(Long clientDataId, InstructorSkinnyDto instructorDTO);
+    InstructorReadDto update(InstructorUpdateDto dto);
 
     void deleteById(Long id);
-
-    void deleteById(Long clientDataId, Long id);
 }

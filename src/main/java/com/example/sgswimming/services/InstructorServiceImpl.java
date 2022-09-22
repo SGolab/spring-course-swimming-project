@@ -3,21 +3,20 @@ package com.example.sgswimming.services;
 import com.example.sgswimming.model.ClientData;
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.Lesson;
-import com.example.sgswimming.model.Swimmer;
 import com.example.sgswimming.model.exceptions.NotFoundException;
 import com.example.sgswimming.repositories.ClientDataRepository;
 import com.example.sgswimming.repositories.InstructorRepository;
 import com.example.sgswimming.repositories.LessonRepository;
 import com.example.sgswimming.repositories.SwimmerRepository;
-import com.example.sgswimming.web.DTOs.InstructorFatDto;
-import com.example.sgswimming.web.DTOs.InstructorSkinnyDto;
+import com.example.sgswimming.web.DTOs.read.InstructorReadDto;
+import com.example.sgswimming.web.DTOs.save.InstructorSaveDto;
+import com.example.sgswimming.web.DTOs.update.InstructorUpdateDto;
 import com.example.sgswimming.web.mappers.InstructorMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -33,116 +32,64 @@ public class InstructorServiceImpl implements InstructorService {
     private final InstructorMapper mapper = InstructorMapper.getInstance();
 
     @Override
-    public List<InstructorFatDto> findAll() {
-        return instructorRepository.findAll()
-                .stream()
-                .map(mapper::toFatDto)
-                .collect(Collectors.toList());
+    public List<InstructorReadDto> findAll() {
+        return instructorRepository.findAll().stream().map(mapper::toReadDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<InstructorFatDto> findAll(Long clientDataId) {
-
-        Optional<ClientData> clientDataOptional = clientDataRepository.findById(clientDataId);
-
-        if (clientDataOptional.isPresent()) {
-            return clientDataOptional.get()
-                    .getInstructors()
-                    .stream()
-                    .map(mapper::toFatDto)
-                    .collect(Collectors.toList());
-        } else {
-            return null;
-        }
+    public List<InstructorReadDto> findAll(ClientData clientData) {
+        return instructorRepository.findAllByClientDataSet(clientData)
+                .stream().map(mapper::toReadDto).collect(Collectors.toList());
     }
 
     @Override
-    public InstructorFatDto findById(Long instructorId) {
-        return mapper.toFatDto(instructorRepository.findById(instructorId)
-                .orElseThrow(() -> new NotFoundException(instructorId, Instructor.class)));
+    public InstructorReadDto findById(Long id) {
+        Instructor instructor = instructorRepository.findById(id).orElseThrow(() -> new NotFoundException(id, Instructor.class));
+        return mapper.toReadDto(instructor);
     }
 
     @Override
-    public InstructorFatDto findById(Long clientDataId, Long instructorId) {
-
-        Optional<ClientData> clientDataOptional = clientDataRepository.findById(clientDataId);
-
-        if (!clientDataOptional.isPresent()) return null;
-
-        Instructor foundInstructor = clientDataOptional.get()
-                .getInstructors()
-                .stream()
-                .filter(instructor -> instructor.getId().equals(instructorId))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException(instructorId, Instructor.class));
-
-        return mapper.toFatDto(foundInstructor);
+    public InstructorReadDto findById(ClientData clientData, Long id) {
+        Instructor instructor = instructorRepository.findByIdAndClientDataSet(id, clientData).orElseThrow(() -> new NotFoundException(id, Instructor.class));
+        return mapper.toReadDto(instructor);
     }
 
-    @Transactional
     @Override
-    public InstructorFatDto saveOrUpdate(InstructorSkinnyDto instructorDTO) {
-        Instructor savedInstructor = save(instructorDTO);
-        return mapper.toFatDto(savedInstructor);
+    public InstructorReadDto save(InstructorSaveDto dto) {
+        Instructor instructor = mapper.fromSaveDtoToInstructor(dto);
+        Instructor savedInstructor = instructorRepository.save(instructor);
+        return mapper.toReadDto(savedInstructor);
     }
 
-    @Transactional
     @Override
-    public InstructorFatDto saveOrUpdate(Long clientDataId, InstructorSkinnyDto instructorDTO) {
-        Instructor savedInstructor = save(instructorDTO);
+    public InstructorReadDto update(InstructorUpdateDto dto) {
 
-        ClientData clientData = clientDataRepository.findById(clientDataId)
-                .orElseThrow(() -> new NotFoundException(clientDataId, ClientData.class));
-        clientData.setInstructor(savedInstructor);
-        clientDataRepository.save(clientData);
-
-        return mapper.toFatDto(savedInstructor);
-    }
-
-    private Instructor save(InstructorSkinnyDto instructorDto) {
-
-        if (instructorDto.getId() != null) { //update
-            findById(instructorDto.getId()); //check if entity to update exists
+        if (dto.getId() == null) {
+            throw new IllegalArgumentException("InstructorUpdateDto has to contain an id value.");
         }
 
-        Instructor instructor = demapAndLoadEntities(instructorDto);
-        return instructorRepository.save(instructor);
+        instructorRepository.findById(dto.getId())
+                .orElseThrow(() -> new NotFoundException(dto.getId(), Instructor.class));
+
+        Instructor instructor = mapper.fromUpdateDtoToInstructor(dto);
+
+        if (!dto.getLessons().isEmpty()) {
+            List<Lesson> lessons = lessonRepository.findAllById(dto.getLessons());
+            lessons.forEach(lesson -> lesson.setInstructor(instructor));
+            instructor.setLessons(lessons);
+        }
+
+        Instructor savedInstructor = instructorRepository.save(instructor);
+        return mapper.toReadDto(savedInstructor);
     }
 
-    @Transactional
     @Override
     public void deleteById(Long id) {
-        Instructor instructor = instructorRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(id, Instructor.class));
 
-        instructor.getLessons().forEach(lesson -> lesson.setInstructor(null));
+        Set<Lesson> lessons = lessonRepository.findAllByInstructorId(id);
+        lessons.forEach(lesson -> lesson.setInstructor(null));
+        lessonRepository.saveAll(lessons);
+
         instructorRepository.deleteById(id);
-    }
-
-    @Transactional
-    @Override
-    public void deleteById(Long clientDataId, Long instructorId) {
-        deleteById(instructorId);
-
-        Optional<ClientData> clientDataOptional = clientDataRepository.findById(clientDataId);
-        if (!clientDataOptional.isPresent()) {
-            throw new NotFoundException(clientDataId, ClientData.class);
-        }
-        ClientData clientData = clientDataOptional.get();
-        clientData.setInstructor(null);
-    }
-
-    private Instructor demapAndLoadEntities(InstructorSkinnyDto instructorDTO) {
-        Instructor instructor = mapper.fromSkinnyToInstructor(instructorDTO);
-
-        instructorDTO.getLessonIds()
-                .stream()
-                .map((id) -> lessonRepository.findById(id).orElseThrow(() -> new NotFoundException(id, Lesson.class)))
-                .forEach((lesson) -> {
-                    lesson.setInstructor(instructor);
-                    instructor.addLesson(lesson);
-                });
-
-        return instructor;
     }
 }

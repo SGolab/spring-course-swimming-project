@@ -1,18 +1,12 @@
-package com.example.sgswimming.web.DTOs;
+package com.example.sgswimming.web.DTOs.save;
 
-import lombok.*;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
-import java.util.List;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class SwimmerSkinnyDto {
-
-    private Long id;
+public class SwimmerSaveDto {
 
     @NotBlank
     @Length(min = 3, max = 20)
@@ -21,7 +15,4 @@ public class SwimmerSkinnyDto {
     @NotBlank
     @Length(min = 3, max = 20)
     private String lastName;
-
-    @Singular
-    private List<Long> lessonIds;
 }

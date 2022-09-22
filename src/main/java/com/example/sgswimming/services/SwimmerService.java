@@ -1,17 +1,20 @@
 package com.example.sgswimming.services;
 
-import com.example.sgswimming.web.DTOs.SwimmerFatDto;
-import com.example.sgswimming.web.DTOs.SwimmerSkinnyDto;
+import com.example.sgswimming.web.DTOs.read.SwimmerReadDto;
+import com.example.sgswimming.web.DTOs.save.SwimmerSaveDto;
+import com.example.sgswimming.web.DTOs.update.SwimmerUpdateDto;
 
 import java.util.List;
 
 public interface SwimmerService {
 
-    List<SwimmerFatDto> findAll();
+    List<SwimmerReadDto> findAll();
 
-    SwimmerFatDto findById(Long id);
+    SwimmerReadDto findById(Long id);
 
-    SwimmerFatDto saveOrUpdate(SwimmerSkinnyDto swimmerDTO);
+    SwimmerReadDto save(SwimmerSaveDto swimmerDTO);
+
+    SwimmerReadDto update(SwimmerUpdateDto swimmerDTO);
 
     void deleteById(Long id);
 }

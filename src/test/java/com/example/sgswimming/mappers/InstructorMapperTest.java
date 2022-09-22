@@ -1,78 +1,81 @@
 package com.example.sgswimming.mappers;
 
 import com.example.sgswimming.model.Instructor;
-import com.example.sgswimming.web.DTOs.InstructorFatDto;
-import com.example.sgswimming.web.DTOs.InstructorSkinnyDto;
+import com.example.sgswimming.model.Lesson;
+import com.example.sgswimming.web.DTOs.read.InstructorReadDto;
+import com.example.sgswimming.web.DTOs.save.InstructorSaveDto;
+import com.example.sgswimming.web.DTOs.update.InstructorUpdateDto;
 import com.example.sgswimming.web.mappers.InstructorMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class InstructorMapperTest {
 
+    Long ID = 1L;
     String FIRST_NAME = "John";
     String LAST_NAME = "Kowalski";
 
     InstructorMapper mapper = InstructorMapper.getInstance();
 
-    @Test
-    void objectToDTO() {
-        Instructor instructor =
-                Instructor.builder()
-                        .firstName(FIRST_NAME)
-                        .lastName(LAST_NAME)
-                        .build();
+    Instructor instructor;
+    InstructorSaveDto instructorSaveDto;
+    InstructorUpdateDto instructorUpdateDto;
 
-        InstructorFatDto dto = mapper.toFatDto(instructor);
+    @BeforeEach
+    void setUp() {
+        instructor = new Instructor();
+        instructor.setId(1L);
+        instructor.setFirstName(FIRST_NAME);
+        instructor.setLastName(LAST_NAME);
 
-        assertEquals(FIRST_NAME, dto.getFirstName());
-        assertEquals(LAST_NAME, dto.getLastName());
-        assertNotNull(instructor.getLessons());
+        instructor.setLessons(List.of(
+                new Lesson(),
+                new Lesson(),
+                new Lesson()
+        ));
+
+        instructorSaveDto = new InstructorSaveDto();
+        instructorSaveDto.setFirstName(FIRST_NAME);
+        instructorSaveDto.setLastName(LAST_NAME);
+
+        instructorUpdateDto = new InstructorUpdateDto();
+        instructorUpdateDto.setId(1L);
+        instructorUpdateDto.setFirstName(FIRST_NAME);
+        instructorUpdateDto.setLastName(LAST_NAME);
+        instructorUpdateDto.setLessons(Set.of(1L, 2L, 3L));
     }
 
     @Test
-    void DTOtoObject() {
-        InstructorFatDto dto = InstructorFatDto
-                .builder()
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .build();
+    void toReadDto() {
+        InstructorReadDto instructorReadDto = mapper.toReadDto(instructor);
 
-        Instructor instructor = mapper.fromFatToInstructor(dto);
+        assertEquals(ID, instructorReadDto.getId());
+        assertEquals(FIRST_NAME, instructorReadDto.getFirstName());
+        assertEquals(LAST_NAME, instructorReadDto.getLastName());
+        assertFalse(instructorReadDto.getLessons().isEmpty());
+    }
+
+    @Test
+    void fromSaveDtoToInstructor() {
+        Instructor instructor = mapper.fromSaveDtoToInstructor(instructorSaveDto);
 
         assertEquals(FIRST_NAME, instructor.getFirstName());
         assertEquals(LAST_NAME, instructor.getLastName());
-        assertNotNull(instructor.getLessons());
+        assertTrue(instructor.getLessons().isEmpty());
     }
 
     @Test
-    void objectToSkinnyDTO() {
-        Instructor instructor =
-                Instructor.builder()
-                        .firstName(FIRST_NAME)
-                        .lastName(LAST_NAME)
-                        .build();
+    void fromUpdateDtoToInstructor() {
+        Instructor instructor = mapper.fromUpdateDtoToInstructor(instructorUpdateDto);
 
-        InstructorSkinnyDto dto = mapper.toSkinnyDto(instructor);
-
-        assertEquals(FIRST_NAME, dto.getFirstName());
-        assertEquals(LAST_NAME, dto.getLastName());
-        assertNotNull(dto.getLessonIds());
-    }
-
-    @Test
-    void skinnyDtoToObject() {
-        InstructorSkinnyDto dto =
-                InstructorSkinnyDto.builder()
-                        .firstName(FIRST_NAME)
-                        .lastName(LAST_NAME)
-                        .build();
-
-        Instructor instructor = mapper.fromSkinnyToInstructor(dto);
-
+        assertEquals(ID, instructor.getId());
         assertEquals(FIRST_NAME, instructor.getFirstName());
         assertEquals(LAST_NAME, instructor.getLastName());
-        assertNotNull(instructor.getLessons());
+        assertTrue(instructor.getLessons().isEmpty());
     }
 }

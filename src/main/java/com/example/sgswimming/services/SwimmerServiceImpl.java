@@ -5,8 +5,9 @@ import com.example.sgswimming.model.Swimmer;
 import com.example.sgswimming.model.exceptions.NotFoundException;
 import com.example.sgswimming.repositories.LessonRepository;
 import com.example.sgswimming.repositories.SwimmerRepository;
-import com.example.sgswimming.web.DTOs.SwimmerFatDto;
-import com.example.sgswimming.web.DTOs.SwimmerSkinnyDto;
+import com.example.sgswimming.web.DTOs.read.SwimmerReadDto;
+import com.example.sgswimming.web.DTOs.save.SwimmerSaveDto;
+import com.example.sgswimming.web.DTOs.update.SwimmerUpdateDto;
 import com.example.sgswimming.web.mappers.SwimmerMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,44 +25,27 @@ public class SwimmerServiceImpl implements SwimmerService {
     private final SwimmerMapper mapper = SwimmerMapper.getInstance();
 
     @Override
-    public List<SwimmerFatDto> findAll() {
-        return swimmerRepository
-                .findAll()
-                .stream()
-                .map(mapper::toFatDto)
-                .collect(Collectors.toList());
+    public List<SwimmerReadDto> findAll() {
+        return null;
     }
 
     @Override
-    public SwimmerFatDto findById(Long id) {
-        return mapper.toFatDto(swimmerRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(id, Swimmer.class)));
+    public SwimmerReadDto findById(Long id) {
+        return null;
     }
 
     @Override
-    public SwimmerFatDto saveOrUpdate(SwimmerSkinnyDto swimmerDTO) {
+    public SwimmerReadDto save(SwimmerSaveDto swimmerDTO) {
+        return null;
+    }
 
-        if (swimmerDTO.getId() != null) { //update
-            findById(swimmerDTO.getId()); //check if entity to update exists
-        }
-
-        Swimmer swimmer = mapper.fromSkinnyToSwimmer(swimmerDTO);
-
-        swimmerDTO.getLessonIds()
-                .stream()
-                .map((id) -> lessonRepository.findById(id).orElseThrow(() -> new NotFoundException(id, Lesson.class)))
-                .forEach((lesson -> {
-                    lesson.addSwimmer(swimmer);
-                    swimmer.addLesson(lesson);
-                }));
-
-        Swimmer savedSwimmer = swimmerRepository.save(swimmer);
-
-        return mapper.toFatDto(savedSwimmer);
+    @Override
+    public SwimmerReadDto update(SwimmerUpdateDto swimmerDTO) {
+        return null;
     }
 
     @Override
     public void deleteById(Long id) {
-        swimmerRepository.deleteById(id);
+
     }
 }

@@ -1,0 +1,34 @@
+package com.example.sgswimming.web.DTOs.read;
+
+import lombok.Data;
+
+import java.time.LocalDateTime;
+import java.util.Set;
+
+@Data
+public class LessonReadDto {
+
+    private Long id;
+    private String description;
+    private String localDateTime;
+
+    private Instructor instructor;
+    private String firstName;
+    private String lastName;
+
+    private Set<Swimmer> swimmers;
+
+    @Data
+    public static class Instructor {
+        private Long id;
+        private String firstName;
+        private String lastName;
+    }
+
+    @Data
+    public static class Swimmer {
+        private Long id;
+        private String firstName;
+        private String lastName;
+    }
+}

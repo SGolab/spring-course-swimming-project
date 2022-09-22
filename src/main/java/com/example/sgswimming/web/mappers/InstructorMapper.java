@@ -2,17 +2,12 @@ package com.example.sgswimming.web.mappers;
 
 
 import com.example.sgswimming.model.Instructor;
-import com.example.sgswimming.model.Lesson;
-import com.example.sgswimming.web.DTOs.InstructorFatDto;
-import com.example.sgswimming.web.DTOs.InstructorSkinnyDto;
+import com.example.sgswimming.web.DTOs.read.InstructorReadDto;
+import com.example.sgswimming.web.DTOs.save.InstructorSaveDto;
+import com.example.sgswimming.web.DTOs.update.InstructorUpdateDto;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class InstructorMapper {
@@ -29,48 +24,38 @@ public class InstructorMapper {
         return INSTANCE;
     }
 
-    InstructorMapper.Fat fatMapper = Mappers.getMapper(InstructorMapper.Fat.class);
-    InstructorMapper.Skinny skinnyMapper = Mappers.getMapper(InstructorMapper.Skinny.class);
+    InstructorMapper.Read readMapper = Mappers.getMapper(InstructorMapper.Read.class);
+    InstructorMapper.Save saveMapper = Mappers.getMapper(InstructorMapper.Save.class);
+    InstructorMapper.Update updateMapper = Mappers.getMapper(InstructorMapper.Update.class);
 
-    public InstructorFatDto toFatDto(Instructor instructor) {
-        return fatMapper.toFatDto(instructor);
+    public InstructorReadDto toReadDto(Instructor instructor) {
+        return readMapper.toReadDto(instructor);
     }
 
-    public Instructor fromFatToInstructor(InstructorFatDto dto) {
-        return fatMapper.fromFatToInstructor(dto);
+    public Instructor fromSaveDtoToInstructor(InstructorSaveDto dto) {
+        return saveMapper.fromSaveDtoToInstructor(dto);
     }
 
-    public InstructorSkinnyDto toSkinnyDto(Instructor instructor) {
-        return skinnyMapper.toSkinnyDto(instructor);
+    public Instructor fromUpdateDtoToInstructor(InstructorUpdateDto dto) {
+        return updateMapper.fromUpdateDtoToInstructor(dto);
     }
 
-    public Instructor fromSkinnyToInstructor(InstructorSkinnyDto dto) {
-        return skinnyMapper.fromSkinnyToInstructor(dto);
-    }
 
-    @Mapper(uses = LessonMapper.Skinny.class)
-    interface Fat {
-        InstructorMapper.Fat INSTANCE = Mappers.getMapper(InstructorMapper.Fat.class);
-
-        InstructorFatDto toFatDto(Instructor instructor);
-
-        Instructor fromFatToInstructor(InstructorFatDto dto);
+    @Mapper(uses = LessonMapper.Read.class)
+    interface Read {
+        InstructorMapper.Read INSTANCE = Mappers.getMapper(InstructorMapper.Read.class);
+        InstructorReadDto toReadDto(Instructor instructor);
     }
 
     @Mapper
-    interface Skinny {
-        InstructorMapper.Skinny INSTANCE = Mappers.getMapper(InstructorMapper.Skinny.class);
+    interface Save {
+        InstructorMapper.Save INSTANCE = Mappers.getMapper(InstructorMapper.Save.class);
+        Instructor fromSaveDtoToInstructor(InstructorSaveDto dto);
+    }
 
-        @Mapping(source = "lessons", target = "lessonIds", qualifiedByName = "lessonsToLessonIds")
-        InstructorSkinnyDto toSkinnyDto(Instructor instructor);
-
-        Instructor fromSkinnyToInstructor(InstructorSkinnyDto dto);
-
-        @Named("lessonsToLessonIds")
-        static List<Long> lessonsToLessonIds(List<Lesson> lessons) {
-            return lessons.stream()
-                    .map(Lesson::getId)
-                    .collect(Collectors.toList());
-        }
+    @Mapper(uses = LessonMapper.SaveOrUpdate.class)
+    interface Update {
+        InstructorMapper.Update INSTANCE = Mappers.getMapper(InstructorMapper.Update.class);
+        Instructor fromUpdateDtoToInstructor(InstructorUpdateDto dto);
     }
 }

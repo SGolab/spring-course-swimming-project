@@ -1,17 +1,17 @@
-package com.example.sgswimming.web.DTOs;
+package com.example.sgswimming.web.DTOs.update;
 
-import lombok.*;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
-import java.util.List;
+import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class InstructorSkinnyDto {
+public class SwimmerUpdateDto {
 
+    @NotNull
     private Long id;
 
     @NotBlank
@@ -22,6 +22,5 @@ public class InstructorSkinnyDto {
     @Length(min = 3, max = 20)
     private String lastName;
 
-    @Singular
-    private List<Long> lessonIds;
+    Set<Long> lessons = new HashSet<>();
 }

@@ -1,16 +1,23 @@
 package com.example.sgswimming.mappers;
 
 import com.example.sgswimming.model.Swimmer;
-import com.example.sgswimming.web.DTOs.SwimmerFatDto;
-import com.example.sgswimming.web.DTOs.SwimmerSkinnyDto;
+import com.example.sgswimming.model.Lesson;
+import com.example.sgswimming.web.DTOs.read.SwimmerReadDto;
+import com.example.sgswimming.web.DTOs.save.SwimmerSaveDto;
+import com.example.sgswimming.web.DTOs.update.SwimmerUpdateDto;
 import com.example.sgswimming.web.mappers.SwimmerMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SwimmerMapperTest {
 
+    Long ID = 1L;
     String FIRST_NAME = "John";
     String LAST_NAME = "Kowalski";
     Swimmer SWIMMER = Swimmer.builder()
@@ -20,51 +27,60 @@ public class SwimmerMapperTest {
 
     SwimmerMapper mapper = SwimmerMapper.getInstance();
 
-    @Test
-    void objectToDTO() {
-        SwimmerFatDto dto = mapper.toFatDto(SWIMMER);
+    Swimmer swimmer;
+    SwimmerSaveDto swimmerSaveDto;
+    SwimmerUpdateDto swimmerUpdateDto;
 
-        assertEquals(FIRST_NAME, dto.getFirstName());
-        assertEquals(LAST_NAME, dto.getLastName());
-        assertNotNull(dto.getLessons());
+    @BeforeEach
+    void setUp() {
+        swimmer = new Swimmer();
+        swimmer.setId(1L);
+        swimmer.setFirstName(FIRST_NAME);
+        swimmer.setLastName(LAST_NAME);
+
+        swimmer.setLessons(List.of(
+                new Lesson(),
+                new Lesson(),
+                new Lesson()
+        ));
+
+        swimmerSaveDto = new SwimmerSaveDto();
+        swimmerSaveDto.setFirstName(FIRST_NAME);
+        swimmerSaveDto.setLastName(LAST_NAME);
+
+        swimmerUpdateDto = new SwimmerUpdateDto();
+        swimmerUpdateDto.setId(1L);
+        swimmerUpdateDto.setFirstName(FIRST_NAME);
+        swimmerUpdateDto.setLastName(LAST_NAME);
+        swimmerUpdateDto.setLessons(Set.of(1L, 2L, 3L));
     }
 
     @Test
-    void DTOtoObject() {
-        SwimmerFatDto dto = SwimmerFatDto
-                .builder()
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .build();
+    void toReadDto() {
+        SwimmerReadDto swimmerReadDto = mapper.toReadDto(swimmer);
 
-        Swimmer swimmer = mapper.fromFatToSwimmer(dto);
-
-        assertEquals(swimmer.getFirstName(), dto.getFirstName());
-        assertEquals(swimmer.getLastName(), dto.getLastName());
-        assertNotNull(swimmer.getLessons());
+        assertEquals(ID, swimmerReadDto.getId());
+        assertEquals(FIRST_NAME, swimmerReadDto.getFirstName());
+        assertEquals(LAST_NAME, swimmerReadDto.getLastName());
+        assertFalse(swimmerReadDto.getLessons().isEmpty());
     }
 
     @Test
-    void objectToSkinnyDTO() {
-        SwimmerSkinnyDto dto = mapper.toSkinnyDto(SWIMMER);
+    void fromSaveDtoToSwimmer() {
+        Swimmer swimmer = mapper.fromSaveDtoToSwimmer(swimmerSaveDto);
 
-        assertEquals(FIRST_NAME, dto.getFirstName());
-        assertEquals(LAST_NAME, dto.getLastName());
-        assertNotNull(dto.getLessonIds());
+        assertEquals(FIRST_NAME, swimmer.getFirstName());
+        assertEquals(LAST_NAME, swimmer.getLastName());
+        assertTrue(swimmer.getLessons().isEmpty());
     }
 
     @Test
-    void skinnyDtoToObject() {
-        SwimmerSkinnyDto dto = SwimmerSkinnyDto
-                .builder()
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .build();
+    void fromUpdateDtoToSwimmer() {
+        Swimmer swimmer = mapper.fromUpdateDtoToSwimmer(swimmerUpdateDto);
 
-        Swimmer swimmer = mapper.fromSkinnyToSwimmer(dto);
-
-        assertEquals(swimmer.getFirstName(), dto.getFirstName());
-        assertEquals(swimmer.getLastName(), dto.getLastName());
-        assertNotNull(swimmer.getLessons());
+        assertEquals(ID, swimmer.getId());
+        assertEquals(FIRST_NAME, swimmer.getFirstName());
+        assertEquals(LAST_NAME, swimmer.getLastName());
+        assertTrue(swimmer.getLessons().isEmpty());
     }
 }

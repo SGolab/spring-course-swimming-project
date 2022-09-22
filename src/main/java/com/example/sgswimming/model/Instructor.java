@@ -26,8 +26,11 @@ public class Instructor {
         this.lastName = lastName;
     }
 
-    @OneToMany(mappedBy = "instructor", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "instructor", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<Lesson> lessons = new ArrayList<>();
+
+    @OneToMany
+    private Set<ClientData> clientDataSet = new HashSet<>();
 
     public void addLesson(Lesson lesson) {
         lessons.add(lesson);
@@ -36,5 +39,13 @@ public class Instructor {
     public void setLessons(List<Lesson> lessons) {
         this.lessons = lessons;
         lessons.forEach(lesson -> lesson.setInstructor(this));
+    }
+
+    public void addClientData(ClientData clientData) {
+        clientDataSet.add(clientData);
+    }
+
+    public void removeClientData(ClientData clientData) {
+        clientDataSet.remove(clientData);
     }
 }

@@ -24,7 +24,7 @@ import java.util.Set;
 import static com.example.sgswimming.bootstrap.BootstrapHelper.*;
 
 @RequiredArgsConstructor
-@Component
+//@Component
 public class Bootstrap implements CommandLineRunner {
 
     private final PasswordEncoder passwordEncoder;

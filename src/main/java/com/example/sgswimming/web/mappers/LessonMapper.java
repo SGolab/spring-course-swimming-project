@@ -1,22 +1,15 @@
 package com.example.sgswimming.web.mappers;
 
-import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.Lesson;
-import com.example.sgswimming.model.Swimmer;
-import com.example.sgswimming.web.DTOs.LessonFatDto;
-import com.example.sgswimming.web.DTOs.LessonSkinnyDto;
+import com.example.sgswimming.web.DTOs.read.LessonReadDto;
+import com.example.sgswimming.web.DTOs.save.LessonSaveOrUpdateDto;
 import com.example.sgswimming.web.config.JsonDateMappingConfig;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class LessonMapper {
@@ -33,63 +26,30 @@ public class LessonMapper {
         return INSTANCE;
     }
 
-    LessonMapper.Fat fatMapper = Mappers.getMapper(LessonMapper.Fat.class);
-    LessonMapper.Skinny skinnyMapper = Mappers.getMapper(LessonMapper.Skinny.class);
+    LessonMapper.Read readMapper = Mappers.getMapper(LessonMapper.Read.class);
+    SaveOrUpdate saveOrUpdateMapper = Mappers.getMapper(SaveOrUpdate.class);
 
-    public LessonFatDto toFatDto(Lesson lesson) {
-        return fatMapper.toFatDto(lesson);
+    public LessonReadDto toReadDto(Lesson lesson) {
+        return readMapper.toReadDto(lesson);
     }
 
-    public Lesson fromFatToLesson(LessonFatDto dto) {
-        return fatMapper.fromFatToLesson(dto);
+    public Lesson fromSaveOrUpdateDtoToLesson(LessonSaveOrUpdateDto dto) {
+        return saveOrUpdateMapper.fromUpdateDtoToLesson(dto);
     }
 
-    public LessonSkinnyDto toSkinnyDto(Lesson lesson) {
-        return skinnyMapper.toDto(lesson);
+    @Mapper(uses = {InstructorMapper.Read.class, SwimmerMapper.Read.class})
+    interface Read {
+        LessonMapper.Read INSTANCE = Mappers.getMapper(LessonMapper.Read.class);
+        LessonReadDto toReadDto(Lesson lesson);
     }
 
-    public Lesson fromSkinnyToLesson(LessonSkinnyDto dto) {
-        return skinnyMapper.fromSkinnyToLesson(dto);
-    }
+    @Mapper(uses = SaveOrUpdate.class)
+    interface SaveOrUpdate {
+        SaveOrUpdate INSTANCE = Mappers.getMapper(SaveOrUpdate.class);
+        Lesson fromUpdateDtoToLesson(LessonSaveOrUpdateDto dto);
 
-
-    @Mapper(uses = {InstructorMapper.Skinny.class, SwimmerMapper.Skinny.class})
-    interface Fat {
-        LessonMapper.Fat INSTANCE = Mappers.getMapper(LessonMapper.Fat.class);
-
-        LessonFatDto toFatDto(Lesson lesson);
-        Lesson fromFatToLesson(LessonFatDto dto);
-    }
-
-    @Mapper
-    interface Skinny {
-        LessonMapper.Skinny INSTANCE = Mappers.getMapper(LessonMapper.Skinny.class);
-
-        @Mappings({
-                @Mapping(source = "instructor", target = "instructorId", qualifiedByName = "instructorToId"),
-                @Mapping(source = "swimmers", target = "swimmerIds", qualifiedByName = "swimmersToSwimmerIds"),
-                @Mapping(target = "localDateTime", dateFormat = "HH:mm dd.MM.yyyy")
-        })
-        LessonSkinnyDto toDto(Lesson lesson);
-
-        @Mapping(target = "localDateTime", dateFormat = "HH:mm dd.MM.yyyy")
-        Lesson fromSkinnyToLesson(LessonSkinnyDto dto);
-
-        @Named("instructorToId")
-        static Long instructorToId(Instructor instructor) {
-            return instructor.getId();
-        }
-
-        @Named("swimmersToSwimmerIds")
-        static List<Long> swimmersToSwimmerIds(List<Swimmer> swimmers) {
-            return swimmers.stream()
-                    .map(Swimmer::getId)
-                    .collect(Collectors.toList());
-        }
-
-        @Named("localDateTimeToString")
-        static String localDateTimeToString(LocalDateTime localDateTime) {
-            return localDateTime.format(DateTimeFormatter.ofPattern(JsonDateMappingConfig.DATE_TIME_FORMAT));
+        static LocalDateTime map(String value) {
+            return LocalDateTime.parse(value, DateTimeFormatter.ofPattern(JsonDateMappingConfig.DATE_TIME_FORMAT));
         }
     }
 }

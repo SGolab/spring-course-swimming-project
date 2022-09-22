@@ -6,8 +6,9 @@ import com.example.sgswimming.security.perms.instructors.ReadInstructorPermissio
 import com.example.sgswimming.security.perms.instructors.RemoveInstructorPermission;
 import com.example.sgswimming.security.perms.instructors.UpdateInstructorPermission;
 import com.example.sgswimming.services.InstructorService;
-import com.example.sgswimming.web.DTOs.InstructorFatDto;
-import com.example.sgswimming.web.DTOs.InstructorSkinnyDto;
+import com.example.sgswimming.web.DTOs.read.InstructorReadDto;
+import com.example.sgswimming.web.DTOs.save.InstructorSaveDto;
+import com.example.sgswimming.web.DTOs.update.InstructorUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -32,31 +33,28 @@ public class InstructorController {
 
     @ReadInstructorPermission
     @GetMapping("/")
-    public List<InstructorFatDto> getAllInstructors() {
+    public List<InstructorReadDto> getAllInstructors() {
         return instructorService.findAll();
     }
 
-    //todo instead of @AuthPrinciple user try to get user.clientData.
-    // This should allow standard controller tests to work
-    // (no user.getClientData which caused NPE)
     @ReadInstructorPermission
     @GetMapping("/{id}")
-    public InstructorFatDto getInstructorById(@PathVariable Long id) {
+    public InstructorReadDto getInstructorById(@PathVariable Long id) {
         return instructorService.findById(id);
     }
 
     @CreateInstructorPermission
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/")
-    public InstructorFatDto saveNewInstructor(@Valid @RequestBody InstructorSkinnyDto instructorDTO) {
-        return instructorService.saveOrUpdate(instructorDTO);
+    public InstructorReadDto saveNewInstructor(@Valid @RequestBody InstructorSaveDto instructorDTO) {
+        return instructorService.save(instructorDTO);
     }
 
     @UpdateInstructorPermission
     @PutMapping("/{id}")
-    public InstructorFatDto updateInstructor(@PathVariable Long id, @Valid @RequestBody InstructorSkinnyDto instructorDTO) {
+    public InstructorReadDto updateInstructor(@PathVariable Long id, @Valid @RequestBody InstructorUpdateDto instructorDTO) {
         instructorDTO.setId(id);
-        return instructorService.saveOrUpdate(instructorDTO);
+        return instructorService.update(instructorDTO);
     }
 
     @RemoveInstructorPermission
