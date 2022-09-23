@@ -85,7 +85,6 @@ public class InstructorServiceImpl implements InstructorService {
 
     @Override
     public void deleteById(Long id) {
-
         Set<Lesson> lessons = lessonRepository.findAllByInstructorId(id);
         lessons.forEach(lesson -> lesson.setInstructor(null));
         lessonRepository.saveAll(lessons);

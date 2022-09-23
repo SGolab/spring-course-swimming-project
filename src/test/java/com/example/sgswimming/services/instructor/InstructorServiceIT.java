@@ -12,11 +12,13 @@ import com.example.sgswimming.services.InstructorServiceImpl;
 import com.example.sgswimming.web.DTOs.read.InstructorReadDto;
 import com.example.sgswimming.web.DTOs.save.InstructorSaveDto;
 import com.example.sgswimming.web.DTOs.update.InstructorUpdateDto;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
 public class InstructorServiceIT {
 
@@ -57,6 +60,7 @@ public class InstructorServiceIT {
 
     @Test
     void findAll() {
+
         //given
         Instructor instructor = new Instructor();
         instructor.setFirstName(FIRST_NAME);

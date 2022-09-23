@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@ToString(exclude = "lessons")
+@ToString(exclude = {"lessons", "clientDataSet"})
 @EqualsAndHashCode(exclude = "lessons")
 @Entity
 public class Swimmer {

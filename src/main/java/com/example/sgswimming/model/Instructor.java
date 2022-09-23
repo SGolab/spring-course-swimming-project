@@ -7,8 +7,8 @@ import java.util.*;
 
 @Data
 @NoArgsConstructor
-@ToString(exclude = "lessons")
-@EqualsAndHashCode(exclude = "lessons")
+@ToString(exclude = {"lessons", "clientDataSet"})
+@EqualsAndHashCode(exclude = {"lessons", "clientDataSet"})
 @Entity
 public class Instructor {
 

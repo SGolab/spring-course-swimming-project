@@ -10,15 +10,18 @@ import com.example.sgswimming.repositories.SwimmerRepository;
 import com.example.sgswimming.services.InstructorService;
 import com.example.sgswimming.services.InstructorServiceImpl;
 import com.example.sgswimming.web.DTOs.read.InstructorReadDto;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
 public class InstructorServiceMultiTenancyIT {
 
