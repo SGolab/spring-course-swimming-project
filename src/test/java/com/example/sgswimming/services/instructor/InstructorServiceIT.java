@@ -212,6 +212,6 @@ public class InstructorServiceIT {
         Optional<Instructor> instructorOptional = repository.findById(savedEntityId);
 
         assertFalse(instructorOptional.isPresent());
-        assertTrue(lessonRepository.findAllDistinctByInstructorId(savedEntityId).isEmpty());
+        assertTrue(lessonRepository.findAllByInstructorId(savedEntityId).isEmpty());
     }
 }

@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Set;
 
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
-    Set<Lesson> findAllDistinctByInstructorId(Long id);
+    Set<Lesson> findAllByInstructorId(Long id);
     Set<Lesson> findAllBySwimmersId(Long id);
 }
