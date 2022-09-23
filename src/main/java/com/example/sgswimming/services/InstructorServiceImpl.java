@@ -4,10 +4,8 @@ import com.example.sgswimming.model.ClientData;
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.model.exceptions.NotFoundException;
-import com.example.sgswimming.repositories.ClientDataRepository;
 import com.example.sgswimming.repositories.InstructorRepository;
 import com.example.sgswimming.repositories.LessonRepository;
-import com.example.sgswimming.repositories.SwimmerRepository;
 import com.example.sgswimming.web.DTOs.read.InstructorReadDto;
 import com.example.sgswimming.web.DTOs.save.InstructorSaveDto;
 import com.example.sgswimming.web.DTOs.update.InstructorUpdateDto;
@@ -23,11 +21,8 @@ import java.util.stream.Collectors;
 @Service
 public class InstructorServiceImpl implements InstructorService {
 
-    private final ClientDataRepository clientDataRepository;
-
     private final InstructorRepository instructorRepository;
     private final LessonRepository lessonRepository;
-    private final SwimmerRepository swimmerRepository;
 
     private final InstructorMapper mapper = InstructorMapper.getInstance();
 
@@ -85,7 +80,7 @@ public class InstructorServiceImpl implements InstructorService {
 
     @Override
     public void deleteById(Long id) {
-        Set<Lesson> lessons = lessonRepository.findAllByInstructorId(id);
+        Set<Lesson> lessons = lessonRepository.findAllDistinctByInstructorId(id);
         lessons.forEach(lesson -> lesson.setInstructor(null));
         lessonRepository.saveAll(lessons);
 

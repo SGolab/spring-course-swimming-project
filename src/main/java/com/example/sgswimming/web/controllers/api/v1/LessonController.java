@@ -7,9 +7,9 @@ import com.example.sgswimming.security.perms.lessons.ReadLessonPermission;
 import com.example.sgswimming.security.perms.lessons.UpdateLessonPermission;
 import com.example.sgswimming.services.LessonService;
 import com.example.sgswimming.web.DTOs.read.LessonReadDto;
-import com.example.sgswimming.web.DTOs.save.LessonSaveOrUpdateDto;
+import com.example.sgswimming.web.DTOs.save.LessonSaveDto;
+import com.example.sgswimming.web.DTOs.update.LessonUpdateDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -44,13 +44,13 @@ public class LessonController {
     @CreateLessonPermission
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/")
-    public LessonReadDto saveNewLesson(@Valid @RequestBody LessonSaveOrUpdateDto lessonDTO) {
+    public LessonReadDto saveNewLesson(@Valid @RequestBody LessonSaveDto lessonDTO) {
         return lessonService.save(lessonDTO);
     }
 
     @UpdateLessonPermission
     @PutMapping("/{id}")
-    public LessonReadDto processUpdateLesson(@PathVariable Long id, @Valid @RequestBody LessonSaveOrUpdateDto lessonDTO) {
+    public LessonReadDto processUpdateLesson(@PathVariable Long id, @Valid @RequestBody LessonUpdateDto lessonDTO) {
         lessonDTO.setId(id);
         return lessonService.update(lessonDTO);
     }

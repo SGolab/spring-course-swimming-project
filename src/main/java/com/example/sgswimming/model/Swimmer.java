@@ -11,7 +11,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @ToString(exclude = {"lessons", "clientDataSet"})
-@EqualsAndHashCode(exclude = "lessons")
+@EqualsAndHashCode(exclude = {"lessons", "clientDataSet"})
 @Entity
 public class Swimmer {
 
@@ -22,8 +22,11 @@ public class Swimmer {
     private String firstName;
     private String lastName;
 
-    @ManyToMany(mappedBy = "swimmers", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "swimmers", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<Lesson> lessons = new ArrayList<>();
+
+    @OneToMany
+    private Set<ClientData> clientDataSet = new HashSet<>();
 
     @Builder
     public Swimmer(Long id, String firstName, String lastName) {
@@ -34,5 +37,13 @@ public class Swimmer {
 
     public void addLesson(Lesson lesson) {
         lessons.add(lesson);
+    }
+
+    public void addClientData(ClientData clientData) {
+        clientDataSet.add(clientData);
+    }
+
+    public void removeClientData(ClientData clientData) {
+        clientDataSet.remove(clientData);
     }
 }

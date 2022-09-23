@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @ToString(exclude = {"instructor", "swimmers"})
 @EqualsAndHashCode(exclude = {"instructor", "swimmers"})
@@ -22,6 +24,7 @@ public class Lesson {
     @JoinColumn(name = "instructor_id")
     private Instructor instructor;
 
+    @Singular
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             joinColumns = @JoinColumn(name = "lesson_id"),

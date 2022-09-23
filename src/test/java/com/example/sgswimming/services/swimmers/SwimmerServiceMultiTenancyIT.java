@@ -1,16 +1,17 @@
-package com.example.sgswimming.services.instructor;
+package com.example.sgswimming.services.swimmers;
 
 import com.example.sgswimming.model.ClientData;
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.Lesson;
+import com.example.sgswimming.model.Swimmer;
 import com.example.sgswimming.repositories.ClientDataRepository;
 import com.example.sgswimming.repositories.InstructorRepository;
 import com.example.sgswimming.repositories.LessonRepository;
 import com.example.sgswimming.repositories.SwimmerRepository;
-import com.example.sgswimming.services.InstructorService;
-import com.example.sgswimming.services.InstructorServiceImpl;
+import com.example.sgswimming.services.SwimmerService;
+import com.example.sgswimming.services.SwimmerServiceImpl;
 import com.example.sgswimming.web.DTOs.read.InstructorReadDto;
-import org.junit.jupiter.api.AfterEach;
+import com.example.sgswimming.web.DTOs.read.SwimmerReadDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,15 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
-public class InstructorServiceMultiTenancyIT {
+public class SwimmerServiceMultiTenancyIT {
 
     @Autowired
-    InstructorRepository repository;
+    SwimmerRepository repository;
 
     @Autowired
     LessonRepository lessonRepository;
@@ -35,26 +37,25 @@ public class InstructorServiceMultiTenancyIT {
     ClientDataRepository clientDataRepository;
 
     @Autowired
-    SwimmerRepository swimmerRepository;
+    InstructorRepository instructorRepository;
 
-    InstructorService service;
+    SwimmerService service;
 
     @BeforeEach
     void setUp() {
-        service = new InstructorServiceImpl(
-                repository,
-                lessonRepository);
+        service = new SwimmerServiceImpl(repository, lessonRepository);
     }
 
     static final Long ID = 1L;
     static final String FIRST_NAME = "first name";
     static final String LAST_NAME = "last name";
 
-    private Instructor getSavedInstructor() {
-        Instructor instructor = new Instructor();
-        instructor.setFirstName(FIRST_NAME);
-        instructor.setLastName(LAST_NAME);
-        return repository.save(instructor);
+
+    private Swimmer getSavedSwimmer() {
+        Swimmer swimmer = new Swimmer();
+        swimmer.setFirstName(FIRST_NAME);
+        swimmer.setLastName(LAST_NAME);
+        return repository.save(swimmer);
     }
 
     private ClientData getSavedClientData() {
@@ -68,27 +69,27 @@ public class InstructorServiceMultiTenancyIT {
         List<Lesson> lessons = List.of(new Lesson());
         List<Lesson> savedLessons = lessonRepository.saveAll(lessons);
 
-        Instructor savedInstructor = getSavedInstructor();
-        ClientData savedClientData = getSavedClientData();
-        savedInstructor.setLessons(savedLessons);
-        for (Lesson lesson : savedLessons) lesson.setInstructor(savedInstructor);
-        savedInstructor = repository.save(savedInstructor);
+        Swimmer savedSwimmer = getSavedSwimmer();
+        savedSwimmer.setLessons(savedLessons);
+        for (Lesson lesson : savedLessons) lesson.addSwimmer(savedSwimmer);
+        savedSwimmer = repository.save(savedSwimmer);
 
-        savedClientData.setInstructor(savedInstructor);
-        savedInstructor.addClientData(savedClientData);
+        ClientData savedClientData = getSavedClientData();
+        savedClientData.addSwimmer(savedSwimmer);
+        savedSwimmer.addClientData(savedClientData);
         savedClientData = clientDataRepository.save(savedClientData);
 
-        Instructor anotherSavedInstructor = getSavedInstructor();
+        Swimmer anotherSavedSwimmer = getSavedSwimmer();
         ClientData anotherSavedClientData = getSavedClientData();
-        anotherSavedClientData.setInstructor(anotherSavedInstructor);
-        anotherSavedInstructor.addClientData(anotherSavedClientData);
+        anotherSavedClientData.addSwimmer(anotherSavedSwimmer);
+        anotherSavedSwimmer.addClientData(anotherSavedClientData);
         clientDataRepository.save(anotherSavedClientData);
 
         //do
-        List<InstructorReadDto> instructorReadDtoList = service.findAll(savedClientData);
+        List<SwimmerReadDto> swimmerReadDtoList = service.findAll(savedClientData);
 
         //test
-        assertEquals(1, instructorReadDtoList.size());
+        assertEquals(1, swimmerReadDtoList.size());
     }
 
     @Test
@@ -97,26 +98,26 @@ public class InstructorServiceMultiTenancyIT {
         List<Lesson> lessons = List.of(new Lesson());
         List<Lesson> savedLessons = lessonRepository.saveAll(lessons);
 
-        Instructor savedInstructor = getSavedInstructor();
-        ClientData savedClientData = getSavedClientData();
-        savedInstructor.setLessons(savedLessons);
-        for (Lesson lesson : savedLessons) lesson.setInstructor(savedInstructor);
-        savedInstructor = repository.save(savedInstructor);
+        Swimmer savedSwimmer = getSavedSwimmer();
+        savedSwimmer.setLessons(savedLessons);
+        for (Lesson lesson : savedLessons) lesson.addSwimmer(savedSwimmer);
+        savedSwimmer = repository.save(savedSwimmer);
 
-        savedClientData.setInstructor(savedInstructor);
-        savedInstructor.addClientData(savedClientData);
+        ClientData savedClientData = getSavedClientData();
+        savedClientData.addSwimmer(savedSwimmer);
+        savedSwimmer.addClientData(savedClientData);
         savedClientData = clientDataRepository.save(savedClientData);
 
-        Instructor anotherSavedInstructor = getSavedInstructor();
+        Swimmer anotherSavedSwimmer = getSavedSwimmer();
         ClientData anotherSavedClientData = getSavedClientData();
-        anotherSavedClientData.setInstructor(anotherSavedInstructor);
-        anotherSavedInstructor.addClientData(anotherSavedClientData);
+        anotherSavedClientData.addSwimmer(anotherSavedSwimmer);
+        anotherSavedSwimmer.addClientData(anotherSavedClientData);
         clientDataRepository.save(anotherSavedClientData);
 
         //do
-        InstructorReadDto instructorReadDto = service.findById(savedClientData, savedInstructor.getId());
+        SwimmerReadDto swimmerReadDto = service.findById(savedSwimmer.getId(), savedClientData);
 
         //test
-        assertNotNull(instructorReadDto);
+        assertNotNull(swimmerReadDto);
     }
 }

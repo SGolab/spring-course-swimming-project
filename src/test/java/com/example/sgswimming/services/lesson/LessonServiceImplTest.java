@@ -7,6 +7,7 @@
 //import com.example.sgswimming.repositories.InstructorRepository;
 //import com.example.sgswimming.repositories.LessonRepository;
 //import com.example.sgswimming.repositories.SwimmerRepository;
+//import com.example.sgswimming.web.DTOs.read.LessonReadDto;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //import org.mockito.InjectMocks;
@@ -44,7 +45,7 @@
 //    void findAll() {
 //        when(lessonRepository.findAll()).thenReturn(List.of(new Lesson(), new Lesson()));
 //
-//        List<LessonFatDto> Lessons = lessonService.findAll();
+//        List<LessonReadDto> Lessons = lessonService.findAll();
 //
 //        assertNotNull(Lessons);
 //        assertEquals(2, Lessons.size());
@@ -54,7 +55,7 @@
 //    void findById() {
 //        when(lessonRepository.findById(anyLong())).thenReturn(Optional.of(new Lesson()));
 //
-//        LessonFatDto lesson = lessonService.findById(1L);
+//        LessonReadDto lesson = lessonService.findById(1L);
 //
 //        assertNotNull(lesson);
 //    }
@@ -77,7 +78,7 @@
 //        when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(new Instructor()));
 //        when(swimmerRepository.findById(anyLong())).thenReturn(Optional.of(new Swimmer()));
 //
-//        LessonFatDto foundLesson = lessonService.saveOrUpdate(lessonDTO);
+//        LessonReadDto foundLesson = lessonService.saveOrUpdate(lessonDTO);
 //
 //        assertNotNull(foundLesson);
 //        verify(lessonRepository).save(any(Lesson.class));
@@ -98,7 +99,7 @@
 //        when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(new Instructor()));
 //        when(swimmerRepository.findById(anyLong())).thenReturn(Optional.of(new Swimmer()));
 //
-//        LessonFatDto foundLesson = lessonService.saveOrUpdate(lessonDTO);
+//        LessonReadDto foundLesson = lessonService.saveOrUpdate(lessonDTO);
 //
 //        assertNotNull(foundLesson);
 //        verify(lessonRepository).save(any(Lesson.class));
@@ -107,7 +108,7 @@
 //
 //    @Test
 //    void updateLessonNotFound() {
-//        LessonSkinnyDto lessonDTO = LessonSkinnyDto.builder().build();
+//        LessonUpda lessonDTO = LessonSkinnyDto.builder().build();
 //        lessonDTO.setInstructorId(1L);
 //        lessonDTO.setSwimmerIds(List.of(1L, 2L, 3L));
 //
@@ -115,7 +116,7 @@
 //        when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(new Instructor()));
 //        when(swimmerRepository.findById(anyLong())).thenReturn(Optional.of(new Swimmer()));
 //
-//        lessonService.saveOrUpdate(lessonDTO);
+//        lessonService.update(lessonDTO);
 //        assertThrows(NotFoundException.class, () -> lessonService.findById(1L));
 //    }
 //

@@ -4,7 +4,8 @@ import com.example.sgswimming.repositories.InstructorRepository;
 import com.example.sgswimming.repositories.LessonRepository;
 import com.example.sgswimming.repositories.SwimmerRepository;
 import com.example.sgswimming.web.DTOs.read.LessonReadDto;
-import com.example.sgswimming.web.DTOs.save.LessonSaveOrUpdateDto;
+import com.example.sgswimming.web.DTOs.save.LessonSaveDto;
+import com.example.sgswimming.web.DTOs.update.LessonUpdateDto;
 import com.example.sgswimming.web.mappers.LessonMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,6 @@ public class LessonServiceImpl implements LessonService {
 
     private final LessonMapper mapper = LessonMapper.getInstance();
 
-
     @Override
     public List<LessonReadDto> findAll() {
         return null;
@@ -33,12 +33,12 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public LessonReadDto save(LessonSaveOrUpdateDto swimmerDTO) {
+    public LessonReadDto save(LessonSaveDto swimmerDTO) {
         return null;
     }
 
     @Override
-    public LessonReadDto update(LessonSaveOrUpdateDto swimmerDTO) {
+    public LessonReadDto update(LessonUpdateDto swimmerDTO) {
         return null;
     }
 

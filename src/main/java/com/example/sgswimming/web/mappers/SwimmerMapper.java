@@ -51,7 +51,7 @@ public class SwimmerMapper {
         Swimmer fromSaveDtoToSwimmer(SwimmerSaveDto dto);
     }
 
-    @Mapper(uses = LessonMapper.SaveOrUpdate.class)
+    @Mapper(uses = LessonMapper.Update.class)
     interface Update {
         SwimmerMapper.Update INSTANCE = Mappers.getMapper(SwimmerMapper.Update.class);
         Swimmer fromUpdateDtoToSwimmer(SwimmerUpdateDto dto);

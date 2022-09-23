@@ -41,4 +41,8 @@ public class ClientData {
             joinColumns = @JoinColumn(name = "client_data_id"),
             inverseJoinColumns = @JoinColumn(name = "lesson_id"))
     private Set<Lesson> lessons = new HashSet<>();
+
+    public void addSwimmer(Swimmer swimmer) {
+        swimmers.add(swimmer);
+    }
 }

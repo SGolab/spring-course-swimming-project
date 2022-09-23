@@ -8,9 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @Data
-public class LessonSaveOrUpdateDto {
-    private Long id; //todo save dto should not have an id, update should
-
+public class LessonSaveDto {
     @NotBlank
     @Length(max = 1000)
     private String description;

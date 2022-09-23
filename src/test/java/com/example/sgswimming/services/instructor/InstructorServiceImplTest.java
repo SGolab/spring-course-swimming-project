@@ -25,13 +25,13 @@ import static org.mockito.Mockito.*;
 class InstructorServiceImplTest {
 
     @Mock
-    InstructorRepository instructorRepository;
+    InstructorRepository repository;
 
     @Mock
     LessonRepository lessonRepository;
 
     @InjectMocks
-    InstructorServiceImpl instructorService;
+    InstructorServiceImpl service;
 
     @BeforeEach
     void setUp() {
@@ -40,9 +40,9 @@ class InstructorServiceImplTest {
 
     @Test
     void findAll() {
-        when(instructorRepository.findAll()).thenReturn(List.of(new Instructor(), new Instructor()));
+        when(repository.findAll()).thenReturn(List.of(new Instructor(), new Instructor()));
 
-        List<InstructorReadDto> instructors = instructorService.findAll();
+        List<InstructorReadDto> instructors = service.findAll();
 
         assertNotNull(instructors);
         assertEquals(2, instructors.size());
@@ -50,19 +50,19 @@ class InstructorServiceImplTest {
 
     @Test
     void findById() {
-        when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(new Instructor()));
+        when(repository.findById(anyLong())).thenReturn(Optional.of(new Instructor()));
 
-        InstructorReadDto instructor = instructorService.findById(1L);
+        InstructorReadDto instructor = service.findById(1L);
 
         assertNotNull(instructor);
     }
 
     @Test()
     void findByIdNotFound() {
-        when(instructorRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(
                 NotFoundException.class,
-                () -> instructorService.findById(1L));
+                () -> service.findById(1L));
     }
 
     @Test
@@ -70,13 +70,13 @@ class InstructorServiceImplTest {
         InstructorSaveDto instructorDTO = new InstructorSaveDto();
         Instructor instructor = new Instructor();
 
-        when(instructorRepository.save(any())).thenReturn(instructor);
+        when(repository.save(any())).thenReturn(instructor);
 
-        InstructorReadDto foundInstructor = instructorService.save(instructorDTO);
+        InstructorReadDto foundInstructor = service.save(instructorDTO);
 
         assertNotNull(foundInstructor);
-        verify(instructorRepository).save(any(Instructor.class));
-        verify(instructorRepository, never()).findById(anyLong());
+        verify(repository).save(any(Instructor.class));
+        verify(repository, never()).findById(anyLong());
     }
 
     @Test
@@ -86,21 +86,21 @@ class InstructorServiceImplTest {
 
         Instructor instructor = new Instructor();
 
-        when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(instructor));
-        when(instructorRepository.save(any())).thenReturn(instructor);
+        when(repository.findById(anyLong())).thenReturn(Optional.of(instructor));
+        when(repository.save(any())).thenReturn(instructor);
 
-        InstructorReadDto foundInstructor = instructorService.update(instructorDTO);
+        InstructorReadDto foundInstructor = service.update(instructorDTO);
 
         assertNotNull(foundInstructor);
-        verify(instructorRepository).save(any(Instructor.class));
-        verify(instructorRepository).findById(anyLong());
+        verify(repository).save(any(Instructor.class));
+        verify(repository).findById(anyLong());
     }
 
     @Test
     void updateIllegalArgument() {
         InstructorUpdateDto instructorDTO = new InstructorUpdateDto();
 
-        assertThrows(IllegalArgumentException.class, () -> instructorService.update(instructorDTO));
+        assertThrows(IllegalArgumentException.class, () -> service.update(instructorDTO));
     }
 
     @Test
@@ -108,9 +108,9 @@ class InstructorServiceImplTest {
         InstructorUpdateDto instructorDTO = new InstructorUpdateDto();
         instructorDTO.setId(1L);
 
-        when(instructorRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> instructorService.update(instructorDTO));
+        assertThrows(NotFoundException.class, () -> service.update(instructorDTO));
     }
 
 
@@ -118,11 +118,11 @@ class InstructorServiceImplTest {
     void deleteById() {
         Long id = 1L;
 
-        when(instructorRepository.findById(anyLong())).thenReturn(Optional.of(new Instructor()));
+        when(repository.findById(anyLong())).thenReturn(Optional.of(new Instructor()));
 
-        instructorService.deleteById(id);
+        service.deleteById(id);
 
-        verify(instructorRepository).deleteById(anyLong());
+        verify(repository).deleteById(anyLong());
         verify(lessonRepository).saveAll(any());
     }
 }

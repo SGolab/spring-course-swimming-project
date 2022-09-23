@@ -4,7 +4,8 @@ import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.model.Swimmer;
 import com.example.sgswimming.web.DTOs.read.LessonReadDto;
-import com.example.sgswimming.web.DTOs.save.LessonSaveOrUpdateDto;
+import com.example.sgswimming.web.DTOs.save.LessonSaveDto;
+import com.example.sgswimming.web.DTOs.update.LessonUpdateDto;
 import com.example.sgswimming.web.config.JsonDateMappingConfig;
 import com.example.sgswimming.web.mappers.LessonMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +26,8 @@ public class LessonMapperTest {
     LessonMapper mapper = LessonMapper.getInstance();
 
     Lesson lesson;
-    LessonSaveOrUpdateDto lessonSaveOrUpdateDto;
+    LessonSaveDto lessonSaveDto;
+    LessonUpdateDto lessonUpdateDto;
 
     @BeforeEach
     void setUp() {
@@ -40,10 +41,14 @@ public class LessonMapperTest {
                 new Swimmer(),
                 new Swimmer()));
 
-        lessonSaveOrUpdateDto = new LessonSaveOrUpdateDto();
-        lessonSaveOrUpdateDto.setId(1L);
-        lessonSaveOrUpdateDto.setDescription(DESCRIPTION);
-        lessonSaveOrUpdateDto.setLocalDateTime(LOCAL_DATE_TIME_STRING);
+        lessonSaveDto = new LessonSaveDto();
+        lessonSaveDto.setDescription(DESCRIPTION);
+        lessonSaveDto.setLocalDateTime(LOCAL_DATE_TIME_STRING);
+
+        lessonUpdateDto = new LessonUpdateDto();
+        lessonUpdateDto.setId(1L);
+        lessonUpdateDto.setDescription(DESCRIPTION);
+        lessonUpdateDto.setLocalDateTime(LOCAL_DATE_TIME_STRING);
     }
 
     @Test
@@ -57,9 +62,21 @@ public class LessonMapperTest {
     }
 
     @Test
-    void fromSaveOrUpdateDtoToLesson() {
-        Lesson lesson = mapper.fromSaveOrUpdateDtoToLesson(lessonSaveOrUpdateDto);
+    void fromSaveDtoToLesson() {
+        Lesson lesson = mapper.fromSaveDtoToLesson(lessonSaveDto);
 
+        assertEquals(DESCRIPTION, lesson.getDescription());
+        assertNotNull(lesson.getLocalDateTime());
+
+        assertNull(lesson.getInstructor());
+        assertTrue(lesson.getSwimmers().isEmpty());
+    }
+
+    @Test
+    void fromUpdateDtoToLesson() {
+        Lesson lesson = mapper.fromUpdateDtoToLesson(lessonUpdateDto);
+
+        assertEquals(1L, lesson.getId());
         assertEquals(DESCRIPTION, lesson.getDescription());
         assertNotNull(lesson.getLocalDateTime());
 

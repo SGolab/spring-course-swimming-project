@@ -53,7 +53,7 @@ public class InstructorMapper {
         Instructor fromSaveDtoToInstructor(InstructorSaveDto dto);
     }
 
-    @Mapper(uses = LessonMapper.SaveOrUpdate.class)
+    @Mapper(uses = LessonMapper.Update.class)
     interface Update {
         InstructorMapper.Update INSTANCE = Mappers.getMapper(InstructorMapper.Update.class);
         Instructor fromUpdateDtoToInstructor(InstructorUpdateDto dto);
