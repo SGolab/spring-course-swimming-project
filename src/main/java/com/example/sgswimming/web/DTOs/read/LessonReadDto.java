@@ -2,7 +2,6 @@ package com.example.sgswimming.web.DTOs.read;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -13,9 +12,6 @@ public class LessonReadDto {
     private String localDateTime;
 
     private Instructor instructor;
-    private String firstName;
-    private String lastName;
-
     private Set<Swimmer> swimmers;
 
     @Data
