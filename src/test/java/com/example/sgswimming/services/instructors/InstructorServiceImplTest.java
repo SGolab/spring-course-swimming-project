@@ -1,4 +1,4 @@
-package com.example.sgswimming.services.instructor;
+package com.example.sgswimming.services.instructors;
 
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.exceptions.NotFoundException;
