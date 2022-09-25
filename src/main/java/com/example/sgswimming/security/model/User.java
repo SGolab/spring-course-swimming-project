@@ -28,7 +28,7 @@ public class User implements UserDetails, CredentialsContainer {
     private String username;
     private String password;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private ClientData clientData;
 
     @Singular

@@ -34,21 +34,21 @@ public abstract class BootstrapHelper {
         return result;
     }
 
-    private static Instructor createInstructor() {
+    static Instructor createInstructor() {
         return Instructor.builder()
                 .firstName(getRandomName())
                 .lastName(getRandomName())
                 .build();
     }
 
-    private static Lesson createLesson() {
+    static Lesson createLesson() {
         return Lesson.builder()
                 .localDateTime(LocalDate.ofEpochDay(ThreadLocalRandom.current().nextInt(365 * 50, 365 * 53)).atStartOfDay())
                 .description("lesson's description")
                 .build();
     }
 
-    private static Swimmer createSwimmer() {
+    static Swimmer createSwimmer() {
         return Swimmer.builder()
                 .firstName(getRandomName())
                 .lastName(getRandomName())

@@ -1,8 +1,10 @@
 package com.example.sgswimming.bootstrap;
 
+import com.example.sgswimming.model.ClientData;
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.model.Swimmer;
+import com.example.sgswimming.repositories.ClientDataRepository;
 import com.example.sgswimming.repositories.InstructorRepository;
 import com.example.sgswimming.repositories.LessonRepository;
 import com.example.sgswimming.repositories.SwimmerRepository;
@@ -17,17 +19,17 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.example.sgswimming.bootstrap.BootstrapHelper.*;
 
 @RequiredArgsConstructor
-//@Component
+@Component
 public class Bootstrap implements CommandLineRunner {
 
     private final PasswordEncoder passwordEncoder;
+
+    private final ClientDataRepository clientDataRepository;
 
     private final InstructorRepository instructorRepository;
     private final LessonRepository lessonRepository;
@@ -47,7 +49,57 @@ public class Bootstrap implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         loadUserData();
+        loadClientData();
         loadModelData();
+    }
+
+    private void loadClientData() {
+        User employee = userRepository.findByUsername("employee").get();
+        ClientData clientData = new ClientData();
+        clientData.setFirstName("employee");
+        clientData.setLastName("employee");
+        ClientData savedClientData = clientDataRepository.save(clientData);
+        savedClientData.setUser(employee);
+        employee.setClientData(savedClientData);
+        userRepository.save(employee);
+
+
+        User customer = userRepository.findByUsername("customer").get();
+        ClientData clientData1 = new ClientData();
+        clientData1.setFirstName("customer");
+        clientData1.setLastName("customer");
+        ClientData savedClientData1 = clientDataRepository.save(clientData1);
+        savedClientData1.setUser(employee);
+        customer.setClientData(savedClientData1);
+        userRepository.save(customer);
+    }
+
+    private void loadModelData() {
+
+        List<Lesson> lessons = lessonRepository.saveAll(List.of(createLesson(), createLesson(), createLesson()));
+
+
+        ClientData instructorClientData = clientDataRepository.findByFirstName("employee");
+        Instructor instructor = instructorRepository.save(createInstructor());
+        instructor.setLessons(lessons);
+        lessons.forEach(l -> l.setInstructor(instructor));
+        instructorClientData.setInstructor(instructor);
+        instructor.addClientData(instructorClientData);
+        clientDataRepository.save(instructorClientData);
+
+
+        ClientData customerClientData = clientDataRepository.findByFirstName("customer");
+        List<Swimmer> swimmers = swimmerRepository.saveAll(List.of(createSwimmer(), createSwimmer(), createSwimmer()));
+        swimmers.forEach(s -> s.setLessons(lessons));
+        lessons.forEach(l -> l.setSwimmers(swimmers));
+        customerClientData.setSwimmers(new HashSet<>(swimmers));
+        swimmers.forEach(s -> s.addClientData(customerClientData));
+        clientDataRepository.save(customerClientData);
+
+
+        System.out.printf(
+                "Loaded bootstrap data.\ninstructor count: %d\nlesson count: %d\nswimmer count: %d\n",
+                instructorRepository.count(), lessonRepository.count(), swimmerRepository.count());
     }
 
     private void loadUserData() {
@@ -152,42 +204,5 @@ public class Bootstrap implements CommandLineRunner {
         userRepository.save(admin);
         userRepository.save(employee);
         userRepository.save(customer);
-    }
-
-    private void loadModelData() {
-        Set<Swimmer> swimmerSet = createSwimmerSet(SWIMMER_AMOUNT);
-        Set<Instructor> instructorSet = createInstructorSet(INSTRUCTOR_AMOUNT);
-        Set<Lesson> lessonsSet = createLessonSet(LESSON_AMOUNT);
-
-        bind(swimmerSet, instructorSet, lessonsSet);
-
-        swimmerRepository.saveAll(swimmerSet);
-        instructorRepository.saveAll(instructorSet);
-        lessonRepository.saveAll(lessonsSet);
-
-        System.out.printf(
-                "Loaded bootstrap data.\ninstructor count: %d\nlesson count: %d\nswimmer count: %d\n",
-                instructorRepository.count(), lessonRepository.count(), swimmerRepository.count());
-    }
-
-    private void bind(Set<Swimmer> swimmerSet, Set<Instructor> instructorSet, Set<Lesson> lessonsSet) {
-
-        Iterator<Lesson> iterator = new CircularIterator<>(lessonsSet);
-
-        swimmerSet.forEach(swimmer -> { //binding lessons to swimmers
-            for (int i = 0; i < LESSON_PER_SWIMMER; i++) {
-                Lesson lesson = iterator.next();
-                swimmer.addLesson(lesson);
-                lesson.addSwimmer(swimmer);
-            }
-        });
-
-        instructorSet.forEach(instructor -> { //binding lessons to instructors
-            for (int i = 0; i < LESSONS_PER_INSTRUCTOR; i++) {
-                Lesson lesson = iterator.next();
-                instructor.addLesson(lesson);
-                lesson.setInstructor(instructor);
-            }
-        });
     }
 }

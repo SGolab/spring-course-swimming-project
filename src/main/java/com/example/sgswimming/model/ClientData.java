@@ -24,8 +24,11 @@ public class ClientData {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user; //todo make user final?
 
+    private String firstName;
+    private String lastName;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    @JoinColumn(referencedColumnName = "id")
+    @JoinColumn(name = "client_data_id", referencedColumnName = "id")
     private Instructor instructor;
 
     @Builder.Default
@@ -34,13 +37,6 @@ public class ClientData {
             joinColumns = @JoinColumn(name = "client_data_id"),
             inverseJoinColumns = @JoinColumn(name = "swimmer_id"))
     private Set<Swimmer> swimmers = new HashSet<>();
-
-    @Builder.Default
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    @JoinTable(
-            joinColumns = @JoinColumn(name = "client_data_id"),
-            inverseJoinColumns = @JoinColumn(name = "lesson_id"))
-    private Set<Lesson> lessons = new HashSet<>();
 
     public void addSwimmer(Swimmer swimmer) {
         swimmers.add(swimmer);
