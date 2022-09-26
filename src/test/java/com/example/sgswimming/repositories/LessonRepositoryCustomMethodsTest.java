@@ -14,7 +14,6 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
 class LessonRepositoryCustomMethodsTest {
 
@@ -60,7 +59,6 @@ class LessonRepositoryCustomMethodsTest {
 
         Set<Lesson> foundLessons = lessonRepository.findAllByInstructorId(savedInstructor.getId());
 
-        assertEquals(2L, lessonRepository.findAll().size());
         assertEquals(1L, foundLessons.size());
     }
 
@@ -94,7 +92,6 @@ class LessonRepositoryCustomMethodsTest {
 
         Set<Lesson> foundLessons = lessonRepository.findAllBySwimmersId(savedSwimmer.getId());
 
-        assertEquals(2L, lessonRepository.findAll().size());
         assertEquals(1L, foundLessons.size());
     }
 }

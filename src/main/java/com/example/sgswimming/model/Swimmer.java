@@ -25,7 +25,7 @@ public class Swimmer {
     @ManyToMany(mappedBy = "swimmers", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<Lesson> lessons = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "swimmers")
+    @ManyToMany(mappedBy = "swimmers", fetch = FetchType.EAGER)
     private Set<ClientData> clientDataSet = new HashSet<>();
 
     @Builder
