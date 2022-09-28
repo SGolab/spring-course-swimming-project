@@ -39,13 +39,6 @@ public class Bootstrap implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final AuthorityRepository authorityRepository;
 
-    private final int SWIMMER_AMOUNT = 12;
-    private final int INSTRUCTOR_AMOUNT = 3;
-    private final int LESSON_AMOUNT = 9;
-
-    private final int LESSON_PER_SWIMMER = 3; //(SWIMMER_AMOUNT / LESSON_PER_SWIMMER) swimmer per lesson
-    private final int LESSONS_PER_INSTRUCTOR = 3; //one instructor per lesson
-
     @Override
     public void run(String... args) throws Exception {
         loadUserData();
@@ -95,6 +88,19 @@ public class Bootstrap implements CommandLineRunner {
         customerClientData.setSwimmers(new HashSet<>(swimmers));
         swimmers.forEach(s -> s.addClientData(customerClientData));
         clientDataRepository.save(customerClientData);
+
+
+        for (int i = 0; i < 5; i++) {
+            lessonRepository.save(createLesson());
+        }
+
+        for (int i = 0; i < 3; i++) {
+            instructorRepository.save(createInstructor());
+        }
+
+        for (int i = 0; i < 10; i++) {
+            swimmerRepository.save(createSwimmer());
+        }
 
 
         System.out.printf(
