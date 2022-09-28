@@ -107,7 +107,7 @@ public class SwimmerServiceIT {
     @Test
     void update() {
         //given
-        List<Lesson> lessons = List.of(Lesson.builder().swimmer(null).build());
+        List<Lesson> lessons = List.of(new Lesson());
         List<Lesson> savedLessons = lessonRepository.saveAll(lessons);
 
         Set<Long> ids = savedLessons
