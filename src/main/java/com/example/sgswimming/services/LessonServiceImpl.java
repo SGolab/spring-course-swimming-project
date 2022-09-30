@@ -1,5 +1,6 @@
 package com.example.sgswimming.services;
 
+import com.example.sgswimming.model.ClientData;
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.model.Swimmer;
@@ -14,8 +15,7 @@ import com.example.sgswimming.web.mappers.LessonMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -34,9 +34,46 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
+    public List<LessonReadDto> findAll(ClientData clientData) {
+
+        Set<Lesson> lessons = new HashSet<>();
+
+        if (clientData.getInstructor() != null) {
+            lessons.addAll(lessonRepository.findAllByInstructor(clientData.getInstructor()));
+        } else if (clientData.getSwimmers() != null) {
+            clientData.getSwimmers().forEach(swimmer -> lessons.addAll(lessonRepository.findAllBySwimmers(swimmer)));
+        } else {
+            throw new IllegalArgumentException("User needs to have instructor or swimmers field declared.");
+        }
+
+        return lessons.stream().map(mapper::toReadDto).collect(Collectors.toList());
+    }
+
+    @Override
     public LessonReadDto findById(Long id) {
         Lesson lesson = lessonRepository.findById(id).orElseThrow(() -> new NotFoundException(id, Instructor.class));
         return mapper.toReadDto(lesson);
+    }
+
+    @Override
+    public LessonReadDto findById(ClientData clientData, Long id) {
+        Optional<Lesson> lesson;
+
+        if (clientData.getInstructor() != null) {
+            lesson = lessonRepository.findByIdAndInstructor(id, clientData.getInstructor());
+        } else if (clientData.getSwimmers() != null) {
+            lesson = clientData
+                    .getSwimmers()
+                    .stream()
+                    .map(swimmer -> lessonRepository.findByIdAndSwimmers(id, swimmer))
+                    .filter(Optional::isPresent)
+                    .findFirst()
+                    .orElse(Optional.empty());
+        } else {
+            throw new IllegalArgumentException("User needs to have instructor or swimmers field declared.");
+        }
+
+        return mapper.toReadDto(lesson.orElseThrow(() -> new NotFoundException(id, Lesson.class)));
     }
 
     @Override
@@ -62,9 +99,9 @@ public class LessonServiceImpl implements LessonService {
         Lesson lesson = lessonRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(id, Instructor.class));
 
-        Set<Instructor> instructors = instructorRepository.findAllByLessonsId(id);
+        Set<Instructor> instructors = instructorRepository.findAllByLessons(lesson);
         instructors.forEach(instructor -> {
-            List<Lesson> lessons = instructor.getLessons();
+            Set<Lesson> lessons = instructor.getLessons();
             lessons.remove(lesson);
             instructor.setLessons(lessons);
         });
@@ -72,7 +109,7 @@ public class LessonServiceImpl implements LessonService {
 
         Set<Swimmer> swimmers = swimmerRepository.findAllByLessonsId(id);
         swimmers.forEach(swimmer -> {
-            List<Lesson> lessons = swimmer.getLessons();
+            Set<Lesson> lessons = swimmer.getLessons();
             lessons.remove(lesson);
             swimmer.setLessons(lessons);
         });

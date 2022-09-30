@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -37,7 +38,7 @@ class LessonRepositoryCustomMethodsTest {
         Instructor savedInstructor = instructorRepository.save(instructor);
 
         List<Lesson> lessons = List.of(new Lesson());
-        List<Lesson> savedLessons = lessonRepository.saveAll(lessons);
+        Set<Lesson> savedLessons = new HashSet<>(lessonRepository.saveAll(lessons));
 
         savedInstructor.setLessons(savedLessons);
         savedLessons.forEach(lesson -> lesson.setInstructor(instructor));
@@ -50,7 +51,7 @@ class LessonRepositoryCustomMethodsTest {
         Instructor anotherSavedInstructor = instructorRepository.save(anotherInstructor);
 
         List<Lesson> anotherLessons = List.of(new Lesson());
-        List<Lesson> anotherSavedLessons = lessonRepository.saveAll(anotherLessons);
+        Set<Lesson> anotherSavedLessons = new HashSet<>(lessonRepository.saveAll(anotherLessons));
 
 
         anotherSavedInstructor.setLessons(anotherSavedLessons);
@@ -70,7 +71,7 @@ class LessonRepositoryCustomMethodsTest {
         Swimmer savedSwimmer = swimmerRepository.save(swimmer);
 
         List<Lesson> lessons = List.of(new Lesson());
-        List<Lesson> savedLessons = lessonRepository.saveAll(lessons);
+        Set<Lesson> savedLessons = new HashSet<>(lessonRepository.saveAll(lessons));
 
         savedSwimmer.setLessons(savedLessons);
         savedLessons.forEach(lesson -> lesson.addSwimmer(swimmer));
@@ -83,7 +84,7 @@ class LessonRepositoryCustomMethodsTest {
         Swimmer anotherSavedSwimmer = swimmerRepository.save(anotherSwimmer);
 
         List<Lesson> anotherLessons = List.of(new Lesson());
-        List<Lesson> anotherSavedLessons = lessonRepository.saveAll(anotherLessons);
+        Set<Lesson> anotherSavedLessons = new HashSet<>(lessonRepository.saveAll(anotherLessons));
 
         anotherSavedSwimmer.setLessons(anotherSavedLessons);
         anotherSavedLessons.forEach(lesson -> lesson.addSwimmer(anotherSavedSwimmer));

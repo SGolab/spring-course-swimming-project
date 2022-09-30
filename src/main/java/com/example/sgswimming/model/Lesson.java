@@ -7,6 +7,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@NamedEntityGraph(
+        name = "lesson.dto.read",
+        attributeNodes = {
+                @NamedAttributeNode("instructor"),
+                @NamedAttributeNode("swimmers"),
+        })
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -24,7 +31,7 @@ public class Lesson {
     @JoinColumn(name = "instructor_id")
     private Instructor instructor;
 
-    @Singular
+    @Builder.Default
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             joinColumns = @JoinColumn(name = "lesson_id"),
@@ -35,15 +42,10 @@ public class Lesson {
 
     private LocalDateTime localDateTime;
 
-    @Builder
-    public Lesson(Long id, Instructor instructor, String description, LocalDateTime localDateTime) {
-        this.id = id;
-        this.instructor = instructor;
-        this.description = description;
-        this.localDateTime = localDateTime;
-    }
-
     public void addSwimmer(Swimmer swimmer) {
+        if (swimmers == null) {
+            swimmers = new ArrayList<>();
+        }
         swimmers.add(swimmer);
     }
 }

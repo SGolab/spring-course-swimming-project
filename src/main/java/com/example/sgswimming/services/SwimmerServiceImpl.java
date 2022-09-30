@@ -16,6 +16,7 @@ import com.example.sgswimming.web.mappers.SwimmerMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -71,7 +72,7 @@ public class SwimmerServiceImpl implements SwimmerService {
         Swimmer swimmer = mapper.fromUpdateDtoToSwimmer(swimmerDTO);
 
         if (!swimmerDTO.getLessons().isEmpty()) {
-            List<Lesson> lessons = lessonRepository.findAllById(swimmerDTO.getLessons());
+            Set<Lesson> lessons = new HashSet<>(lessonRepository.findAllById(swimmerDTO.getLessons()));
             lessons.forEach(lesson -> lesson.addSwimmer(swimmer));
             swimmer.setLessons(lessons);
         }

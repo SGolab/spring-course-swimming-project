@@ -1,9 +1,24 @@
 package com.example.sgswimming.model;
 
 import lombok.*;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 import javax.persistence.*;
 import java.util.*;
+
+
+@NamedEntityGraph(
+        name = "instructor-read-dto",
+        attributeNodes = {
+                @NamedAttributeNode(value = "lessons", subgraph = "lessons-subgraph"),
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "lessons-subgraph",
+                        attributeNodes = {
+                                @NamedAttributeNode(value = "swimmers")
+                        })
+        })
 
 @Data
 @NoArgsConstructor
@@ -27,7 +42,7 @@ public class Instructor {
     }
 
     @OneToMany(mappedBy = "instructor", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    private List<Lesson> lessons = new ArrayList<>();
+    private Set<Lesson> lessons = new HashSet<>();
 
     @OneToMany
     private Set<ClientData> clientDataSet = new HashSet<>();
@@ -36,7 +51,7 @@ public class Instructor {
         lessons.add(lesson);
     }
 
-    public void setLessons(List<Lesson> lessons) {
+    public void setLessons(Set<Lesson> lessons) {
         this.lessons = lessons;
         lessons.forEach(lesson -> lesson.setInstructor(this));
     }

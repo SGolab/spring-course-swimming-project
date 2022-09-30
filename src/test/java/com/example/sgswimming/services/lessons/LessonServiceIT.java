@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -81,8 +82,8 @@ public class LessonServiceIT {
         Lesson lesson = new Lesson();
         Lesson savedLesson = repository.save(lesson);
 
-        savedInstructor.setLessons(List.of(savedLesson));
-        savedSwimmer.setLessons(List.of(savedLesson));
+        savedInstructor.setLessons(Set.of(savedLesson));
+        savedSwimmer.setLessons(Set.of(savedLesson));
         savedLesson.setInstructor(savedInstructor);
         savedLesson.setSwimmers(List.of(savedSwimmer));
         repository.save(savedLesson);
@@ -180,8 +181,8 @@ public class LessonServiceIT {
         Lesson lesson = new Lesson();
         Lesson savedLesson = repository.save(lesson);
 
-        savedInstructor.setLessons(List.of(savedLesson));
-        savedSwimmer.setLessons(List.of(savedLesson));
+        savedInstructor.setLessons(Set.of(savedLesson));
+        savedSwimmer.setLessons(Set.of(savedLesson));
         savedLesson.setInstructor(savedInstructor);
         savedLesson.setSwimmers(List.of(savedSwimmer));
 
@@ -193,6 +194,9 @@ public class LessonServiceIT {
 
         assertFalse(lessonOptional.isPresent());
         assertTrue(swimmerRepository.findAllByLessonsId(savedEntityId).isEmpty());
-        assertTrue(instructorRepository.findAllByLessonsId(savedEntityId).isEmpty());
+        instructorRepository.findAll().forEach(instr ->
+                        assertTrue(instr.getLessons()
+                                .stream()
+                                .noneMatch(l -> l.getId().equals(savedInstructor.getId()))));
     }
 }

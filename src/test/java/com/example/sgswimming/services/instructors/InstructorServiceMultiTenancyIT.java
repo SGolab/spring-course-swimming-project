@@ -3,6 +3,7 @@ package com.example.sgswimming.services.instructors;
 import com.example.sgswimming.model.ClientData;
 import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.Lesson;
+import com.example.sgswimming.model.Swimmer;
 import com.example.sgswimming.repositories.ClientDataRepository;
 import com.example.sgswimming.repositories.InstructorRepository;
 import com.example.sgswimming.repositories.LessonRepository;
@@ -14,9 +15,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,12 +43,17 @@ public class InstructorServiceMultiTenancyIT {
     void setUp() {
         service = new InstructorServiceImpl(
                 repository,
-                lessonRepository);
+                lessonRepository,
+                clientDataRepository);
     }
 
     static final Long ID = 1L;
     static final String FIRST_NAME = "first name";
     static final String LAST_NAME = "last name";
+
+    private Swimmer getSavedSwimmer() {
+        return swimmerRepository.save(new Swimmer());
+    }
 
     private Instructor getSavedInstructor() {
         Instructor instructor = new Instructor();
@@ -61,10 +68,10 @@ public class InstructorServiceMultiTenancyIT {
     }
 
     @Test
-    void findAllWithClientData() {
+    void findAllWithClientDataWithInstructor() {
         //given
         List<Lesson> lessons = List.of(new Lesson());
-        List<Lesson> savedLessons = lessonRepository.saveAll(lessons);
+        Set<Lesson> savedLessons = new HashSet<>(lessonRepository.saveAll(lessons));
 
         Instructor savedInstructor = getSavedInstructor();
         ClientData savedClientData = getSavedClientData();
@@ -82,8 +89,50 @@ public class InstructorServiceMultiTenancyIT {
         anotherSavedInstructor.addClientData(anotherSavedClientData);
         clientDataRepository.save(anotherSavedClientData);
 
+        for (int i = 0; i < 20; i++) {
+            System.out.println("**************************");
+        }
+
         //do
         List<InstructorReadDto> instructorReadDtoList = service.findAll(savedClientData);
+
+        for (int i = 0; i < 20; i++) {
+            System.out.println("**************************");
+        }
+
+        //test
+        assertEquals(1, instructorReadDtoList.size());
+    }
+
+    @Test
+    void findAllWithClientDataWithSwimmers() {
+        //given
+        Set<Lesson> savedLessons = new HashSet<>(lessonRepository.saveAll(List.of(new Lesson())));
+
+        Instructor instructor = getSavedInstructor();
+        Swimmer savedSwimmer = getSavedSwimmer();
+        ClientData savedClientData = getSavedClientData();
+
+        savedSwimmer.setLessons(savedLessons);
+        instructor.setLessons(savedLessons);
+
+        for (Lesson lesson : savedLessons) lesson.addSwimmer(savedSwimmer);
+        for (Lesson lesson : savedLessons) lesson.setInstructor(instructor);
+
+        savedClientData.addSwimmer(savedSwimmer);
+        savedSwimmer.addClientData(savedClientData);
+        savedClientData = clientDataRepository.save(savedClientData);
+
+        for (int i = 0; i < 20; i++) {
+            System.out.println("**************************");
+        }
+
+        //do
+        List<InstructorReadDto> instructorReadDtoList = service.findAll(savedClientData);
+
+        for (int i = 0; i < 20; i++) {
+            System.out.println("**************************");
+        }
 
         //test
         assertEquals(1, instructorReadDtoList.size());
@@ -93,7 +142,7 @@ public class InstructorServiceMultiTenancyIT {
     void findByIdWithClientData() {
         //given
         List<Lesson> lessons = List.of(new Lesson());
-        List<Lesson> savedLessons = lessonRepository.saveAll(lessons);
+        Set<Lesson> savedLessons = new HashSet<>(lessonRepository.saveAll(lessons));
 
         Instructor savedInstructor = getSavedInstructor();
         ClientData savedClientData = getSavedClientData();
@@ -104,12 +153,6 @@ public class InstructorServiceMultiTenancyIT {
         savedClientData.setInstructor(savedInstructor);
         savedInstructor.addClientData(savedClientData);
         savedClientData = clientDataRepository.save(savedClientData);
-
-        Instructor anotherSavedInstructor = getSavedInstructor();
-        ClientData anotherSavedClientData = getSavedClientData();
-        anotherSavedClientData.setInstructor(anotherSavedInstructor);
-        anotherSavedInstructor.addClientData(anotherSavedClientData);
-        clientDataRepository.save(anotherSavedClientData);
 
         //do
         InstructorReadDto instructorReadDto = service.findById(savedClientData, savedInstructor.getId());

@@ -69,7 +69,7 @@ public class Bootstrap implements CommandLineRunner {
 
     private void loadModelData() {
 
-        List<Lesson> lessons = lessonRepository.saveAll(List.of(createLesson(), createLesson(), createLesson()));
+        Set<Lesson> lessons = new HashSet<>(lessonRepository.saveAll(List.of(createLesson(), createLesson(), createLesson())));
 
 
         ClientData instructorClientData = clientDataRepository.findByFirstName("employee");

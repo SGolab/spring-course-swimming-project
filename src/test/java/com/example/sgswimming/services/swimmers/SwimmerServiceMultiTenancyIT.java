@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -66,7 +68,7 @@ public class SwimmerServiceMultiTenancyIT {
     void findAllWithClientData() {
         //given
         List<Lesson> lessons = List.of(new Lesson());
-        List<Lesson> savedLessons = lessonRepository.saveAll(lessons);
+        Set<Lesson> savedLessons = new HashSet<>(lessonRepository.saveAll(lessons));
 
         Swimmer savedSwimmer = getSavedSwimmer();
         savedSwimmer.setLessons(savedLessons);
@@ -95,7 +97,7 @@ public class SwimmerServiceMultiTenancyIT {
     void findByIdWithClientData() {
         //given
         List<Lesson> lessons = List.of(new Lesson());
-        List<Lesson> savedLessons = lessonRepository.saveAll(lessons);
+        Set<Lesson> savedLessons = new HashSet<>(lessonRepository.saveAll(lessons));
 
         Swimmer savedSwimmer = getSavedSwimmer();
         savedSwimmer.setLessons(savedLessons);

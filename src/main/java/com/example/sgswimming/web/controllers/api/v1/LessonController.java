@@ -1,6 +1,7 @@
 package com.example.sgswimming.web.controllers.api.v1;
 
 import com.example.sgswimming.model.exceptions.NotFoundException;
+import com.example.sgswimming.security.model.User;
 import com.example.sgswimming.security.perms.lessons.CreateLessonPermission;
 import com.example.sgswimming.security.perms.lessons.DeleteLessonPermission;
 import com.example.sgswimming.security.perms.lessons.ReadLessonPermission;
@@ -11,6 +12,7 @@ import com.example.sgswimming.web.DTOs.save.LessonSaveDto;
 import com.example.sgswimming.web.DTOs.update.LessonUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -31,14 +33,22 @@ public class LessonController {
 
     @ReadLessonPermission
     @GetMapping("/")
-    public List<LessonReadDto> getAllLessons() {
-        return lessonService.findAll();
+    public List<LessonReadDto> getAllLessons(@AuthenticationPrincipal User user) {
+        if (user.getClientData() == null) {
+            return lessonService.findAll();
+        } else {
+            return lessonService.findAll(user.getClientData());
+        }
     }
 
     @ReadLessonPermission
     @GetMapping("/{id}")
-    public LessonReadDto getLessonById(@PathVariable Long id) {
-        return lessonService.findById(id);
+    public LessonReadDto getLessonById(@AuthenticationPrincipal User user, @PathVariable Long id) {
+        if (user.getClientData() == null) {
+            return lessonService.findById(id);
+        } else {
+            return lessonService.findById(user.getClientData(), id);
+        }
     }
 
     @CreateLessonPermission

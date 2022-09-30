@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -67,7 +68,7 @@ public class SwimmerServiceIT {
         swimmer.setLastName(LAST_NAME);
 
         List<Lesson> lessons = List.of(new Lesson());
-        List<Lesson> savedLessons = lessonRepository.saveAll(lessons);
+        Set<Lesson> savedLessons = new HashSet<>(lessonRepository.saveAll(lessons));
 
         Swimmer savedSwimmer = repository.save(swimmer);
         savedSwimmer.setLessons(savedLessons);
@@ -176,7 +177,7 @@ public class SwimmerServiceIT {
         swimmer.setLastName(LAST_NAME);
 
         List<Lesson> lessons = List.of(new Lesson());
-        List<Lesson> savedLessons = lessonRepository.saveAll(lessons);
+        Set<Lesson> savedLessons = new HashSet<>(lessonRepository.saveAll(lessons));
 
         Swimmer savedSwimmer = repository.save(swimmer);
         savedSwimmer.setLessons(savedLessons);

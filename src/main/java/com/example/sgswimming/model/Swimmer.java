@@ -23,7 +23,7 @@ public class Swimmer {
     private String lastName;
 
     @ManyToMany(mappedBy = "swimmers", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    private List<Lesson> lessons = new ArrayList<>();
+    private Set<Lesson> lessons = new HashSet<>();
 
     @ManyToMany(mappedBy = "swimmers", fetch = FetchType.EAGER)
     private Set<ClientData> clientDataSet = new HashSet<>();

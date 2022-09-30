@@ -33,7 +33,7 @@ public class InstructorMapperTest {
         instructor.setFirstName(FIRST_NAME);
         instructor.setLastName(LAST_NAME);
 
-        instructor.setLessons(List.of(
+        instructor.setLessons(Set.of(
                 new Lesson(),
                 new Lesson(),
                 new Lesson()
