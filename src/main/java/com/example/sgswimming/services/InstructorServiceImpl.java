@@ -42,18 +42,11 @@ public class InstructorServiceImpl implements InstructorService {
         checkValid(clientData);
         clientData = reloadClientData(clientData);
 
-        Set<Long> instructorIds;
-        if (clientData.getInstructor() != null) {
-            instructorIds = Set.of(clientData.getInstructor().getId());
-        } else {
-            instructorIds = clientData
-                    .getSwimmers()
-                    .stream()
-                    .flatMap(swimmer -> swimmer.getLessons().stream())
-                    .distinct()
-                    .map(lesson -> lesson.getInstructor().getId())
-                    .collect(Collectors.toSet());
-        }
+        Set<Long> instructorIds = clientData
+                .getInstructors()
+                .stream()
+                .map(Instructor::getId)
+                .collect(Collectors.toSet());
 
         List<Instructor> instructors = instructorRepository.findAllById(instructorIds);
 

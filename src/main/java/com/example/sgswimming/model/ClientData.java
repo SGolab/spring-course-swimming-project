@@ -3,6 +3,7 @@ package com.example.sgswimming.model;
 import com.example.sgswimming.security.model.User;
 import lombok.*;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.util.*;
@@ -70,5 +71,41 @@ public class ClientData {
 
     public void addSwimmer(Swimmer swimmer) {
         swimmers.add(swimmer);
+    }
+
+    public Set<Instructor> getInstructors() {
+        if (this.instructor != null) {
+            return Set.of(this.instructor);
+        } else {
+            return this.swimmers
+                    .stream()
+                    .flatMap(swimmer -> swimmer.getLessons().stream())
+                    .distinct()
+                    .map(Lesson::getInstructor)
+                    .collect(Collectors.toSet());
+        }
+    }
+
+    public Set<Swimmer> getSwimmers() {
+        if (CollectionUtils.isEmpty(this.swimmers)) {
+            return this.swimmers;
+        } else {
+            return this.instructor
+                    .getLessons()
+                    .stream()
+                    .flatMap(lesson -> lesson.getSwimmers().stream())
+                    .collect(Collectors.toSet());
+        }
+    }
+
+    public Set<Lesson> getLessons() {
+        if (this.instructor != null) {
+            return instructor.getLessons();
+        } else {
+            return this.swimmers
+                    .stream()
+                    .flatMap(swimmer -> swimmer.getLessons().stream())
+                    .collect(Collectors.toSet());
+        }
     }
 }
