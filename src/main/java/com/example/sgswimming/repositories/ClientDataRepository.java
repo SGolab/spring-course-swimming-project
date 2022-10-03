@@ -9,11 +9,11 @@ import java.util.Optional;
 
 public interface ClientDataRepository extends JpaRepository<ClientData, Long> {
 
-    @EntityGraph("client_data-instructor-user")
+    @EntityGraph("client_data-instructor-client")
     @Query("SELECT c FROM ClientData c WHERE c.id = ?1")
     Optional<ClientData> findByIdForInstructorUser(Long aLong);
 
-    @EntityGraph("client_data-swimmer-user")
+    @EntityGraph("client_data-swimmer-client")
     @Query("SELECT c FROM ClientData c WHERE c.id = ?1")
     Optional<ClientData> findByIdForSwimmerUser(Long aLong);
 

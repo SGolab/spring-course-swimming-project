@@ -12,11 +12,15 @@ import java.util.Set;
 
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
-    @EntityGraph(value = "lesson.dto.read")
+    @EntityGraph(value = "lesson-dto-read")
     @Override
     List<Lesson> findAll();
 
-    @EntityGraph(value = "lesson.dto.read")
+    @EntityGraph(value = "lesson-dto-read")
     @Override
     Optional<Lesson> findById(Long aLong);
+
+    @EntityGraph("lesson-dto-read")
+    @Override
+    List<Lesson> findAllById(Iterable<Long> longs);
 }

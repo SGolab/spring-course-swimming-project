@@ -19,4 +19,8 @@ public interface SwimmerRepository extends JpaRepository<Swimmer, Long> {
     @EntityGraph("swimmer-read-dto")
     @Override
     Optional<Swimmer> findById(Long aLong);
+
+    @EntityGraph("swimmer-read-dto")
+    @Override
+    List<Swimmer> findAllById(Iterable<Long> longs);
 }

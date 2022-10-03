@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @NamedEntityGraph(
-        name = "client_data-instructor-user",
+        name = "client_data-instructor-client",
         attributeNodes = {
                 @NamedAttributeNode(value = "instructor", subgraph = "instructor-lessons-subgraph")
         },
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
         })
 
 @NamedEntityGraph(
-        name = "client_data-swimmer-user",
+        name = "client_data-swimmer-client",
         attributeNodes = @NamedAttributeNode(value = "swimmers", subgraph = "swimmers-lessons-subgraph"),
         subgraphs = {
                 @NamedSubgraph(

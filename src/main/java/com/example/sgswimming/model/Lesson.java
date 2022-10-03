@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NamedEntityGraph(
-        name = "lesson.dto.read",
+        name = "lesson-dto-read",
         attributeNodes = {
                 @NamedAttributeNode("instructor"),
                 @NamedAttributeNode("swimmers"),

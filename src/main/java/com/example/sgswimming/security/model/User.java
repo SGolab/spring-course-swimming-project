@@ -12,6 +12,20 @@ import javax.persistence.*;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@NamedEntityGraph(
+        name = "user-graph",
+        attributeNodes = {
+                @NamedAttributeNode(value = "clientData"),
+                @NamedAttributeNode(value = "roles", subgraph = "roles-subgraph"),
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "roles-subgraph",
+                        attributeNodes = {
+                                @NamedAttributeNode(value = "authorities")
+                        })
+        })
+
 @Setter
 @Getter
 @AllArgsConstructor

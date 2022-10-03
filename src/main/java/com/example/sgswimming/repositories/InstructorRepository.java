@@ -22,5 +22,6 @@ public interface InstructorRepository extends JpaRepository<Instructor, Long> {
     Optional<Instructor> findById(Long aLong);
 
     @EntityGraph("instructor-read-dto")
-    Set<Instructor> findAllByLessons(Lesson lesson);
+    @Override
+    List<Instructor> findAllById(Iterable<Long> longs);
 }
