@@ -43,7 +43,7 @@ public class LessonServiceMultiTenancyIT {
 
     @BeforeEach
     void setUp() {
-        service = new LessonServiceImpl(repository, instructorRepository, swimmerRepository);
+        service = new LessonServiceImpl(repository, instructorRepository, swimmerRepository, clientDataRepository);
     }
 
     static final Long ID = 1L;

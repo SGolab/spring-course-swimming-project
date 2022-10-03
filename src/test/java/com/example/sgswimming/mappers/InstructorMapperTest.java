@@ -34,8 +34,6 @@ public class InstructorMapperTest {
         instructor.setLastName(LAST_NAME);
 
         instructor.setLessons(Set.of(
-                new Lesson(),
-                new Lesson(),
                 new Lesson()
         ));
 
@@ -47,7 +45,7 @@ public class InstructorMapperTest {
         instructorUpdateDto.setId(1L);
         instructorUpdateDto.setFirstName(FIRST_NAME);
         instructorUpdateDto.setLastName(LAST_NAME);
-        instructorUpdateDto.setLessons(Set.of(1L, 2L, 3L));
+        instructorUpdateDto.setLessons(Set.of(1L));
     }
 
     @Test

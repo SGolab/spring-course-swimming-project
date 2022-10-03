@@ -12,12 +12,10 @@ import com.example.sgswimming.web.DTOs.read.LessonReadDto;
 import com.example.sgswimming.web.DTOs.save.LessonSaveDto;
 import com.example.sgswimming.web.DTOs.update.LessonUpdateDto;
 import com.example.sgswimming.web.config.JsonDateMappingConfig;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -46,7 +44,7 @@ public class LessonServiceIT {
 
     @BeforeEach
     void setUp() {
-        service = new LessonServiceImpl(repository, instructorRepository, swimmerRepository);
+        service = new LessonServiceImpl(repository, instructorRepository, swimmerRepository, clientDataRepository);
     }
 
     static final Long ID = 1L;
@@ -193,7 +191,13 @@ public class LessonServiceIT {
         Optional<Lesson> lessonOptional = repository.findById(savedEntityId);
 
         assertFalse(lessonOptional.isPresent());
-        assertTrue(swimmerRepository.findAllByLessonsId(savedEntityId).isEmpty());
+
+        swimmerRepository.findAll().forEach(instr ->
+                assertTrue(instr.getLessons()
+                        .stream()
+                        .noneMatch(l -> l.getId().equals(savedSwimmer.getId()))));
+
+
         instructorRepository.findAll().forEach(instr ->
                         assertTrue(instr.getLessons()
                                 .stream()

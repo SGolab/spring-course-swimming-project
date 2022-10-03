@@ -5,6 +5,7 @@ import com.example.sgswimming.model.Instructor;
 import com.example.sgswimming.model.Lesson;
 import com.example.sgswimming.model.Swimmer;
 import com.example.sgswimming.model.exceptions.NotFoundException;
+import com.example.sgswimming.repositories.ClientDataRepository;
 import com.example.sgswimming.repositories.InstructorRepository;
 import com.example.sgswimming.repositories.LessonRepository;
 import com.example.sgswimming.repositories.SwimmerRepository;
@@ -14,6 +15,7 @@ import com.example.sgswimming.web.DTOs.update.LessonUpdateDto;
 import com.example.sgswimming.web.mappers.LessonMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,6 +27,7 @@ public class LessonServiceImpl implements LessonService {
     private final LessonRepository lessonRepository;
     private final InstructorRepository instructorRepository;
     private final SwimmerRepository swimmerRepository;
+    private final ClientDataRepository clientDataRepository;
 
     private final LessonMapper mapper = LessonMapper.getInstance();
 
@@ -35,16 +38,15 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public List<LessonReadDto> findAll(ClientData clientData) {
+        clientData = reloadClientData(clientData);
 
-        Set<Lesson> lessons = new HashSet<>();
+        Set<Long> lessonIds = clientData
+                .getLessonsCalculated()
+                .stream()
+                .map(Lesson::getId)
+                .collect(Collectors.toSet());
 
-        if (clientData.getInstructor() != null) {
-            lessons.addAll(lessonRepository.findAllByInstructor(clientData.getInstructor()));
-        } else if (clientData.getSwimmers() != null) {
-            clientData.getSwimmers().forEach(swimmer -> lessons.addAll(lessonRepository.findAllBySwimmers(swimmer)));
-        } else {
-            throw new IllegalArgumentException("User needs to have instructor or swimmers field declared.");
-        }
+        List<Lesson> lessons = lessonRepository.findAllById(lessonIds);
 
         return lessons.stream().map(mapper::toReadDto).collect(Collectors.toList());
     }
@@ -57,21 +59,10 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public LessonReadDto findById(ClientData clientData, Long id) {
-        Optional<Lesson> lesson;
+        clientData = reloadClientData(clientData);
 
-        if (clientData.getInstructor() != null) {
-            lesson = lessonRepository.findByIdAndInstructor(id, clientData.getInstructor());
-        } else if (clientData.getSwimmers() != null) {
-            lesson = clientData
-                    .getSwimmers()
-                    .stream()
-                    .map(swimmer -> lessonRepository.findByIdAndSwimmers(id, swimmer))
-                    .filter(Optional::isPresent)
-                    .findFirst()
-                    .orElse(Optional.empty());
-        } else {
-            throw new IllegalArgumentException("User needs to have instructor or swimmers field declared.");
-        }
+        Optional<Lesson> lesson =
+                (isAuthorized(clientData, id)) ? lessonRepository.findById(id) : Optional.empty();
 
         return mapper.toReadDto(lesson.orElseThrow(() -> new NotFoundException(id, Lesson.class)));
     }
@@ -99,22 +90,46 @@ public class LessonServiceImpl implements LessonService {
         Lesson lesson = lessonRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(id, Instructor.class));
 
-        Set<Instructor> instructors = instructorRepository.findAllByLessons(lesson);
-        instructors.forEach(instructor -> {
+        if (lesson.getInstructor() != null) {
+            Long instructorId = lesson.getInstructor().getId();
+
+            Instructor instructor = instructorRepository.findById(instructorId)
+                    .orElseThrow(() -> new NotFoundException(id, Instructor.class));
             Set<Lesson> lessons = instructor.getLessons();
             lessons.remove(lesson);
             instructor.setLessons(lessons);
-        });
-        instructorRepository.saveAll(instructors);
+            instructorRepository.save(instructor);
+        }
 
-        Set<Swimmer> swimmers = swimmerRepository.findAllByLessonsId(id);
-        swimmers.forEach(swimmer -> {
-            Set<Lesson> lessons = swimmer.getLessons();
-            lessons.remove(lesson);
-            swimmer.setLessons(lessons);
-        });
-        swimmerRepository.saveAll(swimmers);
+        if (CollectionUtils.isEmpty(lesson.getSwimmers())) {
+            Set<Long> swimmerIds = lesson.getSwimmers().stream().map(Swimmer::getId).collect(Collectors.toSet());
+
+            List<Swimmer> swimmers = swimmerRepository.findAllById(swimmerIds);
+            swimmers.forEach(swimmer -> {
+                Set<Lesson> lessons = swimmer.getLessons();
+                lessons.remove(lesson);
+                swimmer.setLessons(lessons);
+            });
+            swimmerRepository.saveAll(swimmers);
+        }
 
         lessonRepository.deleteById(id);
+    }
+
+    private boolean isAuthorized(ClientData clientData, Long id) {
+        return clientData.getLessonsCalculated().stream()
+                .anyMatch(lesson -> lesson.getId().equals(id));
+    }
+
+    private ClientData reloadClientData(ClientData clientData) {
+        Optional<ClientData> clientDataOptional;
+
+        if (clientData.getInstructor() != null) {
+            clientDataOptional = clientDataRepository.findByIdForInstructorUser(clientData.getId());
+        } else {
+            clientDataOptional = clientDataRepository.findByIdForSwimmerUser(clientData.getId());
+        }
+
+        return clientDataOptional.orElseThrow(() -> new NotFoundException(clientData.getId(), ClientData.class));
     }
 }

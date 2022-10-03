@@ -39,8 +39,6 @@ public class SwimmerMapperTest {
         swimmer.setLastName(LAST_NAME);
 
         swimmer.setLessons(Set.of(
-                new Lesson(),
-                new Lesson(),
                 new Lesson()
         ));
 
@@ -52,7 +50,7 @@ public class SwimmerMapperTest {
         swimmerUpdateDto.setId(1L);
         swimmerUpdateDto.setFirstName(FIRST_NAME);
         swimmerUpdateDto.setLastName(LAST_NAME);
-        swimmerUpdateDto.setLessons(Set.of(1L, 2L, 3L));
+        swimmerUpdateDto.setLessons(Set.of(1L));
     }
 
     @Test

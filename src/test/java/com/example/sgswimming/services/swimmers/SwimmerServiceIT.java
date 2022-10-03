@@ -44,7 +44,7 @@ public class SwimmerServiceIT {
 
     @BeforeEach
     void setUp() {
-        service = new SwimmerServiceImpl(repository, lessonRepository);
+        service = new SwimmerServiceImpl(repository, lessonRepository, clientDataRepository);
     }
 
     static final Long ID = 1L;
@@ -176,12 +176,11 @@ public class SwimmerServiceIT {
         swimmer.setFirstName(FIRST_NAME);
         swimmer.setLastName(LAST_NAME);
 
-        List<Lesson> lessons = List.of(new Lesson());
-        Set<Lesson> savedLessons = new HashSet<>(lessonRepository.saveAll(lessons));
-
+        Lesson savedLesson = lessonRepository.save(new Lesson());
         Swimmer savedSwimmer = repository.save(swimmer);
-        savedSwimmer.setLessons(savedLessons);
-        savedLessons.forEach(lesson -> lesson.addSwimmer(swimmer));
+
+        savedSwimmer.addLesson(savedLesson);
+        savedLesson.addSwimmer(savedSwimmer);
 
         Long savedEntityId = repository.save(savedSwimmer).getId();
 
@@ -190,6 +189,11 @@ public class SwimmerServiceIT {
         Optional<Swimmer> swimmerOptional = repository.findById(savedEntityId);
 
         assertFalse(swimmerOptional.isPresent());
-        assertTrue(lessonRepository.findAllBySwimmersId(savedEntityId).isEmpty());
+
+        assertTrue(lessonRepository
+                .findAll()
+                .stream()
+                .flatMap(lesson -> lesson.getSwimmers().stream())
+                .noneMatch(s -> s.getId().equals(savedEntityId)));
     }
 }

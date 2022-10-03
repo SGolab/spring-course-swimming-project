@@ -28,7 +28,7 @@ public class Lesson {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "instructor_id")
+    @JoinColumn(name = "instructor_id", referencedColumnName = "id")
     private Instructor instructor;
 
     @Builder.Default

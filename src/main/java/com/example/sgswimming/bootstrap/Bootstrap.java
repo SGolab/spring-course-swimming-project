@@ -84,7 +84,11 @@ public class Bootstrap implements CommandLineRunner {
         ClientData customerClientData = clientDataRepository.findByFirstName("customer");
         List<Swimmer> swimmers = swimmerRepository.saveAll(List.of(createSwimmer(), createSwimmer(), createSwimmer()));
         swimmers.forEach(s -> s.setLessons(lessons));
-        lessons.forEach(l -> l.setSwimmers(swimmers));
+        lessons.forEach(l -> {
+            l.setSwimmers(swimmers);
+            l.setInstructor(instructor);
+            instructor.addLesson(l);
+        });
         customerClientData.setSwimmers(new HashSet<>(swimmers));
         swimmers.forEach(s -> s.addClientData(customerClientData));
         clientDataRepository.save(customerClientData);

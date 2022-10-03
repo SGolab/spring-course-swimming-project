@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -114,9 +115,9 @@ public class InstructorServiceMultiTenancyIT {
         ClientData savedClientData = getSavedClientData();
 
         savedSwimmer.setLessons(savedLessons);
-        instructor.setLessons(savedLessons);
-
         for (Lesson lesson : savedLessons) lesson.addSwimmer(savedSwimmer);
+
+        instructor.setLessons(savedLessons);
         for (Lesson lesson : savedLessons) lesson.setInstructor(instructor);
 
         savedClientData.addSwimmer(savedSwimmer);

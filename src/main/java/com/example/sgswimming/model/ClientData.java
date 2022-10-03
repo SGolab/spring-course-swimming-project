@@ -2,22 +2,23 @@ package com.example.sgswimming.model;
 
 import com.example.sgswimming.security.model.User;
 import lombok.*;
-import org.springframework.transaction.annotation.Transactional;
+import org.hibernate.LazyInitializationException;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @NamedEntityGraph(
-        name = "client_data-operations",
+        name = "client_data-instructor-user",
         attributeNodes = {
-                @NamedAttributeNode(value = "instructor", subgraph = "instructor-subgraph"),
-                @NamedAttributeNode(value = "swimmers", subgraph = "swimmers-subgraph")
+                @NamedAttributeNode(value = "instructor", subgraph = "instructor-lessons-subgraph")
         },
         subgraphs = {
                 @NamedSubgraph(
-                        name = "instructor-subgraph",
+                        name = "instructor-lessons-subgraph",
                         attributeNodes = {
                                 @NamedAttributeNode(value = "lessons", subgraph = "lesson-swimmers-subgraph")
                         }),
@@ -25,10 +26,15 @@ import java.util.stream.Collectors;
                         name = "lesson-swimmers-subgraph",
                         attributeNodes = {
                                 @NamedAttributeNode("swimmers")
-                        }),
+                        })
+        })
 
+@NamedEntityGraph(
+        name = "client_data-swimmer-user",
+        attributeNodes = @NamedAttributeNode(value = "swimmers", subgraph = "swimmers-lessons-subgraph"),
+        subgraphs = {
                 @NamedSubgraph(
-                        name = "swimmers-subgraph",
+                        name = "swimmers-lessons-subgraph",
                         attributeNodes = {
                                 @NamedAttributeNode(value = "lessons", subgraph = "lesson-instructor-subgraph")
                         }),
@@ -59,7 +65,7 @@ public class ClientData {
     private String lastName;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinColumn(name = "client_data_id", referencedColumnName = "id")
+    @JoinColumn(name = "instructor_id", referencedColumnName = "id")
     private Instructor instructor;
 
     @Builder.Default
@@ -73,7 +79,10 @@ public class ClientData {
         swimmers.add(swimmer);
     }
 
-    public Set<Instructor> getInstructors() {
+    public Set<Instructor> getInstructorsCalculated() {
+
+        checkIfValid();
+
         if (this.instructor != null) {
             return Set.of(this.instructor);
         } else {
@@ -86,19 +95,25 @@ public class ClientData {
         }
     }
 
-    public Set<Swimmer> getSwimmers() {
-        if (CollectionUtils.isEmpty(this.swimmers)) {
-            return this.swimmers;
-        } else {
+    public Set<Swimmer> getSwimmersCalculated() {
+
+        checkIfValid();
+
+        if (this.instructor != null) {
             return this.instructor
                     .getLessons()
                     .stream()
                     .flatMap(lesson -> lesson.getSwimmers().stream())
                     .collect(Collectors.toSet());
+        } else {
+            return this.swimmers;
         }
     }
 
-    public Set<Lesson> getLessons() {
+    public Set<Lesson> getLessonsCalculated() {
+
+        checkIfValid();
+
         if (this.instructor != null) {
             return instructor.getLessons();
         } else {
@@ -106,6 +121,12 @@ public class ClientData {
                     .stream()
                     .flatMap(swimmer -> swimmer.getLessons().stream())
                     .collect(Collectors.toSet());
+        }
+    }
+
+    private void checkIfValid() {
+        if (this.instructor == null && CollectionUtils.isEmpty(this.swimmers)) {
+            throw new IllegalArgumentException("User needs to have instructor or swimmers field declared.");
         }
     }
 }

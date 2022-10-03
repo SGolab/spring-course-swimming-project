@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import javax.persistence.*;
 import java.util.*;
 
-
 @NamedEntityGraph(
         name = "instructor-read-dto",
         attributeNodes = {
@@ -44,7 +43,7 @@ public class Instructor {
     @OneToMany(mappedBy = "instructor", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Set<Lesson> lessons = new HashSet<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "instructor", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Set<ClientData> clientDataSet = new HashSet<>();
 
     public void addLesson(Lesson lesson) {

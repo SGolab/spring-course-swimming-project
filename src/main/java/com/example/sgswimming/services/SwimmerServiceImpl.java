@@ -8,7 +8,6 @@ import com.example.sgswimming.model.exceptions.NotFoundException;
 import com.example.sgswimming.repositories.ClientDataRepository;
 import com.example.sgswimming.repositories.LessonRepository;
 import com.example.sgswimming.repositories.SwimmerRepository;
-import com.example.sgswimming.web.DTOs.read.InstructorReadDto;
 import com.example.sgswimming.web.DTOs.read.SwimmerReadDto;
 import com.example.sgswimming.web.DTOs.save.SwimmerSaveDto;
 import com.example.sgswimming.web.DTOs.update.SwimmerUpdateDto;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,6 +28,8 @@ public class SwimmerServiceImpl implements SwimmerService {
     private final SwimmerRepository swimmerRepository;
     private final LessonRepository lessonRepository;
 
+    private final ClientDataRepository clientDataRepository;
+
     private final SwimmerMapper mapper = SwimmerMapper.getInstance();
 
     @Override
@@ -37,8 +39,18 @@ public class SwimmerServiceImpl implements SwimmerService {
 
     @Override
     public List<SwimmerReadDto> findAll(ClientData clientData) {
-        return swimmerRepository.findAllByClientDataSet(clientData)
-                .stream().map(mapper::toReadDto).collect(Collectors.toList());
+
+        clientData = reloadClientData(clientData);
+
+        Set<Long> swimmerIds = clientData
+                .getSwimmersCalculated()
+                .stream()
+                .map(Swimmer::getId)
+                .collect(Collectors.toSet());
+
+        List<Swimmer> swimmers = swimmerRepository.findAllById(swimmerIds);
+
+        return swimmers.stream().map(mapper::toReadDto).collect(Collectors.toList());
     }
 
     @Override
@@ -49,8 +61,12 @@ public class SwimmerServiceImpl implements SwimmerService {
 
     @Override
     public SwimmerReadDto findById(Long id, ClientData clientData) {
-        Swimmer swimmer = swimmerRepository.findByIdAndClientDataSet(id, clientData).orElseThrow(() -> new NotFoundException(id, Instructor.class));
-        return mapper.toReadDto(swimmer);
+
+        clientData = reloadClientData(clientData);
+
+        Optional<Swimmer> swimmer = (isAuthorized(clientData, id)) ? swimmerRepository.findById(id) : Optional.empty();
+
+        return mapper.toReadDto(swimmer.orElseThrow(() -> new NotFoundException(id, Swimmer.class)));
     }
 
     @Override
@@ -86,9 +102,15 @@ public class SwimmerServiceImpl implements SwimmerService {
         Swimmer swimmer = swimmerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(id, Instructor.class));
 
-        Set<Lesson> lessons = lessonRepository.findAllBySwimmersId(id);
-        lessons.forEach(lesson -> {
+        Set<Long> swimmerIds = swimmer
+                .getLessons()
+                .stream()
+                .map(Lesson::getId)
+                .collect(Collectors.toSet());
 
+        List<Lesson> lessons = lessonRepository.findAllById(swimmerIds);
+
+        lessons.forEach(lesson -> {
             List<Swimmer> swimmers = lesson.getSwimmers();
             swimmers.remove(swimmer);
             lesson.setSwimmers(swimmers);
@@ -97,5 +119,21 @@ public class SwimmerServiceImpl implements SwimmerService {
         lessonRepository.saveAll(lessons);
 
         swimmerRepository.deleteById(id);
+    }
+
+    private boolean isAuthorized(ClientData clientData, Long id) {
+        return clientData.getSwimmersCalculated().stream().anyMatch(swimmer -> swimmer.getId().equals(id));
+    }
+
+    private ClientData reloadClientData(ClientData clientData) {
+        Optional<ClientData> clientDataOptional;
+
+        if (clientData.getInstructor() != null) {
+            clientDataOptional = clientDataRepository.findByIdForInstructorUser(clientData.getId());
+        } else {
+            clientDataOptional = clientDataRepository.findByIdForSwimmerUser(clientData.getId());
+        }
+
+        return clientDataOptional.orElseThrow(() -> new NotFoundException(clientData.getId(), ClientData.class));
     }
 }

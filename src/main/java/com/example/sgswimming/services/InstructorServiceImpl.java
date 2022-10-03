@@ -13,7 +13,6 @@ import com.example.sgswimming.web.DTOs.update.InstructorUpdateDto;
 import com.example.sgswimming.web.mappers.InstructorMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -38,12 +37,10 @@ public class InstructorServiceImpl implements InstructorService {
 
     @Override
     public List<InstructorReadDto> findAll(ClientData clientData) {
-
-        checkValid(clientData);
         clientData = reloadClientData(clientData);
 
         Set<Long> instructorIds = clientData
-                .getInstructors()
+                .getInstructorsCalculated()
                 .stream()
                 .map(Instructor::getId)
                 .collect(Collectors.toSet());
@@ -61,7 +58,6 @@ public class InstructorServiceImpl implements InstructorService {
 
     @Override
     public InstructorReadDto findById(ClientData clientData, Long id) {
-        checkValid(clientData);
         clientData = reloadClientData(clientData);
 
         Optional<Instructor> instructor =
@@ -84,8 +80,7 @@ public class InstructorServiceImpl implements InstructorService {
             throw new IllegalArgumentException("InstructorUpdateDto has to contain an id value.");
         }
 
-        instructorRepository.findById(dto.getId())
-                .orElseThrow(() -> new NotFoundException(dto.getId(), Instructor.class));
+       findInstructor(dto.getId()); //throw exception if fails
 
         Instructor instructor = mapper.fromUpdateDtoToInstructor(dto);
 
@@ -101,38 +96,31 @@ public class InstructorServiceImpl implements InstructorService {
 
     @Override
     public void deleteById(Long id) {
-        Set<Lesson> lessons = lessonRepository.findAllByInstructorId(id);
+        Instructor instructor = findInstructor(id);
+        Set<Lesson> lessons = instructor.getLessons();
         lessons.forEach(lesson -> lesson.setInstructor(null));
         lessonRepository.saveAll(lessons);
 
         instructorRepository.deleteById(id);
     }
 
-    private void checkValid(ClientData clientData) {
-        if (clientData.getInstructor() == null && CollectionUtils.isEmpty(clientData.getSwimmers())) {
-            throw new IllegalArgumentException("User needs to have instructor or swimmers field declared.");
-        }
+    private Instructor findInstructor(Long id) {
+        return instructorRepository.findById(id).orElseThrow(() -> new NotFoundException(id, Instructor.class));
     }
 
     private boolean isAuthorized(ClientData clientData, Long id) {
-        boolean authorized;
-
-        if (clientData.getInstructor() != null) {
-            authorized = clientData.getInstructor().getId().equals(id);
-        } else {
-            clientData = reloadClientData(clientData);
-
-            authorized = clientData.getSwimmers()
-                    .stream()
-                    .flatMap(swimmer -> swimmer.getLessons().stream())
-                    .anyMatch(lesson -> lesson.getInstructor().getId().equals(id));
-        }
-        return authorized;
+        return clientData.getInstructorsCalculated().stream().anyMatch(instructor -> instructor.getId().equals(id));
     }
 
     private ClientData reloadClientData(ClientData clientData) {
-        return clientDataRepository
-                .findById(clientData.getId())
-                .orElseThrow(() -> new NotFoundException(clientData.getId(), ClientData.class));
+        Optional<ClientData> clientDataOptional;
+
+        if (clientData.getInstructor() != null) {
+            clientDataOptional = clientDataRepository.findByIdForInstructorUser(clientData.getId());
+        } else {
+            clientDataOptional = clientDataRepository.findByIdForSwimmerUser(clientData.getId());
+        }
+
+        return clientDataOptional.orElseThrow(() -> new NotFoundException(clientData.getId(), ClientData.class));
     }
 }

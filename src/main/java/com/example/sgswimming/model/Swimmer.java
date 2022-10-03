@@ -8,6 +8,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@NamedEntityGraph(
+        name = "swimmer-read-dto",
+        attributeNodes = {
+                @NamedAttributeNode(value = "lessons", subgraph = "lessons-subgraph"),
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "lessons-subgraph",
+                        attributeNodes = {
+                                @NamedAttributeNode("instructor"),
+                                @NamedAttributeNode("swimmers")
+                        })
+        })
+
 @Data
 @NoArgsConstructor
 @ToString(exclude = {"lessons", "clientDataSet"})

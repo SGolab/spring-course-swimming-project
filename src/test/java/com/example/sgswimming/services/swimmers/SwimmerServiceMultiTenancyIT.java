@@ -44,7 +44,7 @@ public class SwimmerServiceMultiTenancyIT {
 
     @BeforeEach
     void setUp() {
-        service = new SwimmerServiceImpl(repository, lessonRepository);
+        service = new SwimmerServiceImpl(repository, lessonRepository, clientDataRepository);
     }
 
     static final Long ID = 1L;

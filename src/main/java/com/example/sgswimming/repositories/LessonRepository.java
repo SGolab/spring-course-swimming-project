@@ -16,15 +16,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
     @Override
     List<Lesson> findAll();
 
-    Set<Lesson> findAllByInstructorId(Long id);
-
-    Set<Lesson> findAllBySwimmersId(Long id);
-
-    Set<Lesson> findAllByInstructor(Instructor instructor);
-
-    Set<Lesson> findAllBySwimmers(Swimmer swimmer);
-
-    Optional<Lesson> findByIdAndSwimmers(Long id, Swimmer swimmer);
-
-    Optional<Lesson> findByIdAndInstructor(Long id, Instructor instructor);
+    @EntityGraph(value = "lesson.dto.read")
+    @Override
+    Optional<Lesson> findById(Long aLong);
 }
