@@ -12,6 +12,8 @@ public interface LessonService {
 
     List<LessonReadDto> findAll();
 
+    List<LessonReadDto> findAllWithoutInstructor();
+
     List<LessonReadDto> findAll(ClientData clientData);
 
     LessonReadDto findById(Long id);

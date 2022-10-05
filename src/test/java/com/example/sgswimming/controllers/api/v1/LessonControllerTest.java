@@ -110,6 +110,18 @@ class LessonControllerTest {
     }
 
     @Test
+    void getAllLessonsWithoutInstructor() throws Exception {
+        when(lessonService.findAllWithoutInstructor()).thenReturn(lessons);
+
+        mockMvc.perform(get(uriBuilder.path("noInstructor").build())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].description", equalTo(DESCRIPTION)))
+                .andExpect(jsonPath("$[0].localDateTime", notNullValue()));
+    }
+
+    @Test
     void getLessonById() throws Exception {
         when(lessonService.findById(anyLong())).thenReturn(LESSON_READ_DTO);
 

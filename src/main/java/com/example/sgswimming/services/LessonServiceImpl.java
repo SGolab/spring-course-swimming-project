@@ -37,6 +37,11 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
+    public List<LessonReadDto> findAllWithoutInstructor() {
+        return lessonRepository.findAllWithoutInstructor().stream().map(mapper::toReadDto).collect(Collectors.toList());
+    }
+
+    @Override
     public List<LessonReadDto> findAll(ClientData clientData) {
         clientData = reloadClientData(clientData);
 

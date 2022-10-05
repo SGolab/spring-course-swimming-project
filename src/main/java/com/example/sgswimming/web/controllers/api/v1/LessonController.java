@@ -2,10 +2,7 @@ package com.example.sgswimming.web.controllers.api.v1;
 
 import com.example.sgswimming.model.exceptions.NotFoundException;
 import com.example.sgswimming.security.model.User;
-import com.example.sgswimming.security.perms.lessons.CreateLessonPermission;
-import com.example.sgswimming.security.perms.lessons.DeleteLessonPermission;
-import com.example.sgswimming.security.perms.lessons.ReadLessonPermission;
-import com.example.sgswimming.security.perms.lessons.UpdateLessonPermission;
+import com.example.sgswimming.security.perms.lessons.*;
 import com.example.sgswimming.services.LessonService;
 import com.example.sgswimming.web.DTOs.read.LessonReadDto;
 import com.example.sgswimming.web.DTOs.save.LessonSaveDto;
@@ -39,6 +36,15 @@ public class LessonController {
         } else {
             return lessonService.findAll(user.getClientData());
         }
+    }
+
+    //todo there should probably be a distinction between admin and employee where admin's implementation returns every lesson w/instructor,
+    // but for employee it should return all lessons available for him to pick up (the instructor has no other lessons on the same datetime)
+
+    @ReadLessonWithoutInstructorPermission
+    @GetMapping("/noInstructor")
+    public List<LessonReadDto> getAllLessonsWithoutInstructor() {
+        return lessonService.findAllWithoutInstructor();
     }
 
     @ReadLessonPermission

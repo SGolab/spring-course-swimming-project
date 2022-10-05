@@ -65,6 +65,16 @@ public class LessonServiceIT {
     }
 
     @Test
+    void finAllWithoutInstructor() {
+
+        List<LessonReadDto> foundLessons = service.findAllWithoutInstructor();
+
+        assertFalse(foundLessons.isEmpty());
+
+        foundLessons.forEach(l -> assertNull(l.getInstructor()));
+    }
+
+    @Test
     void findById() {
         //given
         Swimmer swimmer = new Swimmer();

@@ -62,6 +62,16 @@ class LessonServiceImplTest {
     }
 
     @Test
+    void findAllWithoutInstructor() {
+        when(lessonRepository.findAllWithoutInstructor()).thenReturn(List.of(new Lesson(), new Lesson()));
+
+        List<LessonReadDto> Lessons = lessonService.findAllWithoutInstructor();
+
+        assertNotNull(Lessons);
+        assertEquals(2, Lessons.size());
+    }
+
+    @Test
     void findById() {
         when(lessonRepository.findById(anyLong())).thenReturn(Optional.of(new Lesson()));
 
