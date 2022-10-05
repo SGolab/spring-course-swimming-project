@@ -49,10 +49,10 @@ public abstract class BootstrapHelper {
     }
 
     static Swimmer createSwimmer() {
-        return Swimmer.builder()
-                .firstName(getRandomName())
-                .lastName(getRandomName())
-                .build();
+        Swimmer swimmer = new Swimmer();
+        swimmer.setFirstName(getRandomName());
+        swimmer.setLastName(getRandomName());
+        return swimmer;
     }
 
     private static final List<String> names = List.of("Stephany", "Camdyn", "Korey", "Eddy", "Preston", "Myka", "Braelyn", "Emmalynn", "Tatum", "Jaxen", "Jaya", "Don", "Bryer", "Teagan", "Brenna", "Khloee", "Ingrid", "Nigel", "Yaritza", "Jessa", "Rilynn", "Mark", "Angel", "Brady", "Deacon", "Melvin", "Dyllan", "Bronx", "Elisha", "Elan", "Kenia", "Alonzo", "Dean", "Cortez", "Latrell", "Lochlan", "Landin", "Alannah", "Kaiya", "Helena", "Braylan", "Chyna", "Mack", "Madison", "Darien", "Raegan", "Lorraine", "Ryleigh", "Raylan", "Aayden", "Lana", "Case", "Shanaya", "Steven", "Jaelynn", "Zeke", "Maryam", "Trinity", "Weston", "Micaela", "Eliyahu", "Kalen", "Ayman", "Yuna", "Zia", "Jaylynn", "Kole", "Joyce", "Tatianna", "Juancarlos", "Thea", "Soleil", "Alma", "Arleth", "Vicente", "Jethro", "Myra", "Hans", "Sidney", "Jeffery", "Coleman", "Adelynn", "Bryson", "Eddie", "Aiza", "Niall", "Annmarie", "Lina", "Rylie", "Kai", "Walter", "Ivory", "Violeta", "Jazzlyn", "Nick", "Immanuel", "Matthew", "Dyson", "Estevan", "Tala");

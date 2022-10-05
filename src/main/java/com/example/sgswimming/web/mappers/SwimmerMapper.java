@@ -4,9 +4,14 @@ import com.example.sgswimming.model.Swimmer;
 import com.example.sgswimming.web.DTOs.read.SwimmerReadDto;
 import com.example.sgswimming.web.DTOs.save.SwimmerSaveDto;
 import com.example.sgswimming.web.DTOs.update.SwimmerUpdateDto;
+import com.example.sgswimming.web.config.JsonDateMappingConfig;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Component
 public class SwimmerMapper {
@@ -49,11 +54,22 @@ public class SwimmerMapper {
     interface Save {
         SwimmerMapper.Save INSTANCE = Mappers.getMapper(SwimmerMapper.Save.class);
         Swimmer fromSaveDtoToSwimmer(SwimmerSaveDto dto);
+
+        static LocalDate map(String value) {
+            if (value == null) return null;
+            return LocalDate.parse(value, DateTimeFormatter.ofPattern(JsonDateMappingConfig.DATE_FORMAT));
+        }
     }
 
     @Mapper(uses = LessonMapper.Update.class)
     interface Update {
         SwimmerMapper.Update INSTANCE = Mappers.getMapper(SwimmerMapper.Update.class);
+        @Mapping(target = "lessons", ignore = true)
         Swimmer fromUpdateDtoToSwimmer(SwimmerUpdateDto dto);
+
+        static LocalDate map(String value) {
+            if (value == null) return null;
+            return LocalDate.parse(value, DateTimeFormatter.ofPattern(JsonDateMappingConfig.DATE_FORMAT));
+        }
     }
 }

@@ -14,6 +14,8 @@ import java.time.format.DateTimeFormatter;
 public class JsonDateMappingConfig {
 
     public static final String DATE_FORMAT = "dd.MM.yyyy";
+    public static final String DATE_FORMAT_REGEX = "\\d{2}\\.\\d{2}\\.\\d{4}";
+
     public static final String DATE_TIME_FORMAT = "HH:mm dd.MM.yyyy";
     public static final String DATE_TIME_FORMAT_REGEX = "\\d{2}\\:\\d{2} \\d{2}\\.\\d{2}\\.\\d{4}";
 

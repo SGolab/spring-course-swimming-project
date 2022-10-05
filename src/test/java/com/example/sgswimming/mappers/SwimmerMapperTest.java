@@ -9,7 +9,7 @@ import com.example.sgswimming.web.mappers.SwimmerMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,10 +20,9 @@ public class SwimmerMapperTest {
     Long ID = 1L;
     String FIRST_NAME = "John";
     String LAST_NAME = "Kowalski";
-    Swimmer SWIMMER = Swimmer.builder()
-            .firstName(FIRST_NAME)
-            .lastName(LAST_NAME)
-            .build();
+    Integer ADVANCE_LEVEL = 2;
+    String BIRTH_DATE_STRING = "01.01.2000";
+
 
     SwimmerMapper mapper = SwimmerMapper.getInstance();
 
@@ -37,6 +36,8 @@ public class SwimmerMapperTest {
         swimmer.setId(1L);
         swimmer.setFirstName(FIRST_NAME);
         swimmer.setLastName(LAST_NAME);
+        swimmer.setAdvanceLevel(ADVANCE_LEVEL);
+        swimmer.setBirthDate(LocalDate.now());
 
         swimmer.setLessons(Set.of(
                 new Lesson()
@@ -45,11 +46,15 @@ public class SwimmerMapperTest {
         swimmerSaveDto = new SwimmerSaveDto();
         swimmerSaveDto.setFirstName(FIRST_NAME);
         swimmerSaveDto.setLastName(LAST_NAME);
+        swimmerSaveDto.setAdvanceLevel(ADVANCE_LEVEL);
+        swimmerSaveDto.setBirthDate(BIRTH_DATE_STRING);
 
         swimmerUpdateDto = new SwimmerUpdateDto();
         swimmerUpdateDto.setId(1L);
         swimmerUpdateDto.setFirstName(FIRST_NAME);
         swimmerUpdateDto.setLastName(LAST_NAME);
+        swimmerUpdateDto.setAdvanceLevel(ADVANCE_LEVEL);
+        swimmerUpdateDto.setBirthDate(BIRTH_DATE_STRING);
         swimmerUpdateDto.setLessons(Set.of(1L));
     }
 
@@ -60,6 +65,9 @@ public class SwimmerMapperTest {
         assertEquals(ID, swimmerReadDto.getId());
         assertEquals(FIRST_NAME, swimmerReadDto.getFirstName());
         assertEquals(LAST_NAME, swimmerReadDto.getLastName());
+        assertEquals(ADVANCE_LEVEL, swimmerReadDto.getAdvanceLevel());
+
+        assertNotNull(swimmerReadDto.getBirthDate());
         assertFalse(swimmerReadDto.getLessons().isEmpty());
     }
 
@@ -69,6 +77,9 @@ public class SwimmerMapperTest {
 
         assertEquals(FIRST_NAME, swimmer.getFirstName());
         assertEquals(LAST_NAME, swimmer.getLastName());
+        assertEquals(ADVANCE_LEVEL, swimmer.getAdvanceLevel());
+
+        assertNotNull(swimmer.getBirthDate());
         assertTrue(swimmer.getLessons().isEmpty());
     }
 
@@ -79,6 +90,9 @@ public class SwimmerMapperTest {
         assertEquals(ID, swimmer.getId());
         assertEquals(FIRST_NAME, swimmer.getFirstName());
         assertEquals(LAST_NAME, swimmer.getLastName());
+        assertEquals(ADVANCE_LEVEL, swimmer.getAdvanceLevel());
+
+        assertNotNull(swimmer.getBirthDate());
         assertTrue(swimmer.getLessons().isEmpty());
     }
 }

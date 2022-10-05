@@ -1,11 +1,13 @@
 package com.example.sgswimming.model;
 
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @NamedEntityGraph(
@@ -36,18 +38,14 @@ public class Swimmer {
     private String firstName;
     private String lastName;
 
+    private Integer advanceLevel;
+    private LocalDate birthDate;
+
     @ManyToMany(mappedBy = "swimmers", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Set<Lesson> lessons = new HashSet<>();
 
     @ManyToMany(mappedBy = "swimmers", fetch = FetchType.EAGER)
     private Set<ClientData> clientDataSet = new HashSet<>();
-
-    @Builder
-    public Swimmer(Long id, String firstName, String lastName) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
 
     public void addLesson(Lesson lesson) {
         lessons.add(lesson);

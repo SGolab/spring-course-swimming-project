@@ -1,10 +1,11 @@
 package com.example.sgswimming.web.DTOs.update;
 
+import com.example.sgswimming.web.DTOs.validation_annotations.AdvanceLevelRestriction;
+import com.example.sgswimming.web.config.JsonDateMappingConfig;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,5 +23,11 @@ public class SwimmerUpdateDto {
     @Length(min = 3, max = 20)
     private String lastName;
 
-    Set<Long> lessons = new HashSet<>();
+    @AdvanceLevelRestriction
+    private Integer advanceLevel;
+
+    @Pattern(regexp = JsonDateMappingConfig.DATE_FORMAT_REGEX)
+    private String birthDate;
+
+    private Set<Long> lessons = new HashSet<>();
 }
