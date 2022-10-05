@@ -13,6 +13,7 @@ public class LessonReadDto {
 
     private Instructor instructor;
     private Set<Swimmer> swimmers;
+    private Integer advanceLevel;
 
     @Data
     public static class Instructor {

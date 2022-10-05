@@ -40,6 +40,8 @@ public class Lesson {
 
     private String description;
 
+    private Integer advanceLevel;
+
     private LocalDateTime localDateTime;
 
     public void addSwimmer(Swimmer swimmer) {

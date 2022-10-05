@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class LessonMapperTest {
 
     String DESCRIPTION = "Desc";
+    Integer ADVANCE_LEVEL = 2;
     LocalDateTime LOCAL_DATE_TIME = LocalDateTime.now();
     String LOCAL_DATE_TIME_STRING = LOCAL_DATE_TIME.format(DateTimeFormatter.ofPattern(JsonDateMappingConfig.DATE_TIME_FORMAT));
 
@@ -35,6 +36,7 @@ public class LessonMapperTest {
         lesson.setId(1L);
         lesson.setDescription(DESCRIPTION);
         lesson.setLocalDateTime(LOCAL_DATE_TIME);
+        lesson.setAdvanceLevel(ADVANCE_LEVEL);
         lesson.setInstructor(new Instructor());
         lesson.setSwimmers(List.of(
                 new Swimmer(),
@@ -44,11 +46,13 @@ public class LessonMapperTest {
         lessonSaveDto = new LessonSaveDto();
         lessonSaveDto.setDescription(DESCRIPTION);
         lessonSaveDto.setLocalDateTime(LOCAL_DATE_TIME_STRING);
+        lessonSaveDto.setAdvanceLevel(ADVANCE_LEVEL);
 
         lessonUpdateDto = new LessonUpdateDto();
         lessonUpdateDto.setId(1L);
         lessonUpdateDto.setDescription(DESCRIPTION);
         lessonUpdateDto.setLocalDateTime(LOCAL_DATE_TIME_STRING);
+        lessonUpdateDto.setAdvanceLevel(ADVANCE_LEVEL);
     }
 
     @Test
@@ -56,6 +60,7 @@ public class LessonMapperTest {
         LessonReadDto lessonReadDto = mapper.toReadDto(lesson);
 
         assertEquals(DESCRIPTION, lessonReadDto.getDescription());
+        assertEquals(ADVANCE_LEVEL, lessonReadDto.getAdvanceLevel());
         assertNotNull(lessonReadDto.getLocalDateTime());
         assertNotNull(lessonReadDto.getInstructor());
         assertFalse(lessonReadDto.getSwimmers().isEmpty());
@@ -66,6 +71,7 @@ public class LessonMapperTest {
         Lesson lesson = mapper.fromSaveDtoToLesson(lessonSaveDto);
 
         assertEquals(DESCRIPTION, lesson.getDescription());
+        assertEquals(ADVANCE_LEVEL, lesson.getAdvanceLevel());
         assertNotNull(lesson.getLocalDateTime());
 
         assertNull(lesson.getInstructor());
@@ -78,6 +84,7 @@ public class LessonMapperTest {
 
         assertEquals(1L, lesson.getId());
         assertEquals(DESCRIPTION, lesson.getDescription());
+        assertEquals(ADVANCE_LEVEL, lesson.getAdvanceLevel());
         assertNotNull(lesson.getLocalDateTime());
 
         assertNull(lesson.getInstructor());

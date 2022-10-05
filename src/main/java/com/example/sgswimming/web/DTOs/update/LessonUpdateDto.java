@@ -1,5 +1,6 @@
 package com.example.sgswimming.web.DTOs.update;
 
+import com.example.sgswimming.web.DTOs.validation_annotations.AdvanceLevelRestriction;
 import com.example.sgswimming.web.config.JsonDateMappingConfig;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -22,4 +23,7 @@ public class LessonUpdateDto {
 
     @Pattern(regexp = JsonDateMappingConfig.DATE_TIME_FORMAT_REGEX)
     private String localDateTime;
+
+    @AdvanceLevelRestriction
+    private Integer advanceLevel;
 }
